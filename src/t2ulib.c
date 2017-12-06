@@ -19,3 +19,11 @@ extern char * readFile(char *path)
 	fclose(file);
 	return p;
 }
+
+extern void getShaderLog(uint32_t source)
+{
+	char buffer[512];
+	glGetShaderInfoLog(source, 512, NULL, buffer);
+	printf("Shader compile error:\n");
+	printf("%s\n",buffer);
+}

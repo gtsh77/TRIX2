@@ -17,7 +17,10 @@
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 
+//globals
 extern SDL_Window *window;
+
+//vertex buffer ids storage
 struct
 {
 	uint32_t vo1;
@@ -25,7 +28,27 @@ struct
 	uint32_t vo3;
 	uint32_t vo4;
 	uint32_t vo5;
+	uint32_t vs1;
+	uint32_t vs2;
+	uint32_t vs3;
+	uint32_t vs4;
+	uint32_t vs5;
+	uint32_t obj1;
+	uint32_t obj2;
+	uint32_t obj3;
+	uint32_t obj4;
+	uint32_t obj5;
 } buffers;
+
+//vertex shaders compile status storage
+struct
+{
+	int32_t vs1;
+	int32_t vs2;
+	int32_t vs3;
+	int32_t vs4;
+	int32_t vs5;
+} status;
 
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
@@ -46,6 +69,7 @@ extern void m_set_all(gsl_matrix *, double);
 
 //t2ulib
 extern char * readFile(char *);
+extern void getShaderLog(uint32_t);
 
 //common
 extern void shape_a(void);

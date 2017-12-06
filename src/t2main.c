@@ -20,6 +20,7 @@ int main(void)
 
 	//sdl2gl
 	SDL_GLContext GLPixmap = SDL_GL_CreateContext(window);
+	glewExperimental = GL_TRUE;
 	glewInit();
 
 	//test shape
@@ -34,6 +35,9 @@ int main(void)
 	        if (windowEvent.type == SDL_QUIT) break; //cross
 	        else if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
 	    }
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);	    
+	    glDrawArrays(GL_TRIANGLES, 0, 3);
 	    SDL_GL_SwapWindow(window);
 	}
 
