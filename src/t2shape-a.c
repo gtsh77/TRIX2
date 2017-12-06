@@ -6,10 +6,10 @@ void shape_a(void)
 {
 
 	float vertices[] = {
-	    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-	     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-	    -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	    -0.5f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	     0.5f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	     0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+	    -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 	};
 
 	uint32_t elements[] = {
@@ -32,7 +32,7 @@ void shape_a(void)
 	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
 
 	struct asset *asset;
-	getAssetById(10,&asset);
+	getAssetById(12,&asset);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
 
