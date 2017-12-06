@@ -81,3 +81,18 @@ extern void seekAssets(void)
 	}
     return;
 }
+
+extern void getAssetById(uint8_t id, struct asset **p)
+{
+	struct asset *cur = e;
+	while(cur < f)
+	{
+		if(cur->id == id)
+		{
+			*p = cur;
+			cur = f;
+		}
+		else cur = cur->n;
+	}
+    return;
+}
