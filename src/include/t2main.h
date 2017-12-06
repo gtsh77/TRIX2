@@ -18,7 +18,16 @@
 #define ZEROCHK(i) ((i) == 0)?0:i
 
 extern SDL_Window *window;
+struct
+{
+	uint32_t vo1;
+	uint32_t vo2;
+	uint32_t vo3;
+	uint32_t vo4;
+	uint32_t vo5;
+} buffers;
 
+//t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
 extern gsl_matrix * m_new(uint32_t, uint32_t);
 extern void m_setT(gsl_matrix *, double, double, double, uint8_t);
@@ -35,6 +44,10 @@ extern void subVec(double *, double *, uint8_t, double *);
 extern void glmLookAt(double *, double *, double *, gsl_matrix *);
 extern void m_set_all(gsl_matrix *, double);
 
+//t2ulib
+extern char * readFile(char *);
+
+//common
 extern void shape_a(void);
 
 #endif
