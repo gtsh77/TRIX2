@@ -22,7 +22,8 @@
 //globals
 extern SDL_Window *window;
 extern SDL_GLContext GLPixmap;
-extern SDL_Event windowEvent;;
+extern SDL_Event windowEvent;
+extern uint32_t shader_elf;
 extern GLint uniColor;
 
 //vertex buffer ids storage
@@ -116,10 +117,12 @@ extern void loadAssets(void);
 extern void loadAssetItem(struct asset *);
 extern void seekAssets(void);
 extern void getAssetById(uint8_t, struct asset **);
+extern void freeAssets(void);
 
 //common
 void initVideo(void);
 void initLoop(void);
+void doQuit(void);
 extern void shape_a(void);
 
 #endif

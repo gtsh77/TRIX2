@@ -6,7 +6,6 @@ int main(void)
 	loadAssets();
 	shape_a();
 	initLoop();
-	SDL_GL_DeleteContext(GLPixmap);
-	SDL_Quit();
+	doQuit();
 	return 0;
 }

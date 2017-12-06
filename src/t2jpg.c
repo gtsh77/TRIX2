@@ -95,3 +95,14 @@ extern void getAssetById(uint8_t id, struct asset **p)
 	}
     return;
 }
+
+extern void freeAssets(void)
+{
+	struct asset *cur = e;
+	while(cur < f)
+	{
+		free(cur->data);
+		cur = cur->n;
+	}
+    return;
+}

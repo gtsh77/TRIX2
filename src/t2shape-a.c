@@ -64,7 +64,7 @@ void shape_a(void)
 	else if(!status.vs2) getShaderLog(buffers.vs2);
 	else
 	{
-		uint32_t shader_elf = glCreateProgram();
+		shader_elf = glCreateProgram();
 		glAttachShader(shader_elf, buffers.vs1);
 		glAttachShader(shader_elf, buffers.vs2);
 		glBindFragDataLocation(shader_elf, 0, "outColor");
