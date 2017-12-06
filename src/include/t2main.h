@@ -35,4 +35,6 @@ extern void subVec(double *, double *, uint8_t, double *);
 extern void glmLookAt(double *, double *, double *, gsl_matrix *);
 extern void m_set_all(gsl_matrix *, double);
 
+extern void shape_a(void);
+
 #endif

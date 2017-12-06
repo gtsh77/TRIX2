@@ -19,7 +19,11 @@ int main(void)
 	);
 
 	//sdl2gl
-	SDL_GLContext GLPixmap = SDL_GL_CreateContext(window);	
+	SDL_GLContext GLPixmap = SDL_GL_CreateContext(window);
+	glewInit();
+
+	//test shape
+	shape_a();
 
 	//MAIN LOOP (could be frame?)
 	SDL_Event windowEvent;
