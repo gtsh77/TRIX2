@@ -52,7 +52,7 @@ int main(void)
 
         //glUniform3f(uniColor, 1.0f, 0.0f, 1.0f);
         
-	   	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	   	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	    SDL_GL_SwapWindow(window);
 	}
 
