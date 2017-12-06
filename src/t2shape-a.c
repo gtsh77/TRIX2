@@ -6,10 +6,10 @@ void shape_a(void)
 {
 
 	float vertices[] = {
-	    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
-	     0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
-	     0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-	    -0.5f, -0.5f, 1.0f, 1.0f, 1.0f
+	    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+	    -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 	};
 
 	uint32_t elements[] = {
@@ -30,6 +30,17 @@ void shape_a(void)
 
 	glGenTextures(1, &buffers.tex1);
 	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
+
+	struct asset *asset;
+	getAssetById(10,&asset);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
 	const char *vertex_code = readFile("shaders/vertex.glsl");
 	const char *fragment_code = readFile("shaders/frag.glsl");
@@ -61,12 +72,16 @@ void shape_a(void)
 		glUseProgram(shader_elf);
 
 		int32_t position = glGetAttribLocation(shader_elf, "position");
-		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
 		glEnableVertexAttribArray(position);
 
 		int32_t color = glGetAttribLocation(shader_elf, "incolor");
-		glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void *)(2*sizeof(float)));
+		glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void *)(2*sizeof(float)));
 		glEnableVertexAttribArray(color);
+
+		int32_t tex = glGetAttribLocation(shader_elf, "intexcoord");
+		glEnableVertexAttribArray(tex);
+		glVertexAttribPointer(tex, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
 
 		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
 	}

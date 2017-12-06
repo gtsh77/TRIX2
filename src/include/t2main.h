@@ -69,7 +69,7 @@ extern Buffers buffers;
 extern Status status;
 
 //all uniq assets mapped in mem w dynamic list
-typedef struct asset
+struct asset
 {
     uint8_t   id;
     char  *name;
@@ -80,9 +80,9 @@ typedef struct asset
     uint8_t  *data;
     uint8_t   data_length;
     struct    asset *n, *p;
-} Asset;
+} *e, *l, *f;
 
-extern Asset *e, *l, *f;
+//extern Asset *e, *l, *f;
 
 //ingame assets count, should be equal to objNames & objIds length
 #define GAMEOBJECTS 8

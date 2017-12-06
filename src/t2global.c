@@ -5,4 +5,4 @@ SDL_Event windowEvent;
 SDL_GLContext GLPixmap;
 Buffers buffers;
 Status status;
-Asset *e, *l, *f;
+//Asset *e, *l, *f;

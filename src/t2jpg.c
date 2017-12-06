@@ -52,10 +52,9 @@ extern void loadAssetItem(struct asset *asset)
 				(void)jpeg_read_scanlines(&cinfo, buffer,1);
 				for(i=0,k=0;i<buffer_length;i+=3,k+=4)
 				{
-					//24 rgb => 32bgra ?? x11 case
-					asset->data[scanlinelength + k] = buffer[0][i + 2];
+					asset->data[scanlinelength + k] = buffer[0][i + 0];
 					asset->data[scanlinelength + k + 1] = buffer[0][i + 1];
-					asset->data[scanlinelength + k + 2] = buffer[0][i];
+					asset->data[scanlinelength + k + 2] = buffer[0][i + 2];
 					asset->data[scanlinelength + k + 3] = 0;
 				}
 			}

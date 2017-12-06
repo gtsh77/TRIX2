@@ -15,7 +15,7 @@ void initVideo(void)
 		SDL_WINDOW_OPENGL
 	);
 
-	SDL_GLContext GLPixmap = SDL_GL_CreateContext(window);
+	GLPixmap = SDL_GL_CreateContext(window);
 	glewExperimental = GL_TRUE;
 	glewInit();
 
