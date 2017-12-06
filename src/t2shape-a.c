@@ -28,6 +28,9 @@ void shape_a(void)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo1);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
+	glGenTextures(1, &buffers.tex1);
+	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
+
 	const char *vertex_code = readFile("shaders/vertex.glsl");
 	const char *fragment_code = readFile("shaders/frag.glsl");
 	if(!vertex_code || !fragment_code)

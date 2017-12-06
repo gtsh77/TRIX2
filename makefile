@@ -3,7 +3,7 @@ SRC := src
 OBJ := obj
 SRC_FILES := $(wildcard $(SRC)/*.c)
 OBJ_FILES := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SRC_FILES))
-LDFLAGS := -lm -lgsl -lgslcblas -lSDL2 -lGL -lGLU -lGLEW
+LDFLAGS := -lm -lgsl -lgslcblas -lSDL2 -lGL -lGLU -lGLEW -ljpeg 
 CFLAGS := -Wall
 DFLAGS := -gdwarf-2
 

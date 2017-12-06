@@ -4,12 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <math.h>
 #include <gsl/gsl_linalg.h>
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#include "jpeglib.h"
 
 #define GLEW_STATIC
 #define WW 640
@@ -22,7 +24,7 @@ extern SDL_Window *window;
 extern GLint uniColor;
 
 //vertex buffer ids storage
-struct
+typedef struct
 {
 	uint32_t vo1;
 	uint32_t vo2;
@@ -39,22 +41,52 @@ struct
 	uint32_t eo3;
 	uint32_t eo4;
 	uint32_t eo5;
+	uint32_t tex1;
+	uint32_t tex2;
+	uint32_t tex3;
+	uint32_t tex4;
+	uint32_t tex5;
 	uint32_t obj1;
 	uint32_t obj2;
 	uint32_t obj3;
 	uint32_t obj4;
 	uint32_t obj5;
-} buffers;
+} Buffers;
 
 //vertex shaders compile status storage
-struct
+typedef struct
 {
 	int32_t vs1;
 	int32_t vs2;
 	int32_t vs3;
 	int32_t vs4;
 	int32_t vs5;
-} status;
+} Status;
+
+extern Buffers buffers;
+extern Status status;
+
+//all uniq assets mapped in mem w dynamic list
+typedef struct asset
+{
+    uint8_t   id;
+    char  *name;
+    char  *type;
+    char  *path;
+    uint16_t  width;
+    uint16_t  height;
+    uint8_t  *data;
+    uint8_t   data_length;
+    struct    asset *n, *p;
+} Asset;
+
+extern Asset *e, *l, *f;
+
+//ingame assets count, should be equal to objNames & objIds length
+#define GAMEOBJECTS 8
+//game obj definitions
+extern char objNames[GAMEOBJECTS][128];
+extern uint8_t objIds[GAMEOBJECTS];
 
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
@@ -76,6 +108,11 @@ extern void m_set_all(gsl_matrix *, double);
 //t2ulib
 extern char * readFile(char *);
 extern void getShaderLog(uint32_t);
+
+//t2jpg
+extern void loadAssets(void);
+extern void loadAssetItem(struct asset *);
+extern void seekAssets(void);
 
 //common
 extern void shape_a(void);

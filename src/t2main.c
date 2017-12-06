@@ -1,9 +1,8 @@
 #include "include/t2main.h"
 
-SDL_Window *window;
-
 int main(void)
 {
+	loadAssets();
 	//sdl-init could be frame?)
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
