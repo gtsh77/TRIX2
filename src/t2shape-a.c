@@ -6,9 +6,9 @@ void shape_a(void)
 {
 
 	float vertices[] = {
-	     0.0f,  0.5f,
-	     0.5f, -0.5f,
-	    -0.5f, -0.5f
+	     0.0f,  0.5f, 1.0f, 0.0f, 0.0f,
+	     0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f
 	};
 
 	glGenVertexArrays(1, &buffers.obj1);
@@ -48,10 +48,14 @@ void shape_a(void)
 		glUseProgram(shader_elf);
 
 		int32_t position = glGetAttribLocation(shader_elf, "position");
-		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
 		glEnableVertexAttribArray(position);
 
-		uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
+		int32_t color = glGetAttribLocation(shader_elf, "incolor");
+		glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void *)(2*sizeof(float)));
+		glEnableVertexAttribArray(color);
+
+		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
 	}
 
 	return;	

@@ -50,7 +50,7 @@ int main(void)
         // 	glUniform3f(uniColor, 0.0f, 0.0f, 1.0f);
         // }
 
-        glUniform3f(uniColor, 1.0f, 0.0f, 1.0f);
+        //glUniform3f(uniColor, 1.0f, 0.0f, 1.0f);
         
 	    glDrawArrays(GL_TRIANGLES, 0, 3);
 	    SDL_GL_SwapWindow(window);
