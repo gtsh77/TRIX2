@@ -1,5 +1,7 @@
 #include "include/t2main.h"
 
+GLint uniColor;
+
 void shape_a(void)
 {
 
@@ -47,7 +49,9 @@ void shape_a(void)
 
 		int32_t position = glGetAttribLocation(shader_elf, "position");
 		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(position);		
+		glEnableVertexAttribArray(position);
+
+		uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
 	}
 
 	return;	

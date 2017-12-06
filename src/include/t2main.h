@@ -19,6 +19,7 @@
 
 //globals
 extern SDL_Window *window;
+extern GLint uniColor;
 
 //vertex buffer ids storage
 struct

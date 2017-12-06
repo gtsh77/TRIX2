@@ -26,6 +26,8 @@ int main(void)
 	//test shape
 	shape_a();
 
+	//uint8_t flag = 1;
+
 	//MAIN LOOP (could be frame?)
 	SDL_Event windowEvent;
 	while(1)
@@ -36,7 +38,20 @@ int main(void)
 	        else if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
 	    }
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);	    
+        glClear(GL_COLOR_BUFFER_BIT);
+        // if(flag)
+        // {
+        // 	flag = 0;
+        // 	glUniform3f(uniColor, 1.0f, 0.0f, 0.0f);
+        // }
+        // else
+        // {
+        // 	flag = 1;
+        // 	glUniform3f(uniColor, 0.0f, 0.0f, 1.0f);
+        // }
+
+        glUniform3f(uniColor, 1.0f, 0.0f, 1.0f);
+        
 	    glDrawArrays(GL_TRIANGLES, 0, 3);
 	    SDL_GL_SwapWindow(window);
 	}
