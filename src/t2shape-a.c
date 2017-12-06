@@ -11,12 +11,20 @@ void shape_a(void)
 	    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f
 	};
 
+	uint32_t elements[] = {
+	    0, 1, 2
+	};
+
 	glGenVertexArrays(1, &buffers.obj1);
 	glBindVertexArray(buffers.obj1);	
 
 	glGenBuffers(1, &buffers.vo1);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vo1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &buffers.eo1);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo1);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
 	const char *vertex_code = readFile("shaders/vertex.glsl");
 	const char *fragment_code = readFile("shaders/frag.glsl");

@@ -34,6 +34,11 @@ struct
 	uint32_t vs3;
 	uint32_t vs4;
 	uint32_t vs5;
+	uint32_t eo1;
+	uint32_t eo2;
+	uint32_t eo3;
+	uint32_t eo4;
+	uint32_t eo5;
 	uint32_t obj1;
 	uint32_t obj2;
 	uint32_t obj3;
