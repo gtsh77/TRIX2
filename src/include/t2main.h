@@ -18,13 +18,15 @@
 #define WH 480
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
+#define FPS 60
+#define SLEEP 5000
 
 //globals
 extern SDL_Window *window;
 extern SDL_GLContext GLPixmap;
 extern SDL_Event windowEvent;
 extern uint32_t shader_elf;
-extern GLint uniColor;
+//extern GLint uniColor;
 
 //vertex buffer ids storage
 typedef struct
@@ -123,6 +125,7 @@ extern void freeAssets(void);
 void initVideo(void);
 void initLoop(void);
 void doQuit(void);
+uint64_t benchCPU(void);
 extern void shape_a(void);
 
 #endif

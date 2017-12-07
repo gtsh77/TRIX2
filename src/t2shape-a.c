@@ -1,15 +1,15 @@
 #include "include/t2main.h"
 
-GLint uniColor;
+//GLint uniColor;
 
 void shape_a(void)
 {
 
 	float vertices[] = {
-	    -0.5f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	    -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 	     0.5f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 	     0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-	    -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	    -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 	};
 
 	uint32_t elements[] = {
@@ -34,12 +34,13 @@ void shape_a(void)
 	glGenTextures(1, &buffers.tex1);
 	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     //glGenerateMipmap(GL_TEXTURE_2D);
 
 	const char *vertex_code = readFile("shaders/vertex.glsl");
