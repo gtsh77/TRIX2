@@ -7,9 +7,11 @@ in vec2 position;
 out vec3 fragcolor;
 out vec2 fragtexcoord;
 
+uniform mat4 rotate;
+
 void main()
 {
 	fragtexcoord = intexcoord;
 	//fragcolor = incolor;
-    gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = rotate * vec4(position, 0.0, 1.0);
 }

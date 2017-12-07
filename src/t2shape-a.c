@@ -6,10 +6,10 @@ void shape_a(void)
 {
 
 	float vertices[] = {
-	    -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	     0.5f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-	     0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-	    -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+	    -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 	};
 
 	uint32_t elements[] = {
@@ -29,7 +29,7 @@ void shape_a(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
 	struct asset *asset;
-	getAssetById(12,&asset);
+	getAssetById(14,&asset);
 
 	glGenTextures(1, &buffers.tex1);
 	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
@@ -84,7 +84,18 @@ void shape_a(void)
 		glVertexAttribPointer(tex, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
 		glEnableVertexAttribArray(tex);
 
-		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
+		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");	
+
+		gsl_matrix *MRotate = m_new_diag(4);
+		//m_setT(MRotate,0.5,0,0,0);
+		m_setRz(MRotate,0,0);
+		float MRotateF[16];
+		m_array(MRotate,4,4,MRotateF);
+
+		GLint uniformRotate = glGetUniformLocation(shader_elf, "rotate");
+		glUniformMatrix4fv(uniformRotate, 1, GL_FALSE, MRotateF);
+
+
 	}
 
 	return;	

@@ -90,24 +90,48 @@ extern void glmLookAt(double *eye, double *center, double *up, gsl_matrix *R)
 
 // ===== TRANSFORMATION =====
 
-//set translation coefs based on XYZ vector, opt transponse
+//set translation coefs based on XYZ vector, opt transponse (row order / transponse for column)
 extern void m_setT(gsl_matrix *m, double v1, double v2, double v3, uint8_t t)
 {
-	gsl_matrix_set(m,0,3,v1);
-	gsl_matrix_set(m,1,3,v2);
-	gsl_matrix_set(m,2,3,v3);
+	gsl_matrix_set(m,3,0,v1);
+	gsl_matrix_set(m,3,1,v2);
+	gsl_matrix_set(m,3,2,v3);
 	if(t) gsl_matrix_transpose(m);
 
 	return;
 }
 
-//set rotation by Y coefs based on DEG, opt transponse
+//set rotation by X coefs based on DEG, opt transponse (row order / transponse for column)
+extern void m_setRx(gsl_matrix *m, double deg, uint8_t t)
+{
+	gsl_matrix_set(m,1,1,ZEROCHK(cos(RAD(deg))));
+	gsl_matrix_set(m,2,1,ZEROCHK(sin(RAD(deg))));
+	gsl_matrix_set(m,1,2,ZEROCHK(-sin(RAD(deg))));
+	gsl_matrix_set(m,2,2,ZEROCHK(cos(RAD(deg))));
+	if(t) gsl_matrix_transpose(m);
+
+	return;
+}
+
+//set rotation by Y coefs based on DEG, opt transponse (row order / transponse for column)
 extern void m_setRy(gsl_matrix *m, double deg, uint8_t t)
 {
 	gsl_matrix_set(m,0,0,ZEROCHK(cos(RAD(deg))));
 	gsl_matrix_set(m,0,2,ZEROCHK(sin(RAD(deg))));
 	gsl_matrix_set(m,2,0,ZEROCHK(-sin(RAD(deg))));
 	gsl_matrix_set(m,2,2,ZEROCHK(cos(RAD(deg))));
+	if(t) gsl_matrix_transpose(m);
+
+	return;
+}
+
+//set rotation by Z coefs based on DEG, opt transponse (row order / transponse for column)
+extern void m_setRz(gsl_matrix *m, double deg, uint8_t t)
+{
+	gsl_matrix_set(m,0,0,ZEROCHK(cos(RAD(deg))));
+	gsl_matrix_set(m,0,1,ZEROCHK(sin(RAD(deg))));
+	gsl_matrix_set(m,1,0,ZEROCHK(-sin(RAD(deg))));
+	gsl_matrix_set(m,1,1,ZEROCHK(cos(RAD(deg))));
 	if(t) gsl_matrix_transpose(m);
 
 	return;
