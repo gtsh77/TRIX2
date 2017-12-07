@@ -6,10 +6,10 @@ void shape_a(void)
 {
 
 	float vertices[] = {
-	    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-	     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-	    -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	    -0.5f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	     0.5f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	     0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+	    -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 	};
 
 	uint32_t elements[] = {
@@ -29,7 +29,7 @@ void shape_a(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
 	struct asset *asset;
-	getAssetById(14,&asset);
+	getAssetById(12,&asset);
 
 	glGenTextures(1, &buffers.tex1);
 	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
@@ -86,32 +86,32 @@ void shape_a(void)
 
 		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");	
 
-		//model
-		gsl_matrix *MRotate = m_new_diag(4);
-		m_setRz(MRotate,0,0);
+		// //model
+		// gsl_matrix *MRotate = m_new_diag(4);
+		// m_setRz(MRotate,0,0);
 
-		//view
-		gsl_matrix *MView = m_new(4,4);
-		double eye[] = {0,0,5};
-		double center[] = {0,0,0};
-		double up[] = {0,1,0};
-		glmLookAt(eye,center,up,MView);
+		// //view
+		// gsl_matrix *MView = m_new(4,4);
+		// double eye[] = {0,0,5};
+		// double center[] = {0,0,0};
+		// double up[] = {0,1,0};
+		// glmLookAt(eye,center,up,MView);
 
-		//projection
-		gsl_matrix *MProjection = m_new(4,4);
-		glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);
+		// //projection
+		// gsl_matrix *MProjection = m_new(4,4);
+		// glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);
 
-		//MVP	
-		gsl_matrix *MV = m_new(4,4);
-		gsl_matrix *MVP = m_new(4,4);
+		// //MVP	
+		// gsl_matrix *MV = m_new(4,4);
+		// gsl_matrix *MVP = m_new(4,4);
 		
-		m_mul(MRotate,MView,MV);
-		m_mul(MV,MProjection,MVP);
-		float MVPA[16];
-		m_array(MVP,4,4,MVPA);
+		// m_mul(MRotate,MView,MV);
+		// m_mul(MV,MProjection,MVP);
+		// float MVPA[16];
+		// m_array(MVP,4,4,MVPA);
 
-		GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-		glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+		// GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+		// glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
 
 
 	}
