@@ -86,14 +86,32 @@ void shape_a(void)
 
 		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");	
 
+		//model
 		gsl_matrix *MRotate = m_new_diag(4);
-		//m_setT(MRotate,0.5,0,0,0);
 		m_setRz(MRotate,0,0);
-		float MRotateF[16];
-		m_array(MRotate,4,4,MRotateF);
 
-		GLint uniformRotate = glGetUniformLocation(shader_elf, "rotate");
-		glUniformMatrix4fv(uniformRotate, 1, GL_FALSE, MRotateF);
+		//view
+		gsl_matrix *MView = m_new(4,4);
+		double eye[] = {0,0,5};
+		double center[] = {0,0,0};
+		double up[] = {0,1,0};
+		glmLookAt(eye,center,up,MView);
+
+		//projection
+		gsl_matrix *MProjection = m_new(4,4);
+		glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);
+
+		//MVP	
+		gsl_matrix *MV = m_new(4,4);
+		gsl_matrix *MVP = m_new(4,4);
+		
+		m_mul(MRotate,MView,MV);
+		m_mul(MV,MProjection,MVP);
+		float MVPA[16];
+		m_array(MVP,4,4,MVPA);
+
+		GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+		glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
 
 
 	}

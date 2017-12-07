@@ -7,11 +7,11 @@ in vec2 position;
 out vec3 fragcolor;
 out vec2 fragtexcoord;
 
-uniform mat4 rotate;
+uniform mat4 matrix;
 
 void main()
 {
 	fragtexcoord = intexcoord;
 	//fragcolor = incolor;
-    gl_Position = rotate * vec4(position, 0.0, 1.0);
+    gl_Position = matrix * vec4(position, 0.0, 1.0);
 }
