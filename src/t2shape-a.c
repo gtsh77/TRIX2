@@ -28,11 +28,11 @@ void shape_a(void)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo1);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
-	glGenTextures(1, &buffers.tex1);
-	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
-
 	struct asset *asset;
 	getAssetById(12,&asset);
+
+	glGenTextures(1, &buffers.tex1);
+	glBindTexture(GL_TEXTURE_2D, buffers.tex1);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
 
@@ -40,7 +40,7 @@ void shape_a(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //glGenerateMipmap(GL_TEXTURE_2D);
 
 	const char *vertex_code = readFile("shaders/vertex.glsl");
 	const char *fragment_code = readFile("shaders/frag.glsl");
@@ -67,7 +67,7 @@ void shape_a(void)
 		shader_elf = glCreateProgram();
 		glAttachShader(shader_elf, buffers.vs1);
 		glAttachShader(shader_elf, buffers.vs2);
-		glBindFragDataLocation(shader_elf, 0, "outColor");
+		glBindFragDataLocation(shader_elf, 0, "outFragmentColor");
 		glLinkProgram(shader_elf);
 		glUseProgram(shader_elf);
 
@@ -75,13 +75,13 @@ void shape_a(void)
 		glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
 		glEnableVertexAttribArray(position);
 
-		int32_t color = glGetAttribLocation(shader_elf, "incolor");
-		glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void *)(2*sizeof(float)));
-		glEnableVertexAttribArray(color);
+		// int32_t color = glGetAttribLocation(shader_elf, "incolor");
+		// glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void *)(2*sizeof(float)));
+		// glEnableVertexAttribArray(color);
 
 		int32_t tex = glGetAttribLocation(shader_elf, "intexcoord");
-		glEnableVertexAttribArray(tex);
 		glVertexAttribPointer(tex, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
+		glEnableVertexAttribArray(tex);
 
 		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");		
 	}

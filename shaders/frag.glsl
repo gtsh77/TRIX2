@@ -2,12 +2,12 @@
 
 //uniform vec3 triangleColor;
 in vec2 fragtexcoord;
-in vec3 fragcolor;
-out vec4 outColor;
+//in vec3 fragcolor;
+out vec4 outFragmentColor;
 
 uniform sampler2D tex;
 
 void main()
 {
-    outColor = texture(tex, fragtexcoord) * vec4(fragcolor, 1.0);
+    outFragmentColor = texture(tex, fragtexcoord) * vec4(1.0);
 }
