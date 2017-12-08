@@ -2,11 +2,14 @@
 
 void initLoop(void)
 {
+    #if SHOWFRAMETIME
+        uint64_t start,end;
+    #endif
     uint64_t lo,hi,a,b,c,interval;
     uint8_t flag = 0;
     c = 0;
     interval = 44195117;
-    //interval = (benchCPU()/60);
+    //interval = (benchCPU()/FPS);
     //printf("%lu\n",interval);
 
     #if TESTWALL
@@ -58,6 +61,9 @@ void initLoop(void)
     while(1)
     {
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+        #if SHOWFRAMETIME
+            start = getCycles();
+        #endif
         if(!flag)
         {
             a = ((uint64_t)hi << 32) | lo;
@@ -130,7 +136,7 @@ void initLoop(void)
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             #elif TESTCRATE
-                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                 if(deg == 360-4) deg = 0;
@@ -152,6 +158,10 @@ void initLoop(void)
             SDL_GL_SwapWindow(window);
             c = 0;
         }
+        #if SHOWFRAMETIME
+            end = getCycles();
+            printf("Frame: %.9f\n",(double)(end-start)/3.5e9);
+        #endif        
         usleep(SLEEP);
     }
     return;

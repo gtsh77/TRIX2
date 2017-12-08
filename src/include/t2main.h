@@ -19,7 +19,8 @@
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
-#define SLEEP 5000
+#define SLEEP 1000
+#define SHOWFRAMETIME 0
 #define TESTWALL 0
 #define TESTCRATE 1
 
@@ -119,6 +120,7 @@ extern void m_set_all(gsl_matrix *, double);
 //t2ulib
 extern char * readFile(char *);
 extern void getShaderLog(uint32_t);
+extern uint64_t getCycles(void);
 
 //t2jpg
 extern void loadAssets(void);
