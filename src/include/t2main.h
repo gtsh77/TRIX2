@@ -20,7 +20,8 @@
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
 #define SLEEP 5000
-#define TESTWALL 1
+#define TESTWALL 0
+#define TESTCRATE 1
 
 //globals
 extern SDL_Window *window;
@@ -89,7 +90,7 @@ struct asset
 //extern Asset *e, *l, *f;
 
 //ingame assets count, should be equal to objNames & objIds length
-#define GAMEOBJECTS 8
+#define GAMEOBJECTS 9
 //game obj definitions
 extern char objNames[GAMEOBJECTS][128];
 extern uint8_t objIds[GAMEOBJECTS];
@@ -129,6 +130,7 @@ void initVideo(void);
 void initLoop(void);
 void doQuit(void);
 uint64_t benchCPU(void);
-extern void genWall(void);
+void genWall(void);
+void genCrate(void);
 
 #endif

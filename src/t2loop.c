@@ -59,10 +59,10 @@ void initLoop(void)
         }
         if(c > interval)
         {
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-
             #if TESTWALL
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+
                 if(!halt)
                 {
                     eye[2] += (zoomFlag?0.05:-0.05);
@@ -73,9 +73,13 @@ void initLoop(void)
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);            
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-            #endif           
-
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            #elif TESTCRATE
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            #endif
+            
             SDL_GL_SwapWindow(window);
             c = 0;
         }

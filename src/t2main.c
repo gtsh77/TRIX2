@@ -6,6 +6,8 @@ int main(void)
 	loadAssets();
 	#if TESTWALL
 		genWall();
+	#elif TESTCRATE
+		genCrate();
 	#endif
 	initLoop();
 	doQuit();
