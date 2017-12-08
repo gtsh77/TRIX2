@@ -90,7 +90,7 @@ struct asset
 //extern Asset *e, *l, *f;
 
 //ingame assets count, should be equal to objNames & objIds length
-#define GAMEOBJECTS 9
+#define GAMEOBJECTS 10
 //game obj definitions
 extern char objNames[GAMEOBJECTS][128];
 extern uint8_t objIds[GAMEOBJECTS];

@@ -128,33 +128,34 @@ void genCrate(void)
 		glEnable(GL_DEPTH_TEST);
 
 		//build Model
-		gsl_matrix *Model = m_new_diag(4);
+		// gsl_matrix *Model = m_new_diag(4);
+		// m_setRy(Model,10,0);
 
-		//build View
-		gsl_matrix *View = m_new(4,4);
-		double eye[] = {1.2,1.2,1.2};
-		double center[] = {0,0,0};
-		double up[] = {0,1,0};
-		glmLookAt(eye,center,up,View);
+		// //build View
+		// gsl_matrix *View = m_new(4,4);
+		// double eye[] = {1.5,1.5,2};
+		// double center[] = {0,0,0};
+		// double up[] = {0,1,0};
+		// glmLookAt(eye,center,up,View);
 
-		//build Projection
-		gsl_matrix *Projection = m_new(4,4);
-		glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);
+		// //build Projection
+		// gsl_matrix *Projection = m_new(4,4);
+		// glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);
 
-		//calc MVP
-		gsl_matrix *MV = m_new(4,4);
-		gsl_matrix *MVP = m_new(4,4);
+		// //calc MVP
+		// gsl_matrix *MV = m_new(4,4);
+		// gsl_matrix *MVP = m_new(4,4);
 		
-		m_mul(Model,View,MV);
-		m_mul(MV,Projection,MVP);		
+		// m_mul(Model,View,MV);
+		// m_mul(MV,Projection,MVP);		
 
-		//build MVPA
-		float MVPA[16];
-		m_array(MVP,4,4,MVPA);
+		// //build MVPA
+		// float MVPA[16];
+		// m_array(MVP,4,4,MVPA);
 
-		//send MVPA
-		GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-		glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+		// //send MVPA
+		// GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+		// glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
 
 	}	
 

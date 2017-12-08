@@ -10,7 +10,8 @@ char objNames[GAMEOBJECTS][128] =
     "assets/Pak2/textures/general_structure/frenchfloor_wood1.jpg",
     "assets/Pak2/textures/general_structure/garagefloor.jpg",
     "assets/Pak2/textures/mohtest/wlppr_tan.jpg",
-    "assets/Pak2/textures/algiers/arzewpj_1.jpg" 
+    "assets/Pak2/textures/algiers/arzewpj_1.jpg",
+    "assets/Pak2/textures/common/caulk.jpg" 
 };
 
 uint8_t objIds[GAMEOBJECTS] = 
@@ -23,5 +24,6 @@ uint8_t objIds[GAMEOBJECTS] =
     15,
     16,
     17,
-    18
-};
+    18,
+    19
+}; 

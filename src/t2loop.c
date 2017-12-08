@@ -23,6 +23,21 @@ void initLoop(void)
         float MVPA[16];
         double eye[] = {0,0,1};
         double center[] = {0,0,0};
+        double up[] = {0,1,0};
+
+        GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+    #elif TESTCRATE
+        uint16_t deg = 0;
+
+        gsl_matrix *MRotate = m_new_diag(4);
+        gsl_matrix *MView = m_new(4,4);
+        gsl_matrix *MV = m_new(4,4);
+        gsl_matrix *MVP = m_new(4,4);
+        gsl_matrix *MProjection = m_new(4,4);
+        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);    
+        float MVPA[16];
+        double eye[] = {1.1,1.1,2};
+        double center[] = {0,0,0};
         double up[] = {0,1,0};    
 
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
@@ -75,6 +90,15 @@ void initLoop(void)
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             #elif TESTCRATE
+                if(deg == 356) deg = 0;
+                else deg += 4;
+                m_setRy(MRotate,deg,0);
+                glmLookAt(eye,center,up,MView);
+                m_mul(MRotate,MView,MV);
+                m_mul(MV,MProjection,MVP);            
+                m_array(MVP,4,4,MVPA);            
+                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDrawArrays(GL_TRIANGLES, 0, 36);
