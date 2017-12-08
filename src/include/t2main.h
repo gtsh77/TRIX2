@@ -20,6 +20,7 @@
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
 #define SLEEP 5000
+#define TESTWALL 1
 
 //globals
 extern SDL_Window *window;
@@ -128,6 +129,6 @@ void initVideo(void);
 void initLoop(void);
 void doQuit(void);
 uint64_t benchCPU(void);
-extern void shape_a(void);
+extern void genWall(void);
 
 #endif

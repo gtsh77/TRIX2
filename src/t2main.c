@@ -4,7 +4,9 @@ int main(void)
 {
 	initVideo();
 	loadAssets();
-	shape_a();
+	#if TESTWALL
+		genWall();
+	#endif
 	initLoop();
 	doQuit();
 	return 0;

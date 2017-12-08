@@ -2,7 +2,7 @@
 
 //GLint uniColor;
 
-void shape_a(void)
+void genWall(void)
 {
 
 	float vertices[] = {
@@ -43,8 +43,8 @@ void shape_a(void)
 
     //glGenerateMipmap(GL_TEXTURE_2D);
 
-	const char *vertex_code = readFile("shaders/vertex.glsl");
-	const char *fragment_code = readFile("shaders/frag.glsl");
+	const char *vertex_code = readFile("shaders/testwall_vertex.glsl");
+	const char *fragment_code = readFile("shaders/testwall_fragment.glsl");
 	if(!vertex_code || !fragment_code)
 	{
 		printf("not all shaders are loaded\n");
@@ -85,6 +85,8 @@ void shape_a(void)
 		glEnableVertexAttribArray(tex);
 
 		//uniColor = glGetUniformLocation(shader_elf, "triangleColor");	
+
+		//draw MVP_wall once
 
 		// //model
 		// gsl_matrix *MRotate = m_new_diag(4);
