@@ -28,6 +28,7 @@ void initLoop(void)
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
     #elif TESTCRATE
         uint16_t deg = 0;
+        uint8_t i;
 
         gsl_matrix *MRotate = m_new_diag(4);
         gsl_matrix *MView = m_new(4,4);
@@ -36,7 +37,7 @@ void initLoop(void)
         gsl_matrix *MProjection = m_new(4,4);
         glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);    
         float MVPA[16];
-        double eye[] = {1.1,1.1,2};
+        double eye[] = {1.1,1.1,4};
         double center[] = {0,0,0};
         double up[] = {0,1,0};    
 
@@ -90,18 +91,23 @@ void initLoop(void)
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             #elif TESTCRATE
-                if(deg == 356) deg = 0;
-                else deg += 4;
-                m_setRy(MRotate,deg,0);
-                glmLookAt(eye,center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
-                m_array(MVP,4,4,MVPA);            
-                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                if(deg == 360-8) deg = 0;
+                else deg += 8;
+
+                for(i=0;i<3;i++)
+                {
+                    m_setT(MRotate,i,-i*1.5,-i*2.5,0);
+                    m_setRy(MRotate,deg,0);
+                    glmLookAt(eye,center,up,MView);
+                    m_mul(MRotate,MView,MV);
+                    m_mul(MV,MProjection,MVP);            
+                    m_array(MVP,4,4,MVPA);            
+                    glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+                    glDrawArrays(GL_TRIANGLES, 0, 36);                    
+                }
             #endif
             
             SDL_GL_SwapWindow(window);
