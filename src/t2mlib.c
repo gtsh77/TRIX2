@@ -209,7 +209,7 @@ extern double scalar(double *vec1, double *vec2, uint8_t size)
 	return sum;
 }
 
-//substart v2 from v1 Xd both
+//substart v1 from v2 Xd both
 extern void subVec(double *vec1, double *vec2, uint8_t size, double *r)
 {
 	uint8_t i;
@@ -217,6 +217,32 @@ extern void subVec(double *vec1, double *vec2, uint8_t size, double *r)
 	for(i=0;i<size;i++)
 	{
 		r[i] = vec1[i] - vec2[i];
+	}
+
+	return;
+}
+
+//add v1 to v2 Xd both
+extern void addVec(double *vec1, double *vec2, uint8_t size, double *r)
+{
+	uint8_t i;
+
+	for(i=0;i<size;i++)
+	{
+		r[i] = vec1[i] + vec2[i];
+	}
+
+	return;
+}
+
+//mul by N vec
+extern void mulVec(double *vec1, double N, uint8_t size, double *r)
+{
+	uint8_t i;
+
+	for(i=0;i<size;i++)
+	{
+		r[i] = vec1[i] * N;
 	}
 
 	return;

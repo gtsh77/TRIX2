@@ -111,6 +111,8 @@ extern double getVectorLength(double *, uint8_t);
 extern void getCrossV3(double *, double *, double *);
 extern double scalar(double *, double *, uint8_t);
 extern void subVec(double *, double *, uint8_t, double *);
+extern void addVec(double *, double *, uint8_t, double *);
+extern void mulVec(double *, double, uint8_t, double *);
 extern void glmLookAt(double *, double *, double *, gsl_matrix *);
 extern void m_set_all(gsl_matrix *, double);
 

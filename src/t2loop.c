@@ -37,9 +37,20 @@ void initLoop(void)
         gsl_matrix *MProjection = m_new(4,4);
         glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);    
         float MVPA[16];
-        double eye[] = {1.1,1.1,4};
-        double center[] = {0,0,0};
-        double up[] = {0,1,0};    
+        // double eye[] = {1.1,1.1,4};
+        // double center[] = {0,0,-1};
+        // double up[] = {0,1,0}; 
+        double eye[] = {0,0,3};
+        double center[] = {0,0,-1};
+        double up[] = {0,1,0};
+
+        double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
+        double speed = 0.25;
+        mulVec(center,speed,3,speed_zoom);
+        getCrossV3(center,up,center_up);
+        normalize(center_up,3,center_up);
+        mulVec(center_up,speed,3,speed_straight);
+
 
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
     #endif
@@ -62,16 +73,44 @@ void initLoop(void)
         if (SDL_PollEvent(&windowEvent))
         {
             if (windowEvent.type == SDL_QUIT) break; //cross
-            else if (windowEvent.type == SDL_KEYUP)
+            else if(windowEvent.type == SDL_KEYDOWN)
             {
-                #if TESTWALL
-                    if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
-                    else if(windowEvent.key.keysym.sym == SDLK_SPACE) zoomFlag = !zoomFlag;
-                    else if(windowEvent.key.keysym.sym == SDLK_s) halt = !halt;
-                #else
-                    if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
+                #if TESTCRATE
+                    if(windowEvent.key.keysym.sym == SDLK_w)
+                    {
+                        addVec(eye,speed_zoom,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_a)
+                    {
+                        subVec(eye,speed_straight,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_d)
+                    {
+                        //glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed
+                        addVec(eye,speed_straight,3,eye);
+                        addVec(eye,center,3,eye_center);
+
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_s)
+                    {
+                        subVec(eye,speed_zoom,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                 #endif
-            } 
+            }
+            // else if (windowEvent.type == SDL_KEYUP)
+            // {
+            //     #if TESTWALL
+            //         if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
+            //         else if(windowEvent.key.keysym.sym == SDLK_SPACE) zoomFlag = !zoomFlag;
+            //         else if(windowEvent.key.keysym.sym == SDLK_s) halt = !halt;
+            //     #else
+            //         if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break; //esc key
+            //     #endif
+            // } 
         }
         if(c > interval)
         {
@@ -94,14 +133,14 @@ void initLoop(void)
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                if(deg == 360-8) deg = 0;
-                else deg += 8;
+                if(deg == 360-4) deg = 0;
+                else deg += 4;
 
                 for(i=0;i<3;i++)
                 {
                     m_setT(MRotate,i,-i*1.5,-i*2.5,0);
                     m_setRy(MRotate,deg,0);
-                    glmLookAt(eye,center,up,MView);
+                    glmLookAt(eye,eye_center,up,MView);
                     m_mul(MRotate,MView,MV);
                     m_mul(MV,MProjection,MVP);            
                     m_array(MVP,4,4,MVPA);            
