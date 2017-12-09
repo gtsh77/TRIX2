@@ -242,7 +242,7 @@ void initLoop(void)
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                glUniform1i(tsrc,0);
+                glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //left 1
@@ -294,7 +294,7 @@ void initLoop(void)
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                glUniform1i(tsrc,0);
+                glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  
 
                 //right 2
@@ -307,7 +307,7 @@ void initLoop(void)
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                glUniform1i(tsrc,0);
+                glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
 
                 //right 3
@@ -320,7 +320,7 @@ void initLoop(void)
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                glUniform1i(tsrc,0);
+                glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);                
 
             #endif
