@@ -56,6 +56,8 @@ void initLoop(void)
 
 
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+    #elif TESTROOM
+
     #endif
 
     while(1)
@@ -105,6 +107,10 @@ void initLoop(void)
                         addVec(eye,center,3,eye_center);
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
+                #elif TESTWALL
+                    if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
+                #elif TESTROOM
+                    if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                 #endif
             }
             // else if (windowEvent.type == SDL_KEYUP)
@@ -153,6 +159,10 @@ void initLoop(void)
                     glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                     glDrawArrays(GL_TRIANGLES, 0, 36);                    
                 }
+            #elif TESTROOM
+                glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);             
             #endif
             
             SDL_GL_SwapWindow(window);

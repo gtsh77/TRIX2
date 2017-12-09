@@ -22,7 +22,8 @@
 #define SLEEP 1000
 #define SHOWFRAMETIME 0
 #define TESTWALL 0
-#define TESTCRATE 1
+#define TESTCRATE 0
+#define TESTROOM 1
 
 //globals
 extern SDL_Window *window;
@@ -71,8 +72,12 @@ typedef struct
 	int32_t vs5;
 } Status;
 
+//texels storage (texture that stored in GPU mem)
+typedef uint32_t Texels[24];
+
 extern Buffers buffers;
 extern Status status;
+extern Texels texels;
 
 //all uniq assets mapped in mem w dynamic list
 struct asset
@@ -136,5 +141,6 @@ void doQuit(void);
 uint64_t benchCPU(void);
 void genWall(void);
 void genCrate(void);
+void genRoom(void);
 
 #endif

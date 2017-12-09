@@ -8,6 +8,8 @@ int main(void)
 		genWall();
 	#elif TESTCRATE
 		genCrate();
+	#elif TESTROOM
+		genRoom();
 	#endif
 	initLoop();
 	doQuit();

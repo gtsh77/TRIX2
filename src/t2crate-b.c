@@ -14,9 +14,9 @@ void genCrateExample(void)
 
 	//gen TEX
 
-	//load TEX
-
 	//set TEX PARAMS
+
+	//load TEX	
 
 	//load frag/vertex shader's code
 
@@ -28,11 +28,27 @@ void genCrateExample(void)
 
 	//create elf
 
-	//compile elf
+	//attach shaders
+
+	//link
 
 	//use elf
 
-	//build MVP
+	//attribs
+
+	//d-test
+
+	//build Model
+
+	//build View
+
+	//build Projection
+
+	//calc MVP
+
+	//build MVPA
+
+	//send MVPA
 
 	return;
 }
