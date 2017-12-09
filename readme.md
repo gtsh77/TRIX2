@@ -12,7 +12,11 @@ OR JUST CPY PRE-COMPILED:
 ```sh
 sudo pkg install gcc gmake gsl sdl2 glew jpeg-turbo
 ```
-BUILD & RUN RENDER:
+SETUP ASSETS LIST:<br/>
+1. Copy your asset to assets folder (only jpg supported yet)<br/>
+2. Edit src/t2assets.c <br/>
+Use only power of two images, at the example below 128x256 used for walls and 64x64 used for the crate<br/><br/>
+BUILD & RUN:
 ```sh
 git clone git@github.com:gtsh77/TRIX2.git lovely_folder
 cd lovely_folder && gmake
