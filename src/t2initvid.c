@@ -9,7 +9,7 @@ void initVideo(void)
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	window = SDL_CreateWindow(
-		"Hiho!!",
+		"Simple Room",
 		0,0,
 		WW,WH,
 		SDL_WINDOW_OPENGL

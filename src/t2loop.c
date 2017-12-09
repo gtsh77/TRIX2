@@ -335,7 +335,7 @@ void initLoop(void)
 
                 m_reset_diag(MRotate,4);
                 m_setT(MRotate,1,-0.75,1,0);   
-                m_setRy(MRotate,deg,0);
+                m_setRy(MRotate,45,0);
 
                 glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
