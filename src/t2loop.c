@@ -16,13 +16,13 @@ void initLoop(void)
         uint8_t zoomFlag = 1;
         uint8_t halt = 0;
 
-        gsl_matrix *MRotate = m_new_diag(4);
-        gsl_matrix *MView = m_new(4,4);
+        gsl_matrix *Model = m_new_diag(4);
+        gsl_matrix *View = m_new(4,4);
         gsl_matrix *MV = m_new(4,4);
         gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *MProjection = m_new(4,4);
-        m_setRz(MRotate,0,0);
-        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);    
+        gsl_matrix *Projection = m_new(4,4);
+        m_setRz(Model,0,0);
+        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
         float MVPA[16];
         double eye[] = {0,0,1};
         double center[] = {0,0,0};
@@ -33,12 +33,12 @@ void initLoop(void)
         uint16_t deg = 0;
         uint8_t i;
 
-        gsl_matrix *MRotate = m_new_diag(4);
-        gsl_matrix *MView = m_new(4,4);
+        gsl_matrix *Model = m_new_diag(4);
+        gsl_matrix *View = m_new(4,4);
         gsl_matrix *MV = m_new(4,4);
         gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *MProjection = m_new(4,4);
-        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection);    
+        gsl_matrix *Projection = m_new(4,4);
+        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
         float MVPA[16];
         // double eye[] = {1.1,1.1,4};
         // double center[] = {0,0,-1};
@@ -59,24 +59,26 @@ void initLoop(void)
     #elif TESTROOM
 
         uint16_t deg = 0;
-        gsl_matrix *MRotate = m_new_diag(4);
-        gsl_matrix *MView = m_new(4,4);
+        gsl_matrix *Model = m_new_diag(4);
+        gsl_matrix *Model_S = m_new(4,4);
+        gsl_matrix *Model_S_R = m_new(4,4);
+        gsl_matrix *View = m_new(4,4);
         gsl_matrix *MV = m_new(4,4);
         gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *MProjection = m_new(4,4);      
+        gsl_matrix *Projection = m_new(4,4);      
         float MVPA[16];
-        double eye[] = {0,0,5};
+        double eye[] = {0,-0.25,4};
         double center[] = {0,0,-1};
         double up[] = {0,1,0};       
 
         double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
-        double speed = 0.25;
+        double speed = 0.08;
         mulVec(center,speed,3,speed_zoom);
         getCrossV3(center,up,center_up);
         normalize(center_up,3,center_up);
         mulVec(center_up,speed,3,speed_straight);  
 
-        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection); 
+        glmPerspective(RAD(90.0f),(double)WW/(double)WH,0.1f,10.0f,Projection); 
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
         uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
 
@@ -179,9 +181,9 @@ void initLoop(void)
                     eye[2] += (zoomFlag?0.05:-0.05);
                 }
                 
-                glmLookAt(eye,center,up,MView);            
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,center,up,View);            
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);            
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -194,11 +196,11 @@ void initLoop(void)
 
                 for(i=0;i<3;i++)
                 {
-                    m_setT(MRotate,i,-i*1.5,-i*2.5,0);
-                    m_setRy(MRotate,deg,0);
-                    glmLookAt(eye,eye_center,up,MView);
-                    m_mul(MRotate,MView,MV);
-                    m_mul(MV,MProjection,MVP);            
+                    m_setT(Model,i,-i*1.5,-i*2.5,0);
+                    m_setRy(Model,deg,0);
+                    glmLookAt(eye,eye_center,up,View);
+                    m_mul(Model,View,MV);
+                    m_mul(MV,Projection,MVP);            
                     m_array(MVP,4,4,MVPA);            
                     glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                     glDrawArrays(GL_TRIANGLES, 0, 36);                    
@@ -211,120 +213,159 @@ void initLoop(void)
                 glEnable(GL_CULL_FACE);
                 glBindVertexArray(buffers.obj1);
                 //center
-                m_reset_diag(MRotate,4);
-                m_setRz(MRotate,0,0);
-                m_setT(MRotate,0,0,0,0);     
+                m_reset_diag(Model,4);
+                m_setRz(Model,0,0);
+                m_setT(Model,0,0,0,0);     
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,0);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //center -1
-                m_reset_diag(MRotate,4);
-                m_setRz(MRotate,0,0);
-                m_setT(MRotate,-1,0,0,0);     
+                m_reset_diag(Model,4);
+                m_setRz(Model,0,0);
+                m_setT(Model,-1,0,0,0);     
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,0);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //center +1
-                m_reset_diag(MRotate,4);
-                m_setRz(MRotate,0,0);
-                m_setT(MRotate,1,0,0,0);     
+                m_reset_diag(Model,4);
+                m_setRz(Model,0,0);
+                m_setT(Model,1,0,0,0);     
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //left 1
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,-1.5,0,0.5,0);   
-                m_setRy(MRotate,-90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,-1.5,0,0.5,0);   
+                m_setRy(Model,-90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,0);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //left 2
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,-1.5,0,1.5,0);   
-                m_setRy(MRotate,-90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,-1.5,0,1.5,0);   
+                m_setRy(Model,-90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,0);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //left 3
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,-1.5,0,2.5,0);   
-                m_setRy(MRotate,-90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,-1.5,0,2.5,0);   
+                m_setRy(Model,-90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,0);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //right 1
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,+1.5,0,0.5,0);   
-                m_setRy(MRotate,90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,+1.5,0,0.5,0);   
+                m_setRy(Model,90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  
 
                 //right 2
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,+1.5,0,1.5,0);   
-                m_setRy(MRotate,90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,+1.5,0,1.5,0);   
+                m_setRy(Model,90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,1);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
 
                 //right 3
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,+1.5,0,2.5,0);   
-                m_setRy(MRotate,90,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,+1.5,0,2.5,0);   
+                m_setRy(Model,90,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,1);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                //floor 1
+                glBindVertexArray(buffers.obj3);
+                m_reset_diag(Model,4);
+                m_reset_diag(Model_S,4);
+                m_reset_diag(Model_S_R,4);
+                m_setSc(Model,1.5,3,1,0);
+                m_setRx(Model_S,90,0);
+                m_mul(Model,Model_S,Model_S_R);                
+                m_reset_diag(Model_S,4);
+                m_setT(Model_S,-0.75,-1,1.5,0);
+                m_mul(Model_S_R,Model_S,Model);
+
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
+                m_array(MVP,4,4,MVPA);
+                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+                glUniform1i(tsrc,3);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                //floor 2
+                m_reset_diag(Model,4);
+                m_reset_diag(Model_S,4);
+                m_reset_diag(Model_S_R,4);
+                m_setSc(Model,1.5,3,1,0);
+                m_setRx(Model_S,90,0);
+                m_mul(Model,Model_S,Model_S_R);                
+                m_reset_diag(Model_S,4);
+                m_setT(Model_S,0.75,-1,1.5,0);
+                m_mul(Model_S_R,Model_S,Model);
+
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
+                m_array(MVP,4,4,MVPA);
+                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+                glUniform1i(tsrc,3);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                 //crate
@@ -333,13 +374,13 @@ void initLoop(void)
                 glDisable(GL_CULL_FACE);
                 glBindVertexArray(buffers.obj2);
 
-                m_reset_diag(MRotate,4);
-                m_setT(MRotate,1,-0.75,1,0);   
-                m_setRy(MRotate,45,0);
+                m_reset_diag(Model,4);
+                m_setT(Model,1,-0.75,1,0);   
+                m_setRy(Model,deg,0);
 
-                glmLookAt(eye,eye_center,up,MView);
-                m_mul(MRotate,MView,MV);
-                m_mul(MV,MProjection,MVP);            
+                glmLookAt(eye,eye_center,up,View);
+                m_mul(Model,View,MV);
+                m_mul(MV,Projection,MVP);            
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,2);

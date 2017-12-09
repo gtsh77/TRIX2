@@ -10,6 +10,13 @@ void genRoom(void)
 	    -0.5, -1.0, 1.0, 0.0, 0.0, 0.0, 1.0
 	};
 
+	float vertices_floor_a[] = {
+	    -0.5,  0.5, 0.0, 0.0,
+	     0.5,  0.5, 1.0, 0.0,
+	     0.5, -0.5, 1.0, 1.0,
+	    -0.5, -0.5, 0.0, 1.0
+	};
+
 	float vertices_crate_a[] = {
 	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
 	     0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
@@ -59,13 +66,22 @@ void genRoom(void)
 	    0, 1, 2,
 	    2, 3, 0
 	};
+
+	//elements (opt)
+	uint32_t elements_floor_a[] = {
+	    0, 1, 2,
+	    2, 3, 0
+	};
+
 	//gen VAO
 	glGenVertexArrays(1, &buffers.obj1);
 	glGenVertexArrays(1, &buffers.obj2);
+	glGenVertexArrays(1, &buffers.obj3);
 
 	//gen VO
 	glGenBuffers(1, &buffers.vo1);
 	glGenBuffers(1, &buffers.vo2);
+	glGenBuffers(1, &buffers.vo3);
 
 	//WALL-VAO
 	glBindVertexArray(buffers.obj1);
@@ -85,7 +101,7 @@ void genRoom(void)
 
 	glBindVertexArray(0);
 
-	//CRATE-VAO
+	//CRATE-VAO 	
 	glBindVertexArray(buffers.obj2);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vo2);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_crate_a), vertices_crate_a, GL_STATIC_DRAW);
@@ -98,9 +114,29 @@ void genRoom(void)
 
 	glBindVertexArray(0);
 
+
+	//FLOOR-VAO
+	glBindVertexArray(buffers.obj3);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers.vo3);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_floor_a), vertices_floor_a, GL_STATIC_DRAW);
+
+	//wall-elements
+	glGenBuffers(1, &buffers.eo2);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo2);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements_floor_a), elements_floor_a, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void *)(2*sizeof(float)));
+
+	glBindVertexArray(0);
+
+
 	//gen TEX, set params, load from RAM
     struct asset *asset;	
-	glGenTextures(2, texels);
+	glGenTextures(4, texels);
 
 	//tex-wall-1
     getAssetById(12, &asset);
@@ -141,6 +177,24 @@ void genRoom(void)
     getAssetById(18, &asset);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, texels[2]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //AAF
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);    		
+
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	//floor-1
+    getAssetById(14, &asset);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, texels[3]);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

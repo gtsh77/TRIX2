@@ -106,6 +106,7 @@ extern gsl_matrix * m_new_diag(uint32_t);
 extern gsl_matrix * m_new(uint32_t, uint32_t);
 extern void m_reset_diag(gsl_matrix *, uint32_t);
 extern void m_setT(gsl_matrix *, double, double, double, uint8_t);
+extern void m_setSc(gsl_matrix *, double, double, double, uint8_t);
 extern void m_setRx(gsl_matrix *, double, uint8_t);
 extern void m_setRy(gsl_matrix *, double, uint8_t);
 extern void m_setRz(gsl_matrix *, double, uint8_t);

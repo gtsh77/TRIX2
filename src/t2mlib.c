@@ -114,6 +114,16 @@ extern void m_setT(gsl_matrix *m, double v1, double v2, double v3, uint8_t t)
 
 	return;
 }
+//set scale coefs based on XYZ vector, opt transponse (row order / transponse for column)
+extern void m_setSc(gsl_matrix *m, double v1, double v2, double v3, uint8_t t)
+{
+	gsl_matrix_set(m,0,0,v1);
+	gsl_matrix_set(m,1,1,v2);
+	gsl_matrix_set(m,2,2,v3);
+	if(t) gsl_matrix_transpose(m);
+
+	return;
+}
 
 //set rotation by X coefs based on DEG, opt transponse (row order / transponse for column)
 extern void m_setRx(gsl_matrix *m, double deg, uint8_t t)
