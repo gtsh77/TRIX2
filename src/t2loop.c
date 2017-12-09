@@ -65,8 +65,16 @@ void initLoop(void)
         gsl_matrix *MProjection = m_new(4,4);      
         float MVPA[16];
         double eye[] = {0,0,5};
-        double center[] = {0,0,0};
+        double center[] = {0,0,-1};
         double up[] = {0,1,0};       
+
+        double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
+        double speed = 0.25;
+        mulVec(center,speed,3,speed_zoom);
+        getCrossV3(center,up,center_up);
+        normalize(center_up,3,center_up);
+        mulVec(center_up,speed,3,speed_straight);  
+
         glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,MProjection); 
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
         uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
@@ -124,6 +132,28 @@ void initLoop(void)
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                 #elif TESTROOM
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
+                    else if(windowEvent.key.keysym.sym == SDLK_w)
+                    {
+                        addVec(eye,speed_zoom,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_a)
+                    {
+                        subVec(eye,speed_straight,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_d)
+                    {
+                        //glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed
+                        addVec(eye,speed_straight,3,eye);
+                        addVec(eye,center,3,eye_center);
+
+                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_s)
+                    {
+                        subVec(eye,speed_zoom,3,eye);
+                        addVec(eye,center,3,eye_center);
+                    }                    
                 #endif
             }
             // else if (windowEvent.type == SDL_KEYUP)
@@ -181,7 +211,7 @@ void initLoop(void)
                 m_setRz(MRotate,0,0);
                 m_setT(MRotate,0,0,0,0);     
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -194,7 +224,7 @@ void initLoop(void)
                 m_setRz(MRotate,0,0);
                 m_setT(MRotate,-1,0,0,0);     
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -207,7 +237,7 @@ void initLoop(void)
                 m_setRz(MRotate,0,0);
                 m_setT(MRotate,1,0,0,0);     
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -218,9 +248,9 @@ void initLoop(void)
                 //left 1
                 m_reset_diag(MRotate,4);
                 m_setT(MRotate,-1.5,0,0.5,0);   
-                m_setRy(MRotate,90,0);
+                m_setRy(MRotate,-90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -231,9 +261,9 @@ void initLoop(void)
                 //left 2
                 m_reset_diag(MRotate,4);
                 m_setT(MRotate,-1.5,0,1.5,0);   
-                m_setRy(MRotate,90,0);
+                m_setRy(MRotate,-90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -244,9 +274,9 @@ void initLoop(void)
                 //left 3
                 m_reset_diag(MRotate,4);
                 m_setT(MRotate,-1.5,0,2.5,0);   
-                m_setRy(MRotate,90,0);
+                m_setRy(MRotate,-90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -259,7 +289,7 @@ void initLoop(void)
                 m_setT(MRotate,+1.5,0,0.5,0);   
                 m_setRy(MRotate,90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -272,7 +302,7 @@ void initLoop(void)
                 m_setT(MRotate,+1.5,0,1.5,0);   
                 m_setRy(MRotate,90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);
@@ -285,7 +315,7 @@ void initLoop(void)
                 m_setT(MRotate,+1.5,0,2.5,0);   
                 m_setRy(MRotate,90,0);
 
-                glmLookAt(eye,center,up,MView);
+                glmLookAt(eye,eye_center,up,MView);
                 m_mul(MRotate,MView,MV);
                 m_mul(MV,MProjection,MVP);            
                 m_array(MVP,4,4,MVPA);

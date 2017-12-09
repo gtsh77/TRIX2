@@ -155,6 +155,11 @@ void genRoom(void)
 		//d-test
 		glEnable(GL_DEPTH_TEST);
 
+		//only front
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);		
+
 		//build Model
 		// gsl_matrix *Model = m_new_diag(4);
 		// //m_setRy(Model,10,0);
