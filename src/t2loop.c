@@ -58,6 +58,7 @@ void initLoop(void)
         GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
     #elif TESTROOM
 
+        uint16_t deg = 0;
         gsl_matrix *MRotate = m_new_diag(4);
         gsl_matrix *MView = m_new(4,4);
         gsl_matrix *MV = m_new(4,4);
@@ -206,6 +207,9 @@ void initLoop(void)
                 glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+                //walls
+                glEnable(GL_CULL_FACE);
+                glBindVertexArray(buffers.obj1);
                 //center
                 m_reset_diag(MRotate,4);
                 m_setRz(MRotate,0,0);
@@ -321,7 +325,27 @@ void initLoop(void)
                 m_array(MVP,4,4,MVPA);
                 glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                 glUniform1i(tsrc,1);
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);                
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                //crate
+                if(deg == 360-4) deg = 0;
+                else deg += 4;                
+                glDisable(GL_CULL_FACE);
+                glBindVertexArray(buffers.obj2);
+
+                m_reset_diag(MRotate,4);
+                m_setT(MRotate,1,-0.75,1,0);   
+                m_setRy(MRotate,deg,0);
+
+                glmLookAt(eye,eye_center,up,MView);
+                m_mul(MRotate,MView,MV);
+                m_mul(MV,MProjection,MVP);            
+                m_array(MVP,4,4,MVPA);
+                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+                glUniform1i(tsrc,2);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36); 
+
 
             #endif
             

@@ -11,47 +11,47 @@ void genRoom(void)
 	};
 
 	float vertices_crate_a[] = {
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	     0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	     0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	     0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	    -0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	     0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	     0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	    -0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
 
-	    -0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	     0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	    -0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	    -0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
+	    -0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	     0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	    -0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	    -0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
 
-	    -0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	    -0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	    -0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	    -0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
+	    -0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	    -0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	    -0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	    -0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
 
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	     0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	     0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	     0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	     0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	     0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	     0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	     0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
 
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	     0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	     0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	     0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	    -0.5, -0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	    -0.5, -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	     0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	     0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	    -0.25, -0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	    -0.25, -0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
 
-	    -0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
-	     0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	     0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0, 0.0,
-	    -0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 0.0, 0.0,
-	    -0.5,  0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0
+	    -0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0,
+	     0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 1.0, 1.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	     0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 1.0, 0.0,
+	    -0.25,  0.25,  0.25, 1.0, 1.0, 1.0, 0.0, 0.0,
+	    -0.25,  0.25, -0.25, 1.0, 1.0, 1.0, 0.0, 1.0
 	};	
 
 	//elements (opt)
@@ -61,27 +61,48 @@ void genRoom(void)
 	};
 	//gen VAO
 	glGenVertexArrays(1, &buffers.obj1);
-	glBindVertexArray(buffers.obj1);
+	glGenVertexArrays(1, &buffers.obj2);
 
 	//gen VO
 	glGenBuffers(1, &buffers.vo1);
-	//glGenBuffers(1, &buffers.vo2);
+	glGenBuffers(1, &buffers.vo2);
 
+	//WALL-VAO
+	glBindVertexArray(buffers.obj1);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vo1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_wall_a), vertices_wall_a, GL_STATIC_DRAW);
-	// glBindBuffer(GL_ARRAY_BUFFER, buffers.vo2);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_crate_a), vertices_crate_a, GL_STATIC_DRAW);
 
-	//gen EO (opt)
+	//wall-elements
 	glGenBuffers(1, &buffers.eo1);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo1);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements_wall_a), elements_wall_a, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void *)(5*sizeof(float)));
+
+	glBindVertexArray(0);
+
+	//CRATE-VAO
+	glBindVertexArray(buffers.obj2);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers.vo2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_crate_a), vertices_crate_a, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void *)(6*sizeof(float)));	
+
+	glBindVertexArray(0);
 
 	//gen TEX, set params, load from RAM
     struct asset *asset;	
 	glGenTextures(2, texels);
 
-	//wall-1
+	//tex-wall-1
     getAssetById(12, &asset);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texels[0]);
@@ -99,10 +120,23 @@ void genRoom(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	//wall-2
+	//tex-wall-2
     getAssetById(13, &asset);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texels[1]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);		
+
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, asset->width, asset->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, asset->data);
+
+	//crate-1
+    getAssetById(18, &asset);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, texels[2]);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -151,22 +185,12 @@ void genRoom(void)
 		//use elf
 		glUseProgram(shader_elf);
 
-		//attribs
-		int32_t PID_wall_a = glGetAttribLocation(shader_elf, "position");
-		glVertexAttribPointer(PID_wall_a, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
-		glEnableVertexAttribArray(PID_wall_a);
-
-		int32_t TID_wall_a = glGetAttribLocation(shader_elf, "texcoord");
-		glVertexAttribPointer(TID_wall_a, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void *)(5*sizeof(float)));
-		glEnableVertexAttribArray(TID_wall_a);
-
 		//d-test
 		glEnable(GL_DEPTH_TEST);
 
 		//only front
-		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);		
+		glFrontFace(GL_CW);
 
 		//build Model
 		// gsl_matrix *Model = m_new_diag(4);
