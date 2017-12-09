@@ -25,6 +25,20 @@ extern gsl_matrix * m_new_diag(uint32_t m)
 	return ma;
 }
 
+//reset to diag matrix
+extern void m_reset_diag(gsl_matrix *m, uint32_t size)
+{
+	uint8_t i;
+
+	gsl_matrix_set_zero(m);
+	for(i=0;i<size;i++)
+	{
+		gsl_matrix_set(m,i,i,1.0f);
+	}
+
+	return;
+}
+
 //set matrix elements to X
 extern void m_set_all(gsl_matrix *m, double x)
 {
