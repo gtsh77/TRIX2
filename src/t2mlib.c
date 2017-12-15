@@ -272,6 +272,19 @@ extern void mulVec(double *vec1, double N, uint8_t size, double *r)
 	return;
 }
 
+//div by N vec
+extern void divVec(double *vec1, double N, uint8_t size, double *r)
+{
+	uint8_t i;
+
+	for(i=0;i<size;i++)
+	{
+		r[i] = vec1[i] / N;
+	}
+
+	return;
+}
+
 //get cross of two 3d vectors
 extern void getCrossV3(double *vec1, double *vec2, double *r)
 {

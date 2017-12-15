@@ -121,6 +121,7 @@ extern double scalar(double *, double *, uint8_t);
 extern void subVec(double *, double *, uint8_t, double *);
 extern void addVec(double *, double *, uint8_t, double *);
 extern void mulVec(double *, double, uint8_t, double *);
+extern void divVec(double *, double, uint8_t, double *);
 extern void glmLookAt(double *, double *, double *, gsl_matrix *);
 extern void m_set_all(gsl_matrix *, double);
 
@@ -135,6 +136,11 @@ extern void loadAssetItem(struct asset *);
 extern void seekAssets(void);
 extern void getAssetById(uint8_t, struct asset **);
 extern void freeAssets(void);
+
+//t2map
+void doMapCalc(void);
+void getND(uint8_t, double *, double *);
+void getIntersaction(uint8_t, uint8_t, uint8_t, double *);
 
 //common
 void initVideo(void);

@@ -13,5 +13,6 @@ int main(void)
 	#endif
 	initLoop();
 	doQuit();
+	//doMapCalc();
 	return 0;
 }
