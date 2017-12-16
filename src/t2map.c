@@ -197,7 +197,7 @@ void parseMap(void)
 {
     FILE *file, *file2;
     char *line = NULL;
-    uint32_t len, i, plane_num;
+    uint32_t line_len, i, j, k, plane_num;
     int32_t num[1], brush_num;
     uint64_t read;
     uint8_t isBrush = 0;
@@ -210,7 +210,7 @@ void parseMap(void)
 	// ======
 
 	//alloc space for header
-	cmap_head header[1];
+	CHEAD header[1];
 
     header[0].brush_count = 0;
     header[0].texel_count = 0;
@@ -218,7 +218,7 @@ void parseMap(void)
     brush_num = -1;
 
     //get count of all brushes
-	while ((read = getline(&line, &len, file)) != -1)
+	while ((read = getline(&line, &line_len, file)) != -1)
 	{
 		if(strncmp(line,"// brush",8) == 0)
 		{
@@ -228,19 +228,19 @@ void parseMap(void)
 	}
 
 	//alloc tmp space for textures duplicates
-	cmap_texel texel_dup[10000];
+	CTEX texel_dup[10000];
 
 	//alloc space for brushes
-	cmap_brush brush[header[0].brush_count];
+	CBRUSH brush[header[0].brush_count];
 
 	//alloc tmp space
-	cmap_brush tmp_brush[1];
+	CBRUSH tmp_brush[1];
 
 	//set file-pointer back
 	rewind(file);
 
 	//parse brushes
-    while ((read = getline(&line, &len, file)) != -1) 
+    while ((read = getline(&line, &line_len, file)) != -1) 
     {
         //printf("Retrieved line of length %zu :\n", read);
         printf("line: %s", line);
@@ -295,16 +295,43 @@ void parseMap(void)
     //chk data
     //printf("%d\n",brush[0].vertices[2]);
 
+    //form unique texture list
+    CTEX texel_new[header[0].texel_count];
+    uint8_t new_texel_size = 0, cnt;
+
+    for(i=0;i<header[0].texel_count;i++)
+    {
+    	cnt = 0;
+    	for(j=0;j<new_texel_size;j++,cnt++)
+    	{
+    		if(strcmp(texel_dup[i].texel,texel_new[j].texel) == 0) break;
+    	}
+
+    	if(cnt == new_texel_size)
+    	{
+    		strcpy(texel_new[new_texel_size].texel,texel_dup[i].texel);
+    		new_texel_size++;
+    	}
+    }
+
+    // for(i=0;i<new_texel_size;i++)
+    // {
+    // 	printf("%s\n",texel_new[i].texel);
+    // }
+
+
     //write bin
     file2 = fopen("maps/test.cmap", "wb");
     fwrite(header,sizeof(header),1,file2);
     fclose(file2);
     file2 = fopen("maps/test.cmap", "ab");
-    fwrite(brush,sizeof(brush),1,file2);
-
-    fclose(file);
+    fwrite(texel_new,sizeof(texel_new),1,file2);
     fclose(file2);
-
+    file2 = fopen("maps/test.cmap", "ab");
+    fwrite(brush,sizeof(brush),1,file2);
+    fclose(file2);
+    fclose(file);
+    
     free(line);
 
     return;

@@ -109,12 +109,12 @@ typedef struct
 {
 	uint32_t brush_count;
 	uint32_t texel_count;
-} cmap_head;
+} CHEAD;
 
 typedef struct
 {
 	char texel[TEXMAXNAMELENGTH];
-} cmap_texel;
+} CTEX;
 
 typedef struct
 {
@@ -123,7 +123,7 @@ typedef struct
 	uint8_t faces[MAXFACES];
 	int32_t vertices[9*MAXFACES];
 	char texel[TEXMAXNAMELENGTH];
-} cmap_brush;
+} CBRUSH;
 
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
@@ -165,6 +165,7 @@ extern void freeAssets(void);
 void doMapCalc(void);
 void getND(uint8_t, double *, double *);
 void getIntersaction(uint8_t, uint8_t, uint8_t, double *);
+void parseMap(void);
 
 //common
 void initVideo(void);
