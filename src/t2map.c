@@ -38,29 +38,27 @@ p_6 num 1: 0.000000 -64.000000 336.000000
 
 */
 
-static double points[] = {
-	112,-64,320,0,-64,320,0,-104,320,
-	0,-104,336,0,-64,336,112,-64,336,
-	0,-104,336,112,-104,336,112,-104,328,
-	112,-104,336,112,-64,336,112,-64,328,
-	112,-64,336,0,-64,336,0,-64,328,
-	0,-64,336,0,-104,336,0,-104,328
-};
+// static double points[] = {
+// 	112,-64,320,0,-64,320,0,-104,320,
+// 	0,-104,336,0,-64,336,112,-64,336,
+// 	0,-104,336,112,-104,336,112,-104,328,
+// 	112,-104,336,112,-64,336,112,-64,328,
+// 	112,-64,336,0,-64,336,0,-64,328,
+// 	0,-64,336,0,-104,336,0,-104,328
+// };
 
 //static double vertices
-
-void doMapCalc(void)
+//doMapCalc(planes, brush[i].faces, brush[i].face_count, vertices);
+void doMapCalc(double *points, uint8_t plane_count, uint8_t *faces, uint8_t face_count, double *r)
 {
 
-	uint8_t planesNum = sizeof(points)/sizeof(double)/9;
-	uint8_t num = 4;
-	uint8_t i,j,k;
+	uint8_t i,j,k,last_stored = 0, num = 4, planesNum = plane_count;
 	double normals[18], distances[6], intersaction[3];
 
 	//get all normals and distances
 	for(i=0;i<planesNum;i++)
 	{
-		getND(i,&normals[i*3], &distances[i]);
+		getND(points,i,&normals[i*3], &distances[i]);
 	}
 
 	//get vertices
@@ -72,32 +70,51 @@ void doMapCalc(void)
 			{
 				if(i != j && i!= k && j != k)
 				{
-					getIntersaction(i,j,k,intersaction);
-					// if(i == 1)
-					// {
-
-						if(intersaction[0] != -1 && intersaction[2] >= 0)
+					//get intersaction
+					getIntersaction(points,i,j,k,intersaction);
+					//show only used faces
+					if(intIn(i, faces, face_count))
+					{
+						//tmp chk if legal by denominator and x < 0
+						if(intersaction[0] != -1 && intersaction[0] >= 0)
 						{
 							if(num == 0) num = 4;
-							printf("p_%d num %d: %f %f %f \n",(i+1),num,intersaction[0],intersaction[1],intersaction[2]);
-							num--;
+							//debug
+							//printf("p_%d num %d: %f %f %f \n",(i+1),num,intersaction[0],intersaction[1],intersaction[2]);
+							//store into *r
+							r[last_stored] = intersaction[0];
+							r[last_stored + 1] = intersaction[1];
+							r[last_stored + 2] = intersaction[2];
+							last_stored += 3;
+							//num--;
 						}
-					//}
+					}
 				}
 			}
 		}
 	}
 }
 
-void getIntersaction(uint8_t i, uint8_t j, uint8_t k, double *intersaction)
+uint8_t intIn(uint8_t num, uint8_t *arr, uint8_t size)
+{
+	uint8_t i;
+	for(i=0;i<size;i++)
+	{
+		if(arr[i] == num) return 1;
+	}
+
+	return 0;
+}
+
+void getIntersaction(double *points, uint8_t i, uint8_t j, uint8_t k, double *intersaction)
 {
 
 	double normals[9], distances[3], tmp[30];
 
 	//get normals and distances
-	getND(i,&normals[0], &distances[0]);
-	getND(j,&normals[3], &distances[1]);
-	getND(k,&normals[6], &distances[2]);
+	getND(points,i,&normals[0], &distances[0]);
+	getND(points,j,&normals[3], &distances[1]);
+	getND(points,k,&normals[6], &distances[2]);
 
 	//calc intersection
 	getCrossV3(&normals[1*3],&normals[2*3],&tmp[0]);
@@ -133,9 +150,9 @@ void getIntersaction(uint8_t i, uint8_t j, uint8_t k, double *intersaction)
 	}
 
 }
+ 
 
-
-void getND(uint8_t planeNum, double *normals, double *distances)
+void getND(double *points, uint8_t planeNum, double *normals, double *distances)
 {
 	double _a[3], _b[3], _c[3], a_b[3], c_b[3], normal[3], normal_n[3], distance;
 
@@ -199,7 +216,7 @@ void parseMap(void)
 {
     FILE *file, *file2;
     char *line = NULL;
-    uint32_t line_len, i, j, plane_num;
+    uint32_t line_len, i, j, k;
     int32_t num[1], brush_num;
     uint64_t read;
     uint8_t isBrush = 0;
@@ -266,12 +283,12 @@ void parseMap(void)
     	if(isBrush)
     	{
 	    	//parse main line into tmp struct
-	    	sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].vertices[0],&tmp_brush[0].vertices[1],&tmp_brush[0].vertices[2],&tmp_brush[0].vertices[3],&tmp_brush[0].vertices[4],&tmp_brush[0].vertices[5],&tmp_brush[0].vertices[6],&tmp_brush[0].vertices[7],&tmp_brush[0].vertices[8],tmp_brush[0].texel,&num[0]);
+	    	sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel,&num[0]);
 
 	    	//store planes
     		for(i=0;i<9;i++)
     		{
-    			brush[brush_num].planes[(brush[brush_num].plane_count*9) + i] = (double)tmp_brush[0].vertices[i];
+    			brush[brush_num].planes[(brush[brush_num].plane_count*9) + i] = tmp_brush[0].planes[i];
     		}
 
 	    	//check if it has valid face
@@ -289,7 +306,7 @@ void parseMap(void)
 	    		//store vertices
 	    		for(i=0;i<9;i++)
 	    		{
-	    			brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = tmp_brush[0].vertices[i];
+	    			brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = (double)tmp_brush[0].planes[i];
 	    			
 	    		}
 	    		//upd struct fc cnt
@@ -301,7 +318,7 @@ void parseMap(void)
     }
 
     //chk data
-    printf("%d\n",brush[0].plane_count);
+    // printf("%d\n",brush[0].planes[0]);
 
     //form unique texture list 
     CTEX texel_final[header[0].texel_count];
@@ -322,23 +339,45 @@ void parseMap(void)
     	}
     }
 
+    //chk
     // for(i=0;i<new_texel_size;i++)
     // {
     // 	printf("%s\n",texel_final[i].texel);
     // }    
 
-    // double points[9*MAXFACES];
+    double planes[9*MAXFACES];
+    double vertices[12*MAXFACES];
 
-    // //calculate vertices
-    // for(i=0;i<header[0].brush_count;i++)
-    // {
-    // 	//prepare planes
-    // 	for(i=0;i<)
-    // }
-    
+    //calculate vertices
+    for(i=0;i<header[0].brush_count;i++)
+    {
+    	//prepare planes
+    	for(j=0;j<brush[i].plane_count;j++)
+    	{
+    		for(k=0;k<9;k++)
+    		{
+	    		planes[9*j + k] = (double)brush[i].planes[9*j + k];
+    		}
+    	}
+    	//calculatec vertices
+    	doMapCalc(planes, brush[i].plane_count, brush[i].faces, brush[i].face_count, vertices);
+    	//chk result
+		// printf("**** brush %d\n",i);
 
+		// for(j=0;j<brush[i].face_count*12;j++)
+		// {
+		// 	printf("%f\n",vertices[j]);   		
+		// }
 
+		//store into struct
+		for(j=0;j<brush[i].face_count*12;j++)
+		{
+			brush[i].vertices[j] = vertices[j];
+		}
+    }
 
+    //chk data
+    //printf("%f\n",brush[1].vertices[0]);    
 
 
     //write bin

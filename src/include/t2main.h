@@ -122,8 +122,8 @@ typedef struct
 	uint8_t face_count;
 	uint8_t plane_count;
 	uint8_t faces[MAXFACES];	
-	int32_t vertices[9*MAXFACES];
-	double planes[9*MAXFACES];
+	double vertices[12*MAXFACES];
+	int32_t planes[9*MAXFACES];
 	char texel[TEXMAXNAMELENGTH];
 } CBRUSH;
 
@@ -164,10 +164,11 @@ extern void getAssetById(uint8_t, struct asset **);
 extern void freeAssets(void);
 
 //t2map
-void doMapCalc(void);
-void getND(uint8_t, double *, double *);
-void getIntersaction(uint8_t, uint8_t, uint8_t, double *);
+void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
+void getND(double *,uint8_t, double *, double *);
+void getIntersaction(double *,uint8_t, uint8_t, uint8_t, double *);
 void parseMap(void);
+uint8_t intIn(uint8_t, uint8_t *, uint8_t);
 
 //common
 void initVideo(void);
