@@ -47,6 +47,8 @@ static double points[] = {
 	0,-64,336,0,-104,336,0,-104,328
 };
 
+//static double vertices
+
 void doMapCalc(void)
 {
 
@@ -197,7 +199,7 @@ void parseMap(void)
 {
     FILE *file, *file2;
     char *line = NULL;
-    uint32_t line_len, i, j, k, plane_num;
+    uint32_t line_len, i, j, plane_num;
     int32_t num[1], brush_num;
     uint64_t read;
     uint8_t isBrush = 0;
@@ -248,9 +250,9 @@ void parseMap(void)
     	//if new brush use new struct
     	if(strncmp(line,"// brush",8) == 0)
     	{
-    		//upd cntrs
-    		plane_num = 0;
+    		//upd cntrs    		
     		brush_num++;
+    		brush[brush_num].plane_count = 0;
 
     		//init struct, clear garbage
     		brush[brush_num].id = brush_num;
@@ -266,12 +268,18 @@ void parseMap(void)
 	    	//parse main line into tmp struct
 	    	sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].vertices[0],&tmp_brush[0].vertices[1],&tmp_brush[0].vertices[2],&tmp_brush[0].vertices[3],&tmp_brush[0].vertices[4],&tmp_brush[0].vertices[5],&tmp_brush[0].vertices[6],&tmp_brush[0].vertices[7],&tmp_brush[0].vertices[8],tmp_brush[0].texel,&num[0]);
 
+	    	//store planes
+    		for(i=0;i<9;i++)
+    		{
+    			brush[brush_num].planes[(brush[brush_num].plane_count*9) + i] = (double)tmp_brush[0].vertices[i];
+    		}
+
 	    	//check if it has valid face
 	    	if(strncmp(tmp_brush[0].texel,"common/caulk",12) != 0)
 	    	{
 	    		printf("new face\n");
 	    		//store face id
-	    		brush[brush_num].faces[brush[brush_num].face_count] = plane_num;
+	    		brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].face_count;
 	    		//store texel name
 	    		strcpy(brush[brush_num].texel,tmp_brush[0].texel);
 	    		//update global texels array
@@ -288,15 +296,15 @@ void parseMap(void)
 	    		brush[brush_num].face_count++;	    			
 	    	}
 	    	//upd plane num
-	    	plane_num++;
+	    	brush[brush_num].plane_count++;
     	}	
     }
 
     //chk data
-    //printf("%d\n",brush[0].vertices[2]);
+    printf("%d\n",brush[0].plane_count);
 
-    //form unique texture list
-    CTEX texel_new[header[0].texel_count];
+    //form unique texture list 
+    CTEX texel_final[header[0].texel_count];
     uint8_t new_texel_size = 0, cnt;
 
     for(i=0;i<header[0].texel_count;i++)
@@ -304,20 +312,33 @@ void parseMap(void)
     	cnt = 0;
     	for(j=0;j<new_texel_size;j++,cnt++)
     	{
-    		if(strcmp(texel_dup[i].texel,texel_new[j].texel) == 0) break;
+    		if(strcmp(texel_dup[i].texel,texel_final[j].texel) == 0) break;
     	}
 
     	if(cnt == new_texel_size)
     	{
-    		strcpy(texel_new[new_texel_size].texel,texel_dup[i].texel);
+    		strcpy(texel_final[new_texel_size].texel,texel_dup[i].texel);
     		new_texel_size++;
     	}
     }
 
     // for(i=0;i<new_texel_size;i++)
     // {
-    // 	printf("%s\n",texel_new[i].texel);
+    // 	printf("%s\n",texel_final[i].texel);
+    // }    
+
+    // double points[9*MAXFACES];
+
+    // //calculate vertices
+    // for(i=0;i<header[0].brush_count;i++)
+    // {
+    // 	//prepare planes
+    // 	for(i=0;i<)
     // }
+    
+
+
+
 
 
     //write bin
@@ -325,13 +346,13 @@ void parseMap(void)
     fwrite(header,sizeof(header),1,file2);
     fclose(file2);
     file2 = fopen("maps/test.cmap", "ab");
-    fwrite(texel_new,sizeof(texel_new),1,file2);
+    fwrite(texel_final,sizeof(texel_final),1,file2);
     fclose(file2);
     file2 = fopen("maps/test.cmap", "ab");
     fwrite(brush,sizeof(brush),1,file2);
     fclose(file2);
     fclose(file);
-    
+
     free(line);
 
     return;

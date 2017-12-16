@@ -120,8 +120,10 @@ typedef struct
 {
 	uint32_t id;
 	uint8_t face_count;
-	uint8_t faces[MAXFACES];
+	uint8_t plane_count;
+	uint8_t faces[MAXFACES];	
 	int32_t vertices[9*MAXFACES];
+	double planes[9*MAXFACES];
 	char texel[TEXMAXNAMELENGTH];
 } CBRUSH;
 
