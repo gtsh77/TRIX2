@@ -101,6 +101,30 @@ struct asset
 extern char objNames[GAMEOBJECTS][128];
 extern uint8_t objIds[GAMEOBJECTS];
 
+//map parser
+#define MAXFACES 6
+#define TEXMAXNAMELENGTH 64
+
+typedef struct
+{
+	uint32_t brush_count;
+	uint32_t texel_count;
+} cmap_head;
+
+typedef struct
+{
+	char texel[TEXMAXNAMELENGTH];
+} cmap_texel;
+
+typedef struct
+{
+	uint32_t id;
+	uint8_t face_count;
+	uint8_t faces[MAXFACES];
+	int32_t vertices[9*MAXFACES];
+	char texel[TEXMAXNAMELENGTH];
+} cmap_brush;
+
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
 extern gsl_matrix * m_new(uint32_t, uint32_t);

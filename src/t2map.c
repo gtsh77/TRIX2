@@ -164,3 +164,148 @@ void getND(uint8_t planeNum, double *normals, double *distances)
 	distances[0] = distance;
 
 }
+
+/*
+
+
+{
+"classname" "worldspawn"
+// brush 0
+{
+( 272 64 0 ) ( 192 64 0 ) ( 192 16 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 192 16 64 ) ( 192 64 64 ) ( 272 64 64 ) general_structure/frenchfloor_wood1 0 0 0.00 1 1 0 16384 0 
+( 192 0 8 ) ( 272 0 8 ) ( 272 0 0 ) general_structure/frenchfloor_wood1 0 0 0.00 1 1 0 16384 0 
+( 320 16 8 ) ( 320 64 8 ) ( 320 64 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 272 64 8 ) ( 192 64 8 ) ( 192 64 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 192 64 8 ) ( 192 16 8 ) ( 192 16 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+}
+// brush 1
+{
+( 144 64 0 ) ( 64 64 0 ) ( 64 16 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 64 16 8 ) ( 64 64 8 ) ( 144 64 8 ) general_structure/frenchfloor_wood1 0 0 0.00 1 1 0 16384 0 
+( 64 0 8 ) ( 144 0 8 ) ( 144 0 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 128 16 8 ) ( 128 64 8 ) ( 128 64 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 144 64 8 ) ( 64 64 8 ) ( 64 64 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+( 64 64 8 ) ( 64 16 8 ) ( 64 16 0 ) common/caulk 0 0 0.00 1 1 0 160 0 
+}
+}
+
+*/
+
+
+void parseMap(void)
+{
+    FILE *file, *file2;
+    char *line = NULL;
+    uint32_t len, i, plane_num;
+    int32_t num[1], brush_num;
+    uint64_t read;
+    uint8_t isBrush = 0;
+
+    file = fopen("maps/test.map", "r");
+    if (file == NULL) printf("can't open map file");
+
+	// ======
+	// = STACK FRAME BELOW (NOT DDATA)
+	// ======
+
+	//alloc space for header
+	cmap_head header[1];
+
+    header[0].brush_count = 0;
+    header[0].texel_count = 0;
+
+    brush_num = -1;
+
+    //get count of all brushes
+	while ((read = getline(&line, &len, file)) != -1)
+	{
+		if(strncmp(line,"// brush",8) == 0)
+		{
+			printf("new brush\n");
+			header[0].brush_count++;
+		}
+	}
+
+	//alloc tmp space for textures duplicates
+	cmap_texel texel_dup[10000];
+
+	//alloc space for brushes
+	cmap_brush brush[header[0].brush_count];
+
+	//alloc tmp space
+	cmap_brush tmp_brush[1];
+
+	//set file-pointer back
+	rewind(file);
+
+	//parse brushes
+    while ((read = getline(&line, &len, file)) != -1) 
+    {
+        //printf("Retrieved line of length %zu :\n", read);
+        printf("line: %s", line);
+
+    	//if new brush use new struct
+    	if(strncmp(line,"// brush",8) == 0)
+    	{
+    		//upd cntrs
+    		plane_num = 0;
+    		brush_num++;
+
+    		//init struct, clear garbage
+    		brush[brush_num].id = brush_num;
+    		brush[brush_num].face_count = 0;
+    		//memset(brush[brush_num].vertices,0,9*4*MAXFACES);
+    	}
+    	else if(strncmp(line,"(",1) == 0) isBrush = 1;
+    	else if(strncmp(line,"}",1) == 0) isBrush = 0;
+    	else;
+
+    	if(isBrush)
+    	{
+	    	//parse main line into tmp struct
+	    	sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].vertices[0],&tmp_brush[0].vertices[1],&tmp_brush[0].vertices[2],&tmp_brush[0].vertices[3],&tmp_brush[0].vertices[4],&tmp_brush[0].vertices[5],&tmp_brush[0].vertices[6],&tmp_brush[0].vertices[7],&tmp_brush[0].vertices[8],tmp_brush[0].texel,&num[0]);
+
+	    	//check if it has valid face
+	    	if(strncmp(tmp_brush[0].texel,"common/caulk",12) != 0)
+	    	{
+	    		printf("new face\n");
+	    		//store face id
+	    		brush[brush_num].faces[brush[brush_num].face_count] = plane_num;
+	    		//store texel name
+	    		strcpy(brush[brush_num].texel,tmp_brush[0].texel);
+	    		//update global texels array
+	    		strcpy(texel_dup[header[0].texel_count].texel,tmp_brush[0].texel);
+	    		//upd tx cnt
+	    		header[0].texel_count++;
+	    		//store vertices
+	    		for(i=0;i<9;i++)
+	    		{
+	    			brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = tmp_brush[0].vertices[i];
+	    			
+	    		}
+	    		//upd struct fc cnt
+	    		brush[brush_num].face_count++;	    			
+	    	}
+	    	//upd plane num
+	    	plane_num++;
+    	}	
+    }
+
+    //chk data
+    //printf("%d\n",brush[0].vertices[2]);
+
+    //write bin
+    file2 = fopen("maps/test.cmap", "wb");
+    fwrite(header,sizeof(header),1,file2);
+    fclose(file2);
+    file2 = fopen("maps/test.cmap", "ab");
+    fwrite(brush,sizeof(brush),1,file2);
+
+    fclose(file);
+    fclose(file2);
+
+    free(line);
+
+    return;
+}
