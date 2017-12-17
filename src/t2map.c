@@ -212,18 +212,35 @@ void getND(double *points, uint8_t planeNum, double *normals, double *distances)
 */
 
 
-void parseMap(void)
+void parseMap(char *path)
 {
     FILE *file, *file2;
-    char *line = NULL;
+    uint8_t isBrush = 0, nonextlen;
+    char *line = NULL, *dot;
     uint32_t line_len, i, j, k;
     int32_t num[1], brush_num;
     uint64_t read;
-    uint8_t isBrush = 0;
 
-    file = fopen("maps/test.map", "r");
-    if (file == NULL) printf("can't open map file");
+    //prepare path
+    dot = strrchr(path,'.');
+    nonextlen = (dot-path);
+    char opath[nonextlen];
+	memset(opath,0,nonextlen + 1);
+	memcpy(opath,path,nonextlen);
+	strcat(opath,".cmap");
+	printf("%s\n",opath);
 
+    file = fopen(path, "r");
+    file2 = fopen(opath, "wb");
+    if (file == NULL){
+    	printf("ERROR: can't open src map file: %s\n",path);
+    	return;
+    }    
+    if (file2 == NULL){
+    	printf("ERROR: can't open dest map file: %s\n",opath);
+    	return;
+    }
+    
 	// ======
 	// = STACK FRAME BELOW (NOT DDATA)
 	// ======
@@ -381,13 +398,12 @@ void parseMap(void)
 
 
     //write bin
-    file2 = fopen("maps/test.cmap", "wb");
     fwrite(header,sizeof(header),1,file2);
     fclose(file2);
-    file2 = fopen("maps/test.cmap", "ab");
+    file2 = fopen(opath, "ab");
     fwrite(texel_final,sizeof(texel_final),1,file2);
     fclose(file2);
-    file2 = fopen("maps/test.cmap", "ab");
+    file2 = fopen(opath, "ab");
     fwrite(brush,sizeof(brush),1,file2);
     fclose(file2);
     fclose(file);

@@ -1,18 +1,26 @@
 #include "include/t2main.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	initVideo();
-	loadAssets();
-	#if TESTWALL
-		genWall();
-	#elif TESTCRATE
-		genCrate();
-	#elif TESTROOM
-		genRoom();
-	#endif
-	initLoop();
-	doQuit();
-	//doMapCalc();
+	if(strcmp(argv[1],"compile") == 0)
+	{
+		printf("compiling: %s\n",argv[2]);
+		parseMap(argv[2]);
+	}
+	else
+	{
+		initVideo();
+		loadAssets();
+		#if TESTWALL
+			genWall();
+		#elif TESTCRATE
+			genCrate();
+		#elif TESTROOM
+			genRoom();
+		#endif
+		initLoop();
+		doQuit();		
+	}
+
 	return 0;
 }

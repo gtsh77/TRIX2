@@ -167,7 +167,7 @@ extern void freeAssets(void);
 void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
 void getND(double *,uint8_t, double *, double *);
 void getIntersaction(double *,uint8_t, uint8_t, uint8_t, double *);
-void parseMap(void);
+void parseMap(char *);
 uint8_t intIn(uint8_t, uint8_t *, uint8_t);
 
 //common
