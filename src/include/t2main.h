@@ -104,12 +104,13 @@ extern uint8_t objIds[GAMEOBJECTS];
 //map parser
 #define MAXFACES 6
 #define TEXMAXNAMELENGTH 64
-#define ENTMAXVAL 10
+#define ENTMAXVALLENGTH 32
+#define ENTMAXVAL 8
 
 typedef struct
 {
 	uint32_t brush_count;
-	uint32_t ent_count;
+	uint32_t entity_count;
 	uint32_t texel_count;
 } CHEAD;
 
@@ -131,15 +132,15 @@ typedef struct
 
 typedef struct
 {
-	char name[TEXMAXNAMELENGTH];
-	char value[TEXMAXNAMELENGTH];
+	char name[ENTMAXVALLENGTH];
+	char value[ENTMAXVALLENGTH];
 } CENTOBJ;
 
 typedef struct
 {
 	uint32_t id;
-	char classname[TEXMAXNAMELENGTH];
-	uint8_t val_cnt;
+	char classname[ENTMAXVALLENGTH];
+	uint8_t value_cnt;
 	CENTOBJ values[ENTMAXVAL];
 
 } CENT;

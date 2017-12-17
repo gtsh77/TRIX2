@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
 	{
 		if(strcmp(argv[1],"compile") == 0)
 		{
-			printf(".MAP PATH: %s\n",argv[2]);
 			parseMap(argv[2]);
 		}
 		else printf("ERROR: bad arg\n");	

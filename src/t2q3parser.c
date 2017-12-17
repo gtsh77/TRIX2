@@ -29,11 +29,13 @@
 void parseMap(char *path)
 {
     FILE *file, *file2;
-    uint8_t isBrush = 0, nonextlen;
+    uint8_t isBrush = 0, isEntity = 0, nonextlen;
     char *line = NULL, *dot;
     uint32_t line_len, i, j, k;
-    int32_t num[1], brush_num;
+    int32_t num[1], brush_num, entity_num;
     uint64_t read;
+
+    printf("\nq3 map path: %s\n",path);
 
     //prepare path
     dot = strrchr(path,'.');
@@ -66,9 +68,10 @@ void parseMap(char *path)
 
     header[0].brush_count = 0;
     header[0].texel_count = 0;
-    header[0].ent_count = 0;
+    header[0].entity_count = 0;
 
     brush_num = -1;
+    entity_num = -1;
 
     //get count of all brushes
 	while ((read = getline(&line, &line_len, file)) != -1)
@@ -80,23 +83,26 @@ void parseMap(char *path)
 		}
         else if(strncmp(line,"// entity",9) == 0)
         {
-            header[0].ent_count++;
+            header[0].entity_count++;
         }
         else;
 	}
 
-    printf("total brushes: %d\n",header[0].brush_count);
-    printf("total entities: %d\n",header[0].ent_count);
-    printf("***** VERTICES/TEXTURES HANDLER *****");
+    printf("\ntotal_brushes: %d\n",header[0].brush_count);
+    printf("total_entities: %d\n\n",header[0].entity_count);
+    printf("*** VERTICES HANDLER ***\n\n");
 
 	//alloc tmp space for textures duplicates
 	CTEX texel_dup[10000];
 
-	//alloc space for brushes
-	CBRUSH brush[header[0].brush_count];
+    //alloc space for brushes
+    CBRUSH brush[header[0].brush_count];
 
-	//alloc tmp space
-	CBRUSH tmp_brush[1];
+    //alloc tmp space for brush
+    CBRUSH tmp_brush[1];
+
+	//alloc space for entities
+	CENT entity[header[0].entity_count];
 
 	//set file-pointer back
 	rewind(file);
@@ -108,20 +114,31 @@ void parseMap(char *path)
         //printf("line: %s", line);
 
     	//if new brush use new struct
-    	if(strncmp(line,"// brush",8) == 0)
+        if(strncmp(line,"// brush",8) == 0)
+        {
+            //upd cntrs         
+            brush_num++;
+            brush[brush_num].plane_count = 0;
+
+            //init struct, clear garbage
+            brush[brush_num].id = brush_num;
+            brush[brush_num].face_count = 0;
+            //memset(brush[brush_num].vertices,0,9*4*MAXFACES);
+            printf("brush %d/%d\n",brush_num+1,header[0].brush_count);
+        }    	
+        else if(strncmp(line,"// entity",9) == 0)
     	{
     		//upd cntrs    		
-    		brush_num++;
-    		brush[brush_num].plane_count = 0;
-
+    		entity_num++;
     		//init struct, clear garbage
-    		brush[brush_num].id = brush_num;
-    		brush[brush_num].face_count = 0;
+            entity[entity_num].id = entity_num;
+    		entity[entity_num].value_cnt = 0;
     		//memset(brush[brush_num].vertices,0,9*4*MAXFACES);
-    		printf("BRUSH %d/%d\n",brush_num+1,header[0].brush_count);
+    		printf("entity %d/%d\n",entity_num+1,header[0].entity_count);
     	}
-    	else if(strncmp(line,"(",1) == 0) isBrush = 1;
-    	else if(strncmp(line,"}",1) == 0) isBrush = 0;
+        else if(strncmp(line,"(",1) == 0) isBrush = 1;
+    	else if(strncmp(line,"\"",1) == 0) isEntity = 1;
+    	else if(strncmp(line,"}",1) == 0) isBrush = isEntity = 0;
     	else;
 
     	if(isBrush)
@@ -158,11 +175,21 @@ void parseMap(char *path)
 	    	}
 	    	//upd plane num
 	    	brush[brush_num].plane_count++;
-    	}	
+    	}
+        else if(isEntity)
+        {
+            sscanf(line,"%s %s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
+            //printf("%s %s\n",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
+            entity[entity_num].value_cnt++;
+           
+        }
+        else;
     }
 
     //chk data
     // printf("%d\n",brush[0].planes[0]);
+
+    printf("\n*** TEXTURES HANDLER ***\n\n");
 
     //form unique texture list 
     CTEX texel_final[header[0].texel_count];
@@ -182,6 +209,9 @@ void parseMap(char *path)
     		new_texel_size++;
     	}
     }
+
+    printf("total_vis_faces: %d\n",header[0].texel_count);
+    printf("total_unique_textures: %d\n",new_texel_size);
 
     //chk
     // for(i=0;i<new_texel_size;i++)
@@ -233,11 +263,14 @@ void parseMap(char *path)
     file2 = fopen(opath, "ab");
     fwrite(brush,sizeof(brush),1,file2);
     fclose(file2);
+    file2 = fopen(opath, "ab");
+    fwrite(entity,sizeof(entity),1,file2);
+    fclose(file2);
     fclose(file);
 
     free(line);
 
-    printf("wrote: %s\n",opath);
+    printf("\nwrote: %s\n\n",opath);
 
     return;
 }
