@@ -104,10 +104,12 @@ extern uint8_t objIds[GAMEOBJECTS];
 //map parser
 #define MAXFACES 6
 #define TEXMAXNAMELENGTH 64
+#define ENTMAXVAL 10
 
 typedef struct
 {
 	uint32_t brush_count;
+	uint32_t ent_count;
 	uint32_t texel_count;
 } CHEAD;
 
@@ -126,6 +128,21 @@ typedef struct
 	int32_t planes[9*MAXFACES];
 	char texel[TEXMAXNAMELENGTH];
 } CBRUSH;
+
+typedef struct
+{
+	char name[TEXMAXNAMELENGTH];
+	char value[TEXMAXNAMELENGTH];
+} CENTOBJ;
+
+typedef struct
+{
+	uint32_t id;
+	char classname[TEXMAXNAMELENGTH];
+	uint8_t val_cnt;
+	CENTOBJ values[ENTMAXVAL];
+
+} CENT;
 
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
@@ -163,7 +180,7 @@ extern void seekAssets(void);
 extern void getAssetById(uint8_t, struct asset **);
 extern void freeAssets(void);
 
-//t2map
+//t2map & q3parser
 void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
 void getND(double *,uint8_t, double *, double *);
 void getIntersaction(double *,uint8_t, uint8_t, uint8_t, double *);

@@ -1,6 +1,31 @@
 #include "include/t2main.h"
 
+/*
 
+// entity 1
+{
+"angle" "270"
+"origin" "96 472 8"
+"classname" "info_player_start"
+}
+// entity 2
+{
+"light" "1000"
+"_color" "1.000000 1.000000 1.000000"
+"origin" "96 256 200"
+"classname" "light"
+}
+// entity 3
+{
+"origin" "96.00 256.00 184.00"
+"testanim" "idle"
+"model" "static/lightbulb_on_wire.tik"
+"scale" "1.0"
+"classname" "static_lamp_lightbulb-on-wire"
+}
+
+
+*/
 void parseMap(char *path)
 {
     FILE *file, *file2;
@@ -19,12 +44,14 @@ void parseMap(char *path)
 	strcat(opath,".cmap");
 	//printf("%s\n",opath);
 
+    //prepare streams
     file = fopen(path, "r");
-    file2 = fopen(opath, "wb");
     if (file == NULL){
-    	printf("ERROR: can't open src map file: %s\n",path);
-    	return;
-    }    
+        printf("ERROR: can't open src map file: %s\n",path);
+        return;
+    }
+
+    file2 = fopen(opath, "wb");
     if (file2 == NULL){
     	printf("ERROR: can't open dest map file: %s\n",opath);
     	return;
@@ -39,6 +66,7 @@ void parseMap(char *path)
 
     header[0].brush_count = 0;
     header[0].texel_count = 0;
+    header[0].ent_count = 0;
 
     brush_num = -1;
 
@@ -50,7 +78,16 @@ void parseMap(char *path)
 			//printf("new brush\n");
 			header[0].brush_count++;
 		}
+        else if(strncmp(line,"// entity",9) == 0)
+        {
+            header[0].ent_count++;
+        }
+        else;
 	}
+
+    printf("total brushes: %d\n",header[0].brush_count);
+    printf("total entities: %d\n",header[0].ent_count);
+    printf("***** VERTICES/TEXTURES HANDLER *****");
 
 	//alloc tmp space for textures duplicates
 	CTEX texel_dup[10000];
