@@ -178,7 +178,8 @@ void parseMap(char *path)
     	}
         else if(isEntity)
         {
-            sscanf(line,"%s %s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
+            //printf("line: %s\n",line);
+            sscanf(line,"%s %[^\t]s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
             //printf("%s %s\n",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
             entity[entity_num].value_cnt++;
            
