@@ -134,15 +134,14 @@ typedef struct
 {
 	char name[ENTMAXVALLENGTH];
 	char value[ENTMAXVALLENGTH];
-} CENTOBJ;
+} CENTPROP;
 
 typedef struct
 {
 	uint32_t id;
 	char classname[ENTMAXVALLENGTH];
 	uint8_t value_cnt;
-	CENTOBJ values[ENTMAXVAL];
-
+	CENTPROP values[ENTMAXVAL];
 } CENT;
 
 //t2mlib

@@ -29,7 +29,7 @@
 void parseMap(char *path)
 {
     FILE *file, *file2;
-    uint8_t isBrush = 0, isEntity = 0, nonextlen;
+    uint8_t isBrush = 0, isEntity = 0, nonextlen, ent_part = 0;
     char *line = NULL, *dot;
     uint32_t line_len, i, j, k;
     int32_t num[1], brush_num, entity_num;
@@ -128,6 +128,7 @@ void parseMap(char *path)
         }    	
         else if(strncmp(line,"// entity",9) == 0)
     	{
+            if(!ent_part) ent_part = 1;
     		//upd cntrs    		
     		entity_num++;
     		//init struct, clear garbage
@@ -137,7 +138,7 @@ void parseMap(char *path)
     		printf("entity %d/%d\n",entity_num+1,header[0].entity_count);
     	}
         else if(strncmp(line,"(",1) == 0) isBrush = 1;
-    	else if(strncmp(line,"\"",1) == 0) isEntity = 1;
+    	else if(ent_part && strncmp(line,"\"",1) == 0) isEntity = 1;
     	else if(strncmp(line,"}",1) == 0) isBrush = isEntity = 0;
     	else;
 
