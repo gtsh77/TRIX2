@@ -31,9 +31,8 @@ void parseMap(char *path)
     FILE *file, *file2;
     uint8_t isBrush = 0, isEntity = 0, nonextlen, ent_part = 0, ignore_brush = 0;
     char *line = NULL, *dot;
-    uint32_t line_len, i, j, k;
+    uint32_t lbuffer, i, j, k;
     int32_t num[1], brush_num, entity_num;
-    uint64_t read;
 
     printf("\nq3 map path: %s\n",path);
 
@@ -74,7 +73,7 @@ void parseMap(char *path)
     entity_num = -1;
 
     //get count of all brushes
-	while ((read = getline(&line, &line_len, file)) != -1)
+	while (getline(&line, &lbuffer, file) > 0)
 	{
 		if(strncmp(line,"// brush",8) == 0)
 		{
@@ -112,7 +111,7 @@ void parseMap(char *path)
 	rewind(file);
 
 	//parse brushes
-    while ((read = getline(&line, &line_len, file)) != -1) 
+    while (getline(&line, &lbuffer, file) > 0) 
     {
         //printf("Retrieved line of length %zu :\n", read);
         //printf("line: %s", line);
@@ -155,45 +154,49 @@ void parseMap(char *path)
     	if(isBrush)
     	{
 	    	//parse main line into tmp struct
-	    	sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel,&num[0]);
+            if(sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel,&num[0]) == 11)
+            {
+                //store planes
+                for(i=0;i<9;i++)
+                {
+                    brush[brush_num].planes[(brush[brush_num].plane_count*9) + i] = tmp_brush[0].planes[i];
+                }
 
-	    	//store planes
-    		for(i=0;i<9;i++)
-    		{
-    			brush[brush_num].planes[(brush[brush_num].plane_count*9) + i] = tmp_brush[0].planes[i];
-    		}
-
-	    	//check if it has valid face
-	    	if(strncmp(tmp_brush[0].texel,"common/caulk",12) != 0)
-	    	{
-	    		//printf("new face\n");
-	    		//store face id
-	    		brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].face_count;
-	    		//store texel name
-	    		strcpy(brush[brush_num].texel,tmp_brush[0].texel);
-	    		//update global texels array
-	    		strcpy(texel_dup[header[0].texel_count].texel,tmp_brush[0].texel);
-	    		//upd tx cnt
-	    		header[0].texel_count++;
-	    		//store vertices
-	    		for(i=0;i<9;i++)
-	    		{
-	    			brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = (double)tmp_brush[0].planes[i];
-	    			
-	    		}
-	    		//upd struct fc cnt
-	    		brush[brush_num].face_count++;	    			
-	    	}
-	    	//upd plane num
-	    	brush[brush_num].plane_count++;
+                //check if it has valid face
+                if(strncmp(tmp_brush[0].texel,"common/caulk",12) != 0)
+                {
+                    //printf("new face\n");
+                    //store face id
+                    brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].face_count;
+                    //store texel name
+                    strcpy(brush[brush_num].texel,tmp_brush[0].texel);
+                    //update global texels array
+                    strcpy(texel_dup[header[0].texel_count].texel,tmp_brush[0].texel);
+                    //upd tx cnt
+                    header[0].texel_count++;
+                    //store vertices
+                    for(i=0;i<9;i++)
+                    {
+                        brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = (double)tmp_brush[0].planes[i];
+                        
+                    }
+                    //upd struct fc cnt
+                    brush[brush_num].face_count++;                  
+                }
+                //upd plane num
+                brush[brush_num].plane_count++;                
+            }
+            else printf("bad_brush_format: %s\n",line);
     	}
         else if(isEntity)
         {
             //printf("line: %s\n",line);
-            sscanf(line,"%s %[^\t]s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
-            //printf("%s %s\n",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
-            entity[entity_num].value_cnt++;
-           
+            if(sscanf(line,"%s %[^\t]s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value) == 2)
+            {
+                entity[entity_num].value_cnt++;
+                //printf("%s %s\n",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
+            }
+            else printf("bad_ent_format: %s\n",line);
         }
         else;
     }
