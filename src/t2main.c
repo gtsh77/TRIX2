@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[])
 {
+	char c, cc = 0;
 	if(argc == 1)
 	{
 		initVideo();
@@ -15,16 +16,19 @@ int main(int argc, char *argv[])
 		#endif
 		initLoop();
 		doQuit();		
-	}	
-	else if(argc > 1)
-	{
-		if(strcmp(argv[1],"compile") == 0)
-		{
-			parseMap(argv[2]);
-		}
-		else printf("ERROR: bad arg\n");	
 	}
-	else;
+	else
+	{
+		while(--argc > 0 && (*++argv)[0] == '-')
+		{
+			while(c = *++argv[0])
+			{
+				if(c == *("c") && (cc = 1));
+			}
+		}
+		if(cc) parseMap(*argv);
+		else printf("usage: trix2 [-c </path/to/file>]\n");
+	}
 	
 	return 0;
 }
