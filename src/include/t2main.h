@@ -187,6 +187,11 @@ void getIntersaction(double *,uint8_t, uint8_t, uint8_t, double *);
 void parseMap(char *);
 uint8_t intIn(uint8_t, uint8_t *, uint8_t);
 
+//memm
+#define POOLSIZE 1024*1024*1
+extern uint8_t * t_alloc(uint32_t);
+extern void t_free(uint8_t *);
+
 //common
 void initVideo(void);
 void initLoop(void);
