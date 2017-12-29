@@ -1,11 +1,11 @@
 #include "include/t2main.h"
 
-extern void loadAssets(void)
+extern void loadTRoomGAssets(void)
 {
 	uint8_t i;
     e = (struct asset*)malloc(sizeof(struct asset));
     l = f = e;
-    for(i=0;i<GAMEOBJECTS;i++)
+    for(i=0;i<TRGAMEOBJECTS;i++)
     {
         l->path = objNames[i];
         l->id = objIds[i];

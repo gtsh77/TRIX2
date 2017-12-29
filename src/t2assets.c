@@ -1,6 +1,6 @@
 #include "include/t2main.h"
 
-char objNames[GAMEOBJECTS][128] = 
+char objNames[TRGAMEOBJECTS][128] = 
 {
     "assets/textures/algiers/brick1.jpg",
     "assets/textures/central_europe/frenchdoor_wood1.jpg",
@@ -14,7 +14,7 @@ char objNames[GAMEOBJECTS][128] =
     "assets/textures/common/caulk.jpg" 
 };
 
-uint8_t objIds[GAMEOBJECTS] = 
+uint8_t objIds[TRGAMEOBJECTS] = 
 {
     10,
     11,

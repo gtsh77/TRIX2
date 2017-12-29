@@ -93,10 +93,10 @@ struct asset
 //extern Asset *e, *l, *f;
 
 //ingame assets count, should be equal to objNames & objIds length
-#define GAMEOBJECTS 10
+#define TRGAMEOBJECTS 10
 //game obj definitions
-extern char objNames[GAMEOBJECTS][128];
-extern uint8_t objIds[GAMEOBJECTS];
+extern char objNames[TRGAMEOBJECTS][128];
+extern uint8_t objIds[TRGAMEOBJECTS];
 
 //map parser
 #define MAXFACES 6
@@ -171,7 +171,7 @@ extern void getShaderLog(uint32_t);
 extern uint64_t getCycles(void);
 
 //t2jpg
-extern void loadAssets(void);
+extern void loadTRoomGAssets(void);
 extern void loadAssetItem(struct asset *);
 extern void seekAssets(void);
 extern void getAssetById(uint8_t, struct asset **);
