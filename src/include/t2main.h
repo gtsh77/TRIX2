@@ -21,9 +21,6 @@
 #define FPS 60
 #define SLEEP 1000
 #define SHOWFRAMETIME 0
-#define TESTWALL 0
-#define TESTCRATE 0
-#define TESTROOM 1
 
 //globals
 extern SDL_Window *window;
