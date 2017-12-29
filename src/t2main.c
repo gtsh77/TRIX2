@@ -1,10 +1,5 @@
 #include "include/t2main.h"
 
-#define TESTROOM   01
-#define LLEVEL     02
-
-static uint8_t MODE;
-
 int main(int argc, char *argv[])
 {
 	char c, cc = 0, sm = 0;

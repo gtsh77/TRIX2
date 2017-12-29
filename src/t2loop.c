@@ -12,77 +12,74 @@ void initLoop(void)
     //interval = (benchCPU()/FPS);
     //printf("%lu\n",interval);
 
-    #if TESTWALL
-        uint8_t zoomFlag = 1;
-        uint8_t halt = 0;
+    // #if TESTWALL
+    //     uint8_t zoomFlag = 1;
+    //     uint8_t halt = 0;
 
-        gsl_matrix *Model = m_new_diag(4);
-        gsl_matrix *View = m_new(4,4);
-        gsl_matrix *MV = m_new(4,4);
-        gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *Projection = m_new(4,4);
-        m_setRz(Model,0,0);
-        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
-        float MVPA[16];
-        double eye[] = {0,0,1};
-        double center[] = {0,0,0};
-        double up[] = {0,1,0};
+    //     gsl_matrix *Model = m_new_diag(4);
+    //     gsl_matrix *View = m_new(4,4);
+    //     gsl_matrix *MV = m_new(4,4);
+    //     gsl_matrix *MVP = m_new(4,4);
+    //     gsl_matrix *Projection = m_new(4,4);
+    //     m_setRz(Model,0,0);
+    //     glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
+    //     float MVPA[16];
+    //     double eye[] = {0,0,1};
+    //     double center[] = {0,0,0};
+    //     double up[] = {0,1,0};
 
-        GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-    #elif TESTCRATE
-        uint16_t deg = 0;
-        uint8_t i;
+    //     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+    // #elif TESTCRATE
+    //     uint16_t deg = 0;
+    //     uint8_t i;
 
-        gsl_matrix *Model = m_new_diag(4);
-        gsl_matrix *View = m_new(4,4);
-        gsl_matrix *MV = m_new(4,4);
-        gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *Projection = m_new(4,4);
-        glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
-        float MVPA[16];
-        // double eye[] = {1.1,1.1,4};
-        // double center[] = {0,0,-1};
-        // double up[] = {0,1,0}; 
-        double eye[] = {0,0,3};
-        double center[] = {0,0,-1};
-        double up[] = {0,1,0};
+    //     gsl_matrix *Model = m_new_diag(4);
+    //     gsl_matrix *View = m_new(4,4);
+    //     gsl_matrix *MV = m_new(4,4);
+    //     gsl_matrix *MVP = m_new(4,4);
+    //     gsl_matrix *Projection = m_new(4,4);
+    //     glmPerspective(RAD(45.0f),(double)WW/(double)WH,0.1f,10.0f,Projection);    
+    //     float MVPA[16];
+    //     // double eye[] = {1.1,1.1,4};
+    //     // double center[] = {0,0,-1};
+    //     // double up[] = {0,1,0}; 
+    //     double eye[] = {0,0,3};
+    //     double center[] = {0,0,-1};
+    //     double up[] = {0,1,0};
 
-        double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
-        double speed = 0.25;
-        mulVec(center,speed,3,speed_zoom);
-        getCrossV3(center,up,center_up);
-        normalize(center_up,3,center_up);
-        mulVec(center_up,speed,3,speed_straight);
+    //     double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
+    //     double speed = 0.25;
+    //     mulVec(center,speed,3,speed_zoom);
+    //     getCrossV3(center,up,center_up);
+    //     normalize(center_up,3,center_up);
+    //     mulVec(center_up,speed,3,speed_straight);
 
 
-        GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-    #elif TESTROOM
+    //     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
 
-        uint16_t deg = 0;
-        gsl_matrix *Model = m_new_diag(4);
-        gsl_matrix *Model_S = m_new(4,4);
-        gsl_matrix *Model_S_R = m_new(4,4);
-        gsl_matrix *View = m_new(4,4);
-        gsl_matrix *MV = m_new(4,4);
-        gsl_matrix *MVP = m_new(4,4);
-        gsl_matrix *Projection = m_new(4,4);      
-        float MVPA[16];
-        double eye[] = {0,-0.25,4};
-        double center[] = {0,0,-1};
-        double up[] = {0,1,0};       
+    uint16_t deg = 0;
+    gsl_matrix *Model = m_new_diag(4);
+    gsl_matrix *Model_S = m_new(4,4);
+    gsl_matrix *Model_S_R = m_new(4,4);
+    gsl_matrix *View = m_new(4,4);
+    gsl_matrix *MV = m_new(4,4);
+    gsl_matrix *MVP = m_new(4,4);
+    gsl_matrix *Projection = m_new(4,4);      
+    float MVPA[16];
+    double eye[] = {0,-0.25,4};
+    double center[] = {0,0,-1};
+    double up[] = {0,1,0};       
 
-        double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
-        double speed = 0.08;
-        mulVec(center,speed,3,speed_zoom);
-        getCrossV3(center,up,center_up);
-        normalize(center_up,3,center_up);
-        mulVec(center_up,speed,3,speed_straight);  
+    double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
+    double speed = 0.08;
+    mulVec(center,speed,3,speed_zoom);
+    getCrossV3(center,up,center_up);
+    normalize(center_up,3,center_up);
+    mulVec(center_up,speed,3,speed_straight);  
 
-        glmPerspective(RAD(90.0f),(double)WW/(double)WH,0.1f,10.0f,Projection); 
-        GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-        uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
-
-    #endif
+    glmPerspective(RAD(90.0f),(double)WW/(double)WH,0.1f,10.0f,Projection); 
+    GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
+    uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");            
 
     while(1)
     {
@@ -107,33 +104,34 @@ void initLoop(void)
             if (windowEvent.type == SDL_QUIT) break; //cross
             else if(windowEvent.type == SDL_KEYDOWN)
             {
-                #if TESTCRATE
-                    if(windowEvent.key.keysym.sym == SDLK_w)
-                    {
-                        addVec(eye,speed_zoom,3,eye);
-                        addVec(eye,center,3,eye_center);
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_a)
-                    {
-                        subVec(eye,speed_straight,3,eye);
-                        addVec(eye,center,3,eye_center);
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_d)
-                    {
-                        //glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed
-                        addVec(eye,speed_straight,3,eye);
-                        addVec(eye,center,3,eye_center);
+                // #if TESTCRATE
+                //     if(windowEvent.key.keysym.sym == SDLK_w)
+                //     {
+                //         addVec(eye,speed_zoom,3,eye);
+                //         addVec(eye,center,3,eye_center);
+                //     }
+                //     else if(windowEvent.key.keysym.sym == SDLK_a)
+                //     {
+                //         subVec(eye,speed_straight,3,eye);
+                //         addVec(eye,center,3,eye_center);
+                //     }
+                //     else if(windowEvent.key.keysym.sym == SDLK_d)
+                //     {
+                //         //glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed
+                //         addVec(eye,speed_straight,3,eye);
+                //         addVec(eye,center,3,eye_center);
 
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_s)
-                    {
-                        subVec(eye,speed_zoom,3,eye);
-                        addVec(eye,center,3,eye_center);
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
-                #elif TESTWALL
-                    if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
-                #elif TESTROOM
+                //     }
+                //     else if(windowEvent.key.keysym.sym == SDLK_s)
+                //     {
+                //         subVec(eye,speed_zoom,3,eye);
+                //         addVec(eye,center,3,eye_center);
+                //     }
+                //     else if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
+                // #elif TESTWALL
+                //     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
+                if(MODE & TESTROOM)
+                {
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                     else if(windowEvent.key.keysym.sym == SDLK_w)
                     {
@@ -156,8 +154,8 @@ void initLoop(void)
                     {
                         subVec(eye,speed_zoom,3,eye);
                         addVec(eye,center,3,eye_center);
-                    }                    
-                #endif
+                    }
+                }
             }
             // else if (windowEvent.type == SDL_KEYUP)
             // {
@@ -172,40 +170,41 @@ void initLoop(void)
         }
         if(c > interval)
         {
-            #if TESTWALL
-                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
+            // #if TESTWALL
+            //     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //     glClear(GL_COLOR_BUFFER_BIT);
 
-                if(!halt)
-                {
-                    eye[2] += (zoomFlag?0.05:-0.05);
-                }
+            //     if(!halt)
+            //     {
+            //         eye[2] += (zoomFlag?0.05:-0.05);
+            //     }
                 
-                glmLookAt(eye,center,up,View);            
-                m_mul(Model,View,MV);
-                m_mul(MV,Projection,MVP);            
-                m_array(MVP,4,4,MVPA);            
-                glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            #elif TESTCRATE
-                glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            //     glmLookAt(eye,center,up,View);            
+            //     m_mul(Model,View,MV);
+            //     m_mul(MV,Projection,MVP);            
+            //     m_array(MVP,4,4,MVPA);            
+            //     glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+            //     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            // #elif TESTCRATE
+            //     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+            //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                if(deg == 360-4) deg = 0;
-                else deg += 4;
+            //     if(deg == 360-4) deg = 0;
+            //     else deg += 4;
 
-                for(i=0;i<3;i++)
-                {
-                    m_setT(Model,i,-i*1.5,-i*2.5,0);
-                    m_setRy(Model,deg,0);
-                    glmLookAt(eye,eye_center,up,View);
-                    m_mul(Model,View,MV);
-                    m_mul(MV,Projection,MVP);            
-                    m_array(MVP,4,4,MVPA);            
-                    glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                    glDrawArrays(GL_TRIANGLES, 0, 36);                    
-                }
-            #elif TESTROOM
+            //     for(i=0;i<3;i++)
+            //     {
+            //         m_setT(Model,i,-i*1.5,-i*2.5,0);
+            //         m_setRy(Model,deg,0);
+            //         glmLookAt(eye,eye_center,up,View);
+            //         m_mul(Model,View,MV);
+            //         m_mul(MV,Projection,MVP);            
+            //         m_array(MVP,4,4,MVPA);            
+            //         glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+            //         glDrawArrays(GL_TRIANGLES, 0, 36);                    
+            //     }
+            if(MODE & TESTROOM)
+            {
                 glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -386,9 +385,7 @@ void initLoop(void)
                 glUniform1i(tsrc,2);
 
                 glDrawArrays(GL_TRIANGLES, 0, 36); 
-
-
-            #endif
+            }
             
             SDL_GL_SwapWindow(window);
             c = 0;

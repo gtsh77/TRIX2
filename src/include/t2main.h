@@ -22,6 +22,11 @@
 #define SLEEP 1000
 #define SHOWFRAMETIME 0
 
+#define TESTROOM   01
+#define LLEVEL     02
+
+extern uint8_t MODE;
+
 //globals
 extern SDL_Window *window;
 extern SDL_GLContext GLPixmap;
