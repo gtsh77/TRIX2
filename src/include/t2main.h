@@ -194,6 +194,10 @@ uint8_t intIn(uint8_t, uint8_t *, uint8_t);
 extern uint8_t * t_alloc(uint32_t);
 extern void t_free(uint8_t *);
 
+//loadl
+#define MAXCMAPFILENAME 32
+void loadLevel(char *);
+
 //common
 void initVideo(void);
 void initLoop(void);

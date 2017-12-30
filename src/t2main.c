@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		else if(MODE & LLEVEL)
 		{
 			if(argc < 2) printf("specify level name\n");
-			else printf("%s\n",*++argv);
+			else loadLevel(*++argv);
 			return 0;
 		}
 		initLoop();

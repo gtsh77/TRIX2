@@ -228,6 +228,9 @@ void parseMap(char *path)
     printf("total_vis_faces: %d\n",header[0].texel_count);
     printf("total_unique_textures: %d\n",new_texel_size);
 
+    //now set proper unique texel count
+    header[0].texel_count = new_texel_size;
+
     //chk
     // for(i=0;i<new_texel_size;i++)
     // {
