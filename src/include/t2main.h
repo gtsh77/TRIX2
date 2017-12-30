@@ -118,7 +118,7 @@ typedef struct
 
 typedef struct
 {
-	char texel[TEXMAXNAMELENGTH];
+	char path[TEXMAXNAMELENGTH];
 } CTEX;
 
 typedef struct
@@ -183,10 +183,12 @@ extern void getAssetById(uint8_t, struct asset **);
 extern void freeAssets(void);
 
 //t2map & q3parser
-void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
+#define CMAPDIR "maps/"
+#define CMAPEXT ".cmap"
+extern void parseMap(char *);
+extern void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
 void getND(double *,uint8_t, double *, double *);
 void getIntersaction(double *,uint8_t, uint8_t, uint8_t, double *);
-void parseMap(char *);
 uint8_t intIn(uint8_t, uint8_t *, uint8_t);
 
 //memm

@@ -26,7 +26,7 @@
 
 
 */
-void parseMap(char *path)
+extern void parseMap(char *path)
 {
     FILE *file, *file2;
     uint8_t isBrush = 0, isEntity = 0, nonextlen, ent_part = 0, ignore_brush = 0;
@@ -42,7 +42,7 @@ void parseMap(char *path)
     char opath[nonextlen];
 	memset(opath,0,nonextlen + 1);
 	memcpy(opath,path,nonextlen);
-	strcat(opath,".cmap");
+	strcat(opath,CMAPEXT);
 	//printf("%s\n",opath);
 
     //prepare streams
@@ -171,7 +171,7 @@ void parseMap(char *path)
                     //store texel name
                     strcpy(brush[brush_num].texel,tmp_brush[0].texel);
                     //update global texels array
-                    strcpy(texel_dup[header[0].texel_count].texel,tmp_brush[0].texel);
+                    strcpy(texel_dup[header[0].texel_count].path,tmp_brush[0].texel);
                     //upd tx cnt
                     header[0].texel_count++;
                     //store vertices
@@ -215,12 +215,12 @@ void parseMap(char *path)
     	cnt = 0;
     	for(j=0;j<new_texel_size;j++,cnt++)
     	{
-    		if(strcmp(texel_dup[i].texel,texel_final[j].texel) == 0) break;
+    		if(strcmp(texel_dup[i].path,texel_final[j].path) == 0) break;
     	}
 
     	if(cnt == new_texel_size)
     	{
-    		strcpy(texel_final[new_texel_size].texel,texel_dup[i].texel);
+    		strcpy(texel_final[new_texel_size].path,texel_dup[i].path);
     		new_texel_size++;
     	}
     }

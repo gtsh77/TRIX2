@@ -13,9 +13,9 @@ void loadLevel(char *name)
 	}
 
 	memset(path,0,MAXCMAPFILENAME+10);
-	memcpy(path,"maps/",5);
+	memcpy(path,CMAPDIR,sizeof(CMAPDIR));
 	strcat(path,name);
-	strcat(path,".cmap");
+	strcat(path,CMAPEXT);
 
 	//stream cmap
 	FILE *cmap;
@@ -32,7 +32,21 @@ void loadLevel(char *name)
 	printf("texel count: %d\n",hp->texel_count);
 
 	//load texel names array
-	
+	CTEX texels[hp->texel_count];
+	fread(texels,sizeof(CTEX)*hp->texel_count,1,cmap);
+	printf("%s\n",texels[2].path);
+
+	//load brushes
+	//...
+
+	//load ent
+	//...
+
+	//read texels by name, decode, map in gpu
+
+
+
+
 
 	fclose(cmap);
 

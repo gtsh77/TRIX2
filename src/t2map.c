@@ -40,7 +40,7 @@ p_6 num 1: 0.000000 -64.000000 336.000000
 
 //static double vertices
 //doMapCalc(planes, brush[i].faces, brush[i].face_count, vertices);
-void doMapCalc(double *points, uint8_t plane_count, uint8_t *faces, uint8_t face_count, double *r)
+extern void doMapCalc(double *points, uint8_t plane_count, uint8_t *faces, uint8_t face_count, double *r)
 {
 
 	uint8_t i,j,k,last_stored = 0, num = 4, planesNum = plane_count;
