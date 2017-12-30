@@ -49,19 +49,12 @@ extern void loadLevel(char *name)
 		tn_cp->local_id = i;
 		tn_cp->path = (char *)calloc(1,sizeof(texels[i].path)); //DD
 		memcpy(tn_cp->path,texels[i].path,sizeof(texels[i].path));
-		//printf("is correct? %s\n",tn_cp->path);
 		//decode jpg, set meta info, feed GPU
 		decodeJPG(tn_cp,(void (*)(TNODE *, uint8_t *, uint32_t))(proccessTexel));
 		tn_cp->n = (TNODE *)(malloc(sizeof(TNODE)));
 		tn_cp = tn_cp->n;
 	}
 	tn_lp = tn_cp;
-
-	
-
-
-
-
 
 	fclose(cmap);
 
@@ -70,10 +63,23 @@ extern void loadLevel(char *name)
 
 void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length)
 {
-	printf("is correct? %d\n",data_length);
-
 	//GPU stuff
-	//...
+	float max_aniso = 0;
+	glGenTextures(1, &tp->gpu_id);
+	glActiveTexture(GL_TEXTURE0+tp->local_id);
+	glBindTexture(GL_TEXTURE_2D, tp->gpu_id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //AAF    
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tp->width, tp->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return;
 }

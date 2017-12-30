@@ -33,10 +33,10 @@ int main(int argc, char *argv[])
 			printf("usage: trix2 [-c </path/to/file>] || [-m <mode> [opt]]\n");
 			return 0;
 		}
-			
+		
+		initVideo();
 		if(MODE & TESTROOM)
-		{
-			initVideo();	
+		{				
 			loadTRoomGAssets();
 			genRoom();
 		} 
