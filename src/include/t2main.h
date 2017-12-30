@@ -95,7 +95,18 @@ struct asset
     struct    asset *n, *p;
 } *e, *l, *f;
 
-//extern Asset *e, *l, *f;
+//v2
+typedef struct tnode
+{
+	uint8_t local_id;
+	uint32_t gpu_id;		
+	char *path;
+	uint16_t width;
+	uint16_t height;
+	struct tnode *n;
+} TNODE;
+
+extern TNODE *tn_fp, *tn_cp, *tn_lp;
 
 //ingame assets count, should be equal to objNames & objIds length
 #define TRGAMEOBJECTS 10
@@ -185,6 +196,8 @@ extern void freeAssets(void);
 //t2map & q3parser
 #define CMAPDIR "maps/"
 #define CMAPEXT ".cmap"
+#define TEXDIR "assets/textures/"
+#define TEXEXT ".jpg"
 extern void parseMap(char *);
 extern void doMapCalc(double *, uint8_t, uint8_t *, uint8_t, double *);
 void getND(double *,uint8_t, double *, double *);
@@ -198,7 +211,9 @@ extern void t_free(uint8_t *);
 
 //loadl
 #define MAXCMAPFILENAME 32
-void loadLevel(char *);
+extern void loadLevel(char *);
+extern void decodeJPG(TNODE *, void (*)(TNODE *, uint8_t *, uint32_t));
+void proccessTexel(TNODE *, uint8_t *, uint32_t);
 
 //common
 void initVideo(void);
