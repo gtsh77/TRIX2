@@ -16,6 +16,7 @@
 #define GLEW_STATIC
 #define WW 640
 #define WH 480
+#define BLOCKSIZE 256
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
@@ -214,6 +215,7 @@ extern void t_free(uint8_t *);
 extern void loadLevel(char *);
 extern void decodeJPG(TNODE *, void (*)(TNODE *, uint8_t *, uint32_t));
 void proccessTexel(TNODE *, uint8_t *, uint32_t);
+void loadShaders(void);
 
 //common
 void initVideo(void);
