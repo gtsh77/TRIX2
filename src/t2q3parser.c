@@ -167,7 +167,7 @@ extern void parseMap(char *path)
                 {
                     //printf("new face\n");
                     //store face id
-                    brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].face_count;
+                    brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].plane_count;
                     //store texel name
                     strcpy(brush[brush_num].texel,tmp_brush[0].texel);
                     //update global texels array
@@ -264,12 +264,14 @@ extern void parseMap(char *path)
 		//store into struct
 		for(j=0;j<brush[i].face_count*12;j++)
 		{
+            
 			brush[i].vertices[j] = vertices[j];
+            //printf("%f\n",brush[i].vertices[j]);
 		}
     }
 
     //chk data
-    //printf("%f\n",brush[1].vertices[0]);    
+    //printf("%f\n",brush[0].vertices[11]);    
 
 
     //write bin
