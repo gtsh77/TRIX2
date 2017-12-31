@@ -36,17 +36,20 @@ int main(int argc, char *argv[])
 		
 		initVideo();
 		if(MODE & TESTROOM)
-		{				
+		{
 			loadTRoomGAssets();
 			genRoom();
+			initLoop();
+			doQuit();			
 		} 
 		else if(MODE & LLEVEL)
 		{
 			if(argc < 2) printf("specify level name\n");
 			else loadLevel(*++argv);
+			initLoop();
+			doQuit2();			
 		}
-		initLoop();
-		doQuit();
+
 	}
 	else printf("usage: trix2 [-c </path/to/file>] || [-m <mode> [opt]]\n");
 

@@ -221,6 +221,7 @@ void loadShaders(void);
 void initVideo(void);
 void initLoop(void);
 void doQuit(void);
+void doQuit2(void);
 uint64_t benchCPU(void);
 void genWall(void);
 void genCrate(void);

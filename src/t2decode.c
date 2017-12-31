@@ -5,7 +5,7 @@ extern void decodeJPG(TNODE *tp, void (*handler)(TNODE *tp, uint8_t *, uint32_t)
 	//prepare path
 	uint8_t pathlen = sizeof(TEXDIR-1)+sizeof(tp->path-1)+sizeof(TEXEXT-1), *data;
 	uint32_t data_length, scanlinelength;
-	char *path = (char *)calloc(1,pathlen); //DD
+	char *path = (char *)t_alloc(pathlen); //DD
 	memset(path,0,pathlen);
 	memcpy(path,TEXDIR,sizeof(TEXDIR));
 	strcat(path,tp->path);
@@ -34,9 +34,9 @@ extern void decodeJPG(TNODE *tp, void (*handler)(TNODE *tp, uint8_t *, uint32_t)
 	buffer = (uint8_t **)malloc(sizeof(uint8_t));
 	buffer_length = cinfo.output_width*3;
 	//jpeg 24rgb
-	buffer[0] = (uint8_t *)malloc((sizeof(uint8_t))*buffer_length);
+	buffer[0] = (uint8_t *)t_alloc((sizeof(uint8_t))*buffer_length);
 	//x11 32rgba
-	data = (uint8_t *)malloc((sizeof(uint8_t))*cinfo.output_width*cinfo.output_height*4);
+	data = (uint8_t *)t_alloc((sizeof(uint8_t))*cinfo.output_width*cinfo.output_height*4);
 	tp->width = cinfo.output_width;
 	tp->height = cinfo.output_height;
 	for(index=0;index<cinfo.output_height;index++)
@@ -56,11 +56,11 @@ extern void decodeJPG(TNODE *tp, void (*handler)(TNODE *tp, uint8_t *, uint32_t)
 	//feed GPU
 	handler(tp, data, data_length);
 
-	//free DD
+	//free SD & DD
 	jpeg_finish_decompress(&cinfo);
-	jpeg_destroy_decompress(&cinfo);
-	free(path);
-	free(buffer[0]);
+	jpeg_destroy_decompress(&cinfo);	
+	t_free(buffer[0]);
+	t_free((uint8_t *)path);
 	free(buffer);
 	fclose(file);
 

@@ -1,13 +1,11 @@
 #include "include/t2main.h"
 
-extern void loadLevel(char *name)
-{
+extern void loadLevel(char *name){
 	//prepare cmap path by given filename
 	char path[MAXCMAPFILENAME + 10];
 	uint8_t plen = strlen(name), i;
 
-	if(plen > MAXCMAPFILENAME)
-	{
+	if(plen > MAXCMAPFILENAME){
 		printf("level name (%d) maxchar exceeded, maximum: %d\n",plen,MAXCMAPFILENAME);
 		return;
 	}
@@ -20,8 +18,7 @@ extern void loadLevel(char *name)
 	//stream cmap
 	FILE *cmap;
 	cmap = fopen(path,"rb");
-	if(cmap == NULL)
-	{
+	if(cmap == NULL){
 		printf("can't open level file: %s\n",path);
 		return;
 	}
@@ -44,10 +41,9 @@ extern void loadLevel(char *name)
 	//create TNODES, read, decode, map in gpu
 	tn_fp = (TNODE *)(malloc(sizeof(TNODE)));
 	tn_cp = tn_lp = tn_fp;
-	for(i=0;i<hp->texel_count;i++)
-	{
+	for(i=0;i<hp->texel_count;i++){
 		tn_cp->local_id = i;
-		tn_cp->path = (char *)calloc(1,sizeof(texels[i].path)); //DD
+		tn_cp->path = (char *)t_alloc(sizeof(texels[i].path)); //SD
 		memcpy(tn_cp->path,texels[i].path,sizeof(texels[i].path));
 		//decode jpg, set meta info, feed GPU
 		decodeJPG(tn_cp,(void (*)(TNODE *, uint8_t *, uint32_t))(proccessTexel));
@@ -64,8 +60,7 @@ extern void loadLevel(char *name)
 	return;
 }
 
-void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length)
-{
+void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length){
 	//GPU stuff
 	float max_aniso = 0;
 	float shape[] = {
@@ -120,13 +115,11 @@ void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length)
 	return;
 }
 
-void loadShaders(void)
-{
+void loadShaders(void){
 	//load frag/vertex shader's code
-	const char *vertex_code = readFile("shaders/room_a_vertex.glsl");
-	const char *fragment_code = readFile("shaders/room_a_fragment.glsl");
-	if(!vertex_code || !fragment_code)
-	{
+	char *vertex_code = readFile("shaders/room_a_vertex.glsl");
+	char *fragment_code = readFile("shaders/room_a_fragment.glsl");
+	if(!vertex_code || !fragment_code){
 		printf("not all shaders are loaded\n");
 		return;
 	}
@@ -136,8 +129,8 @@ void loadShaders(void)
 	buffers.vs2 = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//compile shaders
-	glShaderSource(buffers.vs1, 1, &vertex_code, NULL);
-	glShaderSource(buffers.vs2, 1, &fragment_code, NULL);
+	glShaderSource(buffers.vs1, 1, (const char **)&vertex_code, NULL);
+	glShaderSource(buffers.vs2, 1, (const char **)&fragment_code, NULL);
 	glCompileShader(buffers.vs1);
 	glCompileShader(buffers.vs2);
 
@@ -146,8 +139,7 @@ void loadShaders(void)
 	glGetShaderiv(buffers.vs2, GL_COMPILE_STATUS, &status.vs2);	
 	if(!status.vs1) getShaderLog(buffers.vs1);
 	else if(!status.vs2) getShaderLog(buffers.vs2);
-	else
-	{
+	else{
 		//create elf
 		shader_elf = glCreateProgram();
 
@@ -167,6 +159,10 @@ void loadShaders(void)
 		//only front
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
+
+		//local cleanup
+		free(vertex_code);
+		free(fragment_code);
 
 		//build Model
 		// gsl_matrix *Model = m_new_diag(4);
