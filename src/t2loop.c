@@ -84,6 +84,8 @@ void initLoop(void)
     TNODE *tp;
     uint8_t i,j,k;
 
+    double start_x, start_y, start_z;
+
     while(1)
     {
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
@@ -427,21 +429,27 @@ void initLoop(void)
                     for(k=0;k<level_brushes[j].face_count;k++)
                     {
                         //get proper TNODE
-                        //tp = getTNodeByPath(level_brushes[j].texel[0]);
-
-                        glBindVertexArray(buffers.obj1);
+                        tp = getTNodeByPath(level_brushes[j].texel[k]);
+                        //bind VAO
+                        glBindVertexArray(VAO[tp->local_id]);
+                        //set POS and transforms
+                        if(level_brushes[j].faces[k] == 2) //front
+                        {
+                           m_setRz(Model,0,0);
+                           //start_x = (double)level_brushes[j].verices[12*k + 0]/
+                        }
                         m_reset_diag(Model,4);
-                        m_setRz(Model,0,0);
-                        m_setT(Model,-1,0,0,0);
+                        m_setT(Model,level_brushes[j].start_x[k],0,0,0);
 
                         glmLookAt(eye,eye_center,up,View);
                         m_mul(Model,View,MV);
-                        m_mul(MV,Projection,MVP);            
+                        m_mul(MV,Projection,MVP);
                         m_array(MVP,4,4,MVPA);
                         glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
-                        glUniform1i(tsrc,0);
-                        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);                        
-
+                        glUniform1i(tsrc,tp->local_id);
+                        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                        //unbind VAO
+                        glBindVertexArray(0);
                     }
                 }
 

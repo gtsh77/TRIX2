@@ -38,7 +38,7 @@ extern uint64_t getCycles(void)
 extern TNODE * getTNodeByPath(char *path)
 {
 	TNODE *cur = tn_fp;
-	while(cur < tn_lp)
+	while(cur->n)
 	{
 		if(strcmp(cur->path,path) == 0) return cur;
 		else cur = cur->n;

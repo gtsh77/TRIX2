@@ -37,14 +37,14 @@ extern void loadLevel(char *name){
 	CBRUSH *brush = level_brushes;
 	fread(brush,sizeof(CBRUSH),hp->brush_count,cmap);
 
-	printf("%d\n",brush[0].face_count);
+	//printf("%d\n",brush[0].face_count);
 	//return;
 
 	//load ent
 	//...
 
 	//create TNODES, read, decode, map in gpu
-	tn_fp = (TNODE *)(malloc(sizeof(TNODE)));
+	tn_fp = (TNODE *)(calloc(1,sizeof(TNODE)));
 	tn_cp = tn_lp = tn_fp;
 	for(i=0;i<hp->texel_count;i++){
 		tn_cp->local_id = i;
@@ -52,7 +52,7 @@ extern void loadLevel(char *name){
 		memcpy(tn_cp->path,texels[i].path,sizeof(texels[i].path));
 		//decode jpg, set meta info, feed GPU
 		decodeJPG(tn_cp,(void (*)(TNODE *, uint8_t *, uint32_t))(proccessTexel));
-		tn_cp->n = (TNODE *)(malloc(sizeof(TNODE)));
+		tn_cp->n = (TNODE *)(calloc(1,sizeof(TNODE)));
 		tn_cp = tn_cp->n;
 	}
 	tn_lp = tn_cp;
@@ -64,7 +64,7 @@ extern void loadLevel(char *name){
 	uint32_t elements[] = {
 	    0, 1, 2,
 	    2, 3, 0
-	}, width, height;
+	};
 	float shape[16];
 	//gen EL
 	glGenBuffers(1, &buffers.eo1);
@@ -79,8 +79,11 @@ extern void loadLevel(char *name){
 			//calc width & height
 			if(brush[j].faces[k] == 2)
 			{
-				width = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
-				height = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+				brush[j].start_x[k] = brush[j].vertices[12*k + 0]/(double)brush[j].width[k];
+				//brush[j].start_y = brush[j].vertices[12*k + 1]/(double)brush[j].;
+
 			}
 
 			//set shape dems and text coords
@@ -91,38 +94,37 @@ extern void loadLevel(char *name){
 			//     -(float)width/BLOCKSIZE, -(float)height/BLOCKSIZE, 0.0, 				    (float)tp->height/height
 			// };
 
-
-			shape[0] = -(float)width/BLOCKSIZE;
-			shape[1] =  (float)height/BLOCKSIZE;
+			shape[0] = -(float)brush[j].width[k]/BLOCKSIZE;
+			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
 			shape[2] =  0.0;
 			shape[3] =  0.0;
-			shape[4] =  (float)width/BLOCKSIZE;
-			shape[5] = 	(float)height/BLOCKSIZE;
-			shape[6] =  (float)width/BLOCKSIZE;
+			shape[4] =  (float)brush[j].width[k]/BLOCKSIZE;
+			shape[5] = 	(float)brush[j].height[k]/BLOCKSIZE;			
+			shape[6] =  (float)brush[j].width[k]/tp->width; //+
 			shape[7] =  0.0;
-			shape[8] =  (float)width/BLOCKSIZE;
-			shape[9] = -(float)height/BLOCKSIZE;
-			shape[10] = (float)width/BLOCKSIZE;
-			shape[11] = (float)height/BLOCKSIZE;
-			shape[12] = -(float)width/BLOCKSIZE;
-			shape[13] = -(float)height/BLOCKSIZE;
+			shape[8] =  (float)brush[j].width[k]/BLOCKSIZE;
+			shape[9] = -(float)brush[j].height[k]/BLOCKSIZE;
+			shape[10] = (float)brush[j].width[k]/tp->width; //+
+			shape[11] = (float)BLOCKSIZE/tp->height;//+
+			shape[12] = -(float)brush[j].width[k]/BLOCKSIZE;
+			shape[13] = -(float)brush[j].height[k]/BLOCKSIZE;
 			shape[14] = 0.0;
-			shape[15] = (float)height/BLOCKSIZE;
+			shape[15] = (float)BLOCKSIZE/tp->height; //+
 
 			//printf("%f\n",shape[11]);
 
 			//gen VAO
-			glGenVertexArrays(1, &buffers.obj1+tp->local_id);	
+			glGenVertexArrays(1, &VAO[tp->local_id]);	
 			//gen VO
-			glGenBuffers(1, &buffers.vo1+tp->local_id);
+			glGenBuffers(1, &VO[tp->local_id]);
 			//activate VAO
-			glBindVertexArray(*(&buffers.obj1+tp->local_id));
+			glBindVertexArray(VAO[tp->local_id]);
 			//use VO
-			glBindBuffer(GL_ARRAY_BUFFER, *(&buffers.vo1+tp->local_id));
+			glBindBuffer(GL_ARRAY_BUFFER, VO[tp->local_id]);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(shape), shape, GL_STATIC_DRAW);
 
 			//use same EL
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(&buffers.eo1));
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.eo1);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 			//define data offsets
 		    glEnableVertexAttribArray(0);

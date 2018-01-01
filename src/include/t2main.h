@@ -143,6 +143,11 @@ typedef struct
 	int32_t vertices[12*MAXFACES];
 	int32_t planes[9*MAXFACES];
 	char texel[MAXFACES][TEXMAXNAMELENGTH];
+	uint32_t width[MAXFACES];
+	uint32_t height[MAXFACES];
+	double start_x[MAXFACES];
+	double start_y[MAXFACES];
+	double start_z[MAXFACES];
 } CBRUSH;
 
 typedef struct
