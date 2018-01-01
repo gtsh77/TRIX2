@@ -141,7 +141,7 @@ typedef struct
 	uint8_t faces[MAXFACES];	
 	int32_t vertices[12*MAXFACES];
 	int32_t planes[9*MAXFACES];
-	char texel[TEXMAXNAMELENGTH];
+	char texel[MAXFACES][TEXMAXNAMELENGTH];
 } CBRUSH;
 
 typedef struct

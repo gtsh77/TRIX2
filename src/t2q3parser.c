@@ -154,7 +154,7 @@ extern void parseMap(char *path)
     	if(isBrush)
     	{
 	    	//parse main line into tmp struct
-            if(sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel,&num[0]) == 11)
+            if(sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel[0],&num[0]) == 11)
             {
                 //store planes
                 for(i=0;i<9;i++)
@@ -163,15 +163,15 @@ extern void parseMap(char *path)
                 }
 
                 //check if it has valid face
-                if(strncmp(tmp_brush[0].texel,"common/caulk",12) != 0)
+                if(strncmp(tmp_brush[0].texel[0],"common/caulk",12) != 0)
                 {
                     //printf("new face\n");
                     //store face id
                     brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].plane_count;
                     //store texel name
-                    strcpy(brush[brush_num].texel,tmp_brush[0].texel);
+                    strcpy(brush[brush_num].texel[brush[brush_num].face_count],tmp_brush[0].texel[0]);
                     //update global texels array
-                    strcpy(texel_dup[header[0].texel_count].path,tmp_brush[0].texel);
+                    strcpy(texel_dup[header[0].texel_count].path,tmp_brush[0].texel[0]);
                     //upd tx cnt
                     header[0].texel_count++;
                     //store vertices

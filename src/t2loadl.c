@@ -3,7 +3,7 @@
 extern void loadLevel(char *name){
 	//prepare cmap path by given filename
 	char path[MAXCMAPFILENAME + 10];
-	uint8_t plen = strlen(name), i, j;
+	uint8_t plen = strlen(name), i, j, k;
 
 	if(plen > MAXCMAPFILENAME){
 		printf("level name (%d) maxchar exceeded, maximum: %d\n",plen,MAXCMAPFILENAME);
@@ -34,10 +34,14 @@ extern void loadLevel(char *name){
 	//load brushes
 	CBRUSH brush[hp->brush_count];
 	fread(brush,sizeof(CBRUSH),hp->brush_count,cmap);
-	for(j=0;j<2;j++)
+	for(j=0;j<hp->brush_count;j++)
 	{
-		printf("%s\n",brush[j].texel);
-		for(i=0;i<12;i++)
+		for(k=0;k<brush[j].face_count;k++)
+		{
+			printf("face_%d: %d\n",k,brush[j].faces[k]);
+			printf("tex_%d: %s\n",k,brush[j].texel[k]);
+		}
+		for(i=0;i<brush[j].face_count*12;i++)
 		{
 			printf("p%d: %d\n",i,brush[j].vertices[i]);
 		}
