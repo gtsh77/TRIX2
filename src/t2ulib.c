@@ -34,3 +34,14 @@ extern uint64_t getCycles(void)
 	__asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
 	return ((uint64_t)hi << 32) | lo;
 }
+
+extern TNODE * getTNodeByPath(char *path)
+{
+	TNODE *cur = tn_fp;
+	while(cur < tn_lp)
+	{
+		if(strcmp(cur->path,path) == 0) return cur;
+		else cur = cur->n;
+	}
+    return NULL;
+}

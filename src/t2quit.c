@@ -34,6 +34,9 @@ void doQuit2(void)
         free(tp2);
     }
 
+    free(level_texels);
+    free(level_brushes);
+
     glDeleteProgram(shader_elf);
     glDeleteShader(buffers.vs1);
     glDeleteShader(buffers.vs2);

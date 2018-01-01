@@ -71,7 +71,7 @@ extern void doMapCalc(double *points, uint8_t plane_count, uint8_t *faces, uint8
 						{
 							if(num == 0) num = 4;
 							//debug
-							printf("p_%d num %d: %f %f %f \n",(i+1),num,intersaction[0],intersaction[1],intersaction[2]);
+							//printf("p_%d num %d: %f %f %f \n",(i+1),num,intersaction[0],intersaction[1],intersaction[2]);
 							//store into *r
 							r[last_stored] = intersaction[0];
 							r[last_stored + 1] = intersaction[1];

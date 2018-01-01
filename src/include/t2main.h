@@ -17,6 +17,8 @@
 #define WW 640
 #define WH 480
 #define BLOCKSIZE 256
+#define MAXVO 64
+#define MAXVAO 64
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
@@ -35,7 +37,7 @@ extern SDL_Event windowEvent;
 extern uint32_t shader_elf;
 //extern GLint uniColor;
 
-//vertex buffer ids storage
+//vertex buffer ids storage (old)
 typedef struct
 {
 	uint32_t vo1;
@@ -64,6 +66,10 @@ typedef struct
 	uint32_t obj4;
 	uint32_t obj5;
 } Buffers;
+
+//new
+extern uint32_t VO[MAXVO];
+extern uint32_t VAO[MAXVO];
 
 //vertex shaders compile status storage
 typedef struct
@@ -109,18 +115,13 @@ typedef struct tnode
 
 extern TNODE *tn_fp, *tn_cp, *tn_lp;
 
-//ingame assets count, should be equal to objNames & objIds length
-#define TRGAMEOBJECTS 10
-//game obj definitions
-extern char objNames[TRGAMEOBJECTS][128];
-extern uint8_t objIds[TRGAMEOBJECTS];
-
 //map parser
 #define MAXFACES 6
 #define TEXMAXNAMELENGTH 64
 #define ENTMAXVALLENGTH 32
 #define ENTMAXVAL 8
 
+//cmap structs
 typedef struct
 {
 	uint32_t brush_count;
@@ -158,6 +159,19 @@ typedef struct
 	CENTPROP values[ENTMAXVAL];
 } CENT;
 
+//globals for current level
+extern CHEAD level_header;
+extern CTEX *level_texels;
+extern CBRUSH *level_brushes;
+
+//ingame assets count, should be equal to objNames & objIds length
+#define TRGAMEOBJECTS 10
+//game obj definitions
+extern char objNames[TRGAMEOBJECTS][128];
+extern uint8_t objIds[TRGAMEOBJECTS];
+
+
+
 //t2mlib
 extern gsl_matrix * m_new_diag(uint32_t);
 extern gsl_matrix * m_new(uint32_t, uint32_t);
@@ -186,6 +200,7 @@ extern void m_set_all(gsl_matrix *, double);
 extern char * readFile(char *);
 extern void getShaderLog(uint32_t);
 extern uint64_t getCycles(void);
+extern TNODE * getTNodeByPath(char *);
 
 //t2jpg
 extern void loadTRoomGAssets(void);

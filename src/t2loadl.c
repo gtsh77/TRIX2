@@ -24,28 +24,21 @@ extern void loadLevel(char *name){
 	}
 
 	//read cmap header
-	CHEAD h, *hp = &h;
+	CHEAD *hp = &level_header;
 	fread(hp,sizeof(CHEAD),1,cmap);
 
 	//load texel names array
-	CTEX texels[hp->texel_count];
-	fread(texels,sizeof(CTEX),hp->texel_count,cmap);
+	level_texels = (CTEX *)calloc(hp->texel_count,sizeof(CTEX));
+	CTEX *texels = level_texels;
+	fread(level_texels,sizeof(CTEX),hp->texel_count,cmap);
 
 	//load brushes
-	CBRUSH brush[hp->brush_count];
+	level_brushes = (CBRUSH *)calloc(hp->brush_count,sizeof(CBRUSH));
+	CBRUSH *brush = level_brushes;
 	fread(brush,sizeof(CBRUSH),hp->brush_count,cmap);
-	for(j=0;j<hp->brush_count;j++)
-	{
-		for(k=0;k<brush[j].face_count;k++)
-		{
-			printf("face_%d: %d\n",k,brush[j].faces[k]);
-			printf("tex_%d: %s\n",k,brush[j].texel[k]);
-		}
-		for(i=0;i<brush[j].face_count*12;i++)
-		{
-			printf("p%d: %d\n",i,brush[j].vertices[i]);
-		}
-	}
+
+	printf("%d\n",brush[0].face_count);
+	//return;
 
 	//load ent
 	//...
@@ -64,10 +57,97 @@ extern void loadLevel(char *name){
 	}
 	tn_lp = tn_cp;
 
-	fclose(cmap);
+
+
+	//proccess faces into VAOs
+	TNODE *tp;
+	uint32_t elements[] = {
+	    0, 1, 2,
+	    2, 3, 0
+	}, width, height;
+	float shape[16];
+	//gen EL
+	glGenBuffers(1, &buffers.eo1);
+
+	//gen VAO/VO
+	for(j=0;j<hp->brush_count;j++)
+	{
+		for(k=0;k<brush[j].face_count;k++)
+		{
+			//get proper TNODE
+			tp = getTNodeByPath(brush[j].texel[k]);
+			//calc width & height
+			if(brush[j].faces[k] == 2)
+			{
+				width = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+				height = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+			}
+
+			//set shape dems and text coords
+			// float shape[] = {
+			//     -(float)width/BLOCKSIZE,  (float)height/BLOCKSIZE, 0.0, 				    0.0,
+			//      (float)width/BLOCKSIZE,  (float)height/BLOCKSIZE, (float)tp->width/width,  0.0,
+			//      (float)width/BLOCKSIZE, -(float)height/BLOCKSIZE, (float)tp->width/width,  (float)tp->height/height,
+			//     -(float)width/BLOCKSIZE, -(float)height/BLOCKSIZE, 0.0, 				    (float)tp->height/height
+			// };
+
+
+			shape[0] = -(float)width/BLOCKSIZE;
+			shape[1] =  (float)height/BLOCKSIZE;
+			shape[2] =  0.0;
+			shape[3] =  0.0;
+			shape[4] =  (float)width/BLOCKSIZE;
+			shape[5] = 	(float)height/BLOCKSIZE;
+			shape[6] =  (float)width/BLOCKSIZE;
+			shape[7] =  0.0;
+			shape[8] =  (float)width/BLOCKSIZE;
+			shape[9] = -(float)height/BLOCKSIZE;
+			shape[10] = (float)width/BLOCKSIZE;
+			shape[11] = (float)height/BLOCKSIZE;
+			shape[12] = -(float)width/BLOCKSIZE;
+			shape[13] = -(float)height/BLOCKSIZE;
+			shape[14] = 0.0;
+			shape[15] = (float)height/BLOCKSIZE;
+
+			//printf("%f\n",shape[11]);
+
+			//gen VAO
+			glGenVertexArrays(1, &buffers.obj1+tp->local_id);	
+			//gen VO
+			glGenBuffers(1, &buffers.vo1+tp->local_id);
+			//activate VAO
+			glBindVertexArray(*(&buffers.obj1+tp->local_id));
+			//use VO
+			glBindBuffer(GL_ARRAY_BUFFER, *(&buffers.vo1+tp->local_id));
+			glBufferData(GL_ARRAY_BUFFER, sizeof(shape), shape, GL_STATIC_DRAW);
+
+			//use same EL
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(&buffers.eo1));
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+			//define data offsets
+		    glEnableVertexAttribArray(0);
+		    glEnableVertexAttribArray(1);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void *)(2*sizeof(float)));
+			//deactivate VAO
+			glBindVertexArray(0);
+
+
+				printf("face_%d: %d\n",k,brush[j].faces[k]);
+				printf("tex_%d: %s\n",k,brush[j].texel[k]);
+			// }
+			// for(i=0;i<brush[j].face_count*12;i++)
+			// {
+			// 	printf("p%d: %d\n",i,brush[j].vertices[i]);
+			// }
+		}
+	}
+
 
 	//load shaders
 	loadShaders();
+
+	fclose(cmap);
 
 	return;
 }
@@ -75,38 +155,6 @@ extern void loadLevel(char *name){
 void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length){
 	//GPU stuff
 	float max_aniso = 0;
-	float shape[] = {
-	    -(float)tp->width/BLOCKSIZE,  (float)tp->height/BLOCKSIZE, 0.0, 0.0,
-	     (float)tp->width/BLOCKSIZE,  (float)tp->height/BLOCKSIZE, 1.0, 0.0,
-	     (float)tp->width/BLOCKSIZE, -(float)tp->height/BLOCKSIZE, 1.0, 1.0,
-	    -(float)tp->width/BLOCKSIZE, -(float)tp->height/BLOCKSIZE, 0.0, 1.0
-	};
-	uint32_t elements[] = {
-	    0, 1, 2,
-	    2, 3, 0
-	};
-	//gen VAO
-	glGenVertexArrays(1, &buffers.obj1+tp->local_id);
-	//gen VO
-	glGenBuffers(1, &buffers.vo1+tp->local_id);
-	//gen EL
-	glGenBuffers(1, &buffers.eo1+tp->local_id);
-	//activate VAO
-	glBindVertexArray(*(&buffers.obj1+tp->local_id));
-	//use VO
-	glBindBuffer(GL_ARRAY_BUFFER, *(&buffers.vo1+tp->local_id));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(shape), shape, GL_STATIC_DRAW);
-
-	//use EL
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(&buffers.eo1+tp->local_id));
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-	//define data offsets
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void *)(2*sizeof(float)));
-	//deactivate VAO
-	glBindVertexArray(0);
 
 	//create texel
 	glGenTextures(1, &tp->gpu_id);
