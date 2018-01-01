@@ -105,7 +105,7 @@ extern void parseMap(char *path)
     CBRUSH tmp_brush[1];
 
 	//alloc space for entities
-	CENT entity[header[0].entity_count];
+	CENT entity[header[0].entity_count ? header[0].entity_count : 1];
 
 	//set file-pointer back
 	rewind(file);
@@ -175,11 +175,11 @@ extern void parseMap(char *path)
                     //upd tx cnt
                     header[0].texel_count++;
                     //store vertices
-                    for(i=0;i<9;i++)
-                    {
-                        brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = (double)tmp_brush[0].planes[i];
+                    // for(i=0;i<9;i++)
+                    // {
+                    //     brush[brush_num].vertices[((brush[brush_num].face_count)*9) + i] = tmp_brush[0].planes[i];
                         
-                    }
+                    // }
                     //upd struct fc cnt
                     brush[brush_num].face_count++;                  
                 }
@@ -248,7 +248,7 @@ extern void parseMap(char *path)
     	{
     		for(k=0;k<9;k++)
     		{
-	    		planes[9*j + k] = (double)brush[i].planes[9*j + k];
+	    		planes[9*j + k] = (int32_t)brush[i].planes[9*j + k];
     		}
     	}
     	//calculatec vertices
@@ -263,34 +263,30 @@ extern void parseMap(char *path)
 
 		//store into struct
 		for(j=0;j<brush[i].face_count*12;j++)
-		{
-            
-			brush[i].vertices[j] = vertices[j];
-            //printf("%f\n",brush[i].vertices[j]);
+		{            
+			brush[i].vertices[j] = (int32_t)vertices[j];
+            //printf("%d %d %d\n",brush[i].vertices[j],i,j);
 		}
-    }
+    }    
 
     //chk data
-    //printf("%f\n",brush[0].vertices[11]);    
-
+    //printf("%d\n",brush[1].vertices[0]);    
 
     //write bin
-    fwrite(header,sizeof(header),1,file2);
-    fclose(file2);
-    file2 = fopen(opath, "ab");
-    fwrite(texel_final,sizeof(texel_final),1,file2);
-    fclose(file2);
-    file2 = fopen(opath, "ab");
-    fwrite(brush,sizeof(brush),1,file2);
-    fclose(file2);
-    file2 = fopen(opath, "ab");
-    fwrite(entity,sizeof(entity),1,file2);
+    fwrite(header,sizeof(CHEAD),1,file2);
+    fwrite(texel_final,sizeof(CTEX),header[0].texel_count,file2);
+    fwrite(brush,sizeof(CBRUSH),header[0].brush_count,file2);
+    fwrite(entity,sizeof(CENT),(header[0].entity_count ? header[0].entity_count : 1),file2);
     fclose(file2);
     fclose(file);
+    
+    if(ferror(file2))
+    {
+        printf("something went wrong\n");
+    }
+    else printf("\nwrote: %s\n\n",opath);
 
-    free(line);
-
-    printf("\nwrote: %s\n\n",opath);
+    free(line);   
 
     return;
 }

@@ -3,7 +3,7 @@
 extern void loadLevel(char *name){
 	//prepare cmap path by given filename
 	char path[MAXCMAPFILENAME + 10];
-	uint8_t plen = strlen(name), i;
+	uint8_t plen = strlen(name), i, j;
 
 	if(plen > MAXCMAPFILENAME){
 		printf("level name (%d) maxchar exceeded, maximum: %d\n",plen,MAXCMAPFILENAME);
@@ -26,14 +26,22 @@ extern void loadLevel(char *name){
 	//read cmap header
 	CHEAD h, *hp = &h;
 	fread(hp,sizeof(CHEAD),1,cmap);
-	printf("texel count: %d\n",hp->texel_count);
 
 	//load texel names array
 	CTEX texels[hp->texel_count];
-	fread(texels,sizeof(CTEX)*hp->texel_count,1,cmap);
+	fread(texels,sizeof(CTEX),hp->texel_count,cmap);
 
 	//load brushes
-	//...
+	CBRUSH brush[hp->brush_count];
+	fread(brush,sizeof(CBRUSH),hp->brush_count,cmap);
+	for(j=0;j<2;j++)
+	{
+		printf("%s\n",brush[j].texel);
+		for(i=0;i<12;i++)
+		{
+			printf("p%d: %d\n",i,brush[j].vertices[i]);
+		}
+	}
 
 	//load ent
 	//...
@@ -112,6 +120,7 @@ void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length){
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tp->width, tp->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
+
 	return;
 }
 
@@ -197,5 +206,7 @@ void loadShaders(void){
 		// //switch texture unit
 		// uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
 		// glUniform1i(tsrc,1);
-	}		
+	}
+
+	return;
 }

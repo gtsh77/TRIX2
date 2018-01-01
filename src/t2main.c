@@ -46,10 +46,9 @@ int main(int argc, char *argv[])
 		{
 			if(argc < 2) printf("specify level name\n");
 			else loadLevel(*++argv);
-			initLoop();
+			//initLoop();
 			doQuit2();			
 		}
-
 	}
 	else printf("usage: trix2 [-c </path/to/file>] || [-m <mode> [opt]]\n");
 
