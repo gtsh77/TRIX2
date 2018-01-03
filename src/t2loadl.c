@@ -77,7 +77,7 @@ extern void loadLevel(char *name){
 			//get proper TNODE
 			tp = getTNodeByPath(brush[j].texel[k]);
 			//calc width & height
-			if(brush[j].faces[k] == 2)
+			if(brush[j].faces[k] == 2) //behind
 			{
 				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
@@ -86,7 +86,7 @@ extern void loadLevel(char *name){
 				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
-			else if(brush[j].faces[k] == 3)
+			else if(brush[j].faces[k] == 3) //left
 			{
 				brush[j].width[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
@@ -95,7 +95,7 @@ extern void loadLevel(char *name){
 				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4])/BLOCKSIZE - 1;
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
 			}
-			else if(brush[j].faces[k] == 5)
+			else if(brush[j].faces[k] == 5) //right
 			{
 				brush[j].width[k] = brush[j].vertices[12*k + 1] - brush[j].vertices[12*k + 4];
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
@@ -103,6 +103,24 @@ extern void loadLevel(char *name){
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
 				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] + brush[j].width[k])/BLOCKSIZE;
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
+			}
+			else if(brush[j].faces[k] == 1) //floor
+			{
+				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+				brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 2];
+
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+			}
+			else if(brush[j].faces[k] == 0) //ceil
+			{
+				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 1];
+				brush[j].height[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
+
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 6]/BLOCKSIZE;
+				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 
 			//debug
@@ -113,7 +131,7 @@ extern void loadLevel(char *name){
 			shape[2] =  0.0;
 			shape[3] =  0.0;
 			shape[4] =  (float)brush[j].width[k]/BLOCKSIZE;
-			shape[5] = 	(float)brush[j].height[k]/BLOCKSIZE;			
+			shape[5] = 	(float)brush[j].height[k]/BLOCKSIZE;
 			shape[6] =  (float)brush[j].width[k]/tp->width; //tex
 			shape[7] =  0.0;
 			shape[8] =  (float)brush[j].width[k]/BLOCKSIZE;

@@ -446,6 +446,14 @@ void initLoop(void)
                         {
                            m_setRy(Model,90,0);
                         }
+                        else if(level_brushes[j].faces[k] == 1) //floor
+                        {
+                           m_setRx(Model,90,0);
+                        }
+                        else if(level_brushes[j].faces[k] == 0) //ceil
+                        {
+                           m_setRx(Model,-90,0);
+                        }
 
                         m_setT(Model,level_brushes[j].start_x[k],level_brushes[j].start_z[k],-level_brushes[j].start_y[k],0); //swap Z Y
 
