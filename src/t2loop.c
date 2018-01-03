@@ -77,7 +77,7 @@ void initLoop(void)
     normalize(center_up,3,center_up);
     mulVec(center_up,speed,3,speed_straight);  
 
-    glmPerspective(RAD(80.0f),(double)WW/(double)WH,0.1f,10.0f,Projection); 
+    glmPerspective(RAD(60.0f),(double)WW/(double)WH,0.1f,10.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
     uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");         
 
@@ -437,9 +437,17 @@ void initLoop(void)
                         if(level_brushes[j].faces[k] == 2) //front
                         {
                            m_setRz(Model,0,0);
-                           //start_x = (double)level_brushes[j].verices[12*k + 0]/
-                        }                        
-                        m_setT(Model,level_brushes[j].start_x[k],0,0,0);
+                        }
+                        else if(level_brushes[j].faces[k] == 3) //front
+                        {
+                           m_setRy(Model,-90,0);
+                        }
+                        else if(level_brushes[j].faces[k] == 5) //front
+                        {
+                           m_setRy(Model,90,0);
+                        }
+
+                        m_setT(Model,level_brushes[j].start_x[k],level_brushes[j].start_z[k],-level_brushes[j].start_y[k],0); //swap Z Y
 
                         glmLookAt(eye,eye_center,up,View);
                         m_mul(Model,View,MV);

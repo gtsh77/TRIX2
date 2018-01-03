@@ -81,11 +81,32 @@ extern void loadLevel(char *name){
 			{
 				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
-				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
-				//debug
-				printf("%f\n",brush[j].start_x[k]);
 
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
+			else if(brush[j].faces[k] == 3)
+			{
+				brush[j].width[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
+				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4])/BLOCKSIZE - 1;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
+			}
+			else if(brush[j].faces[k] == 5)
+			{
+				brush[j].width[k] = brush[j].vertices[12*k + 1] - brush[j].vertices[12*k + 4];
+				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] + brush[j].width[k])/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
+			}
+
+			//debug
+			printf("%f\n",brush[j].start_x[k]);			
 
 			shape[0] = 0.0; //-
 			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
