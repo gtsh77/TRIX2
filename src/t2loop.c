@@ -430,8 +430,9 @@ void initLoop(void)
                     {
                         //get proper TNODE
                         tp = getTNodeByPath(level_brushes[j].texel[k]);
+                        gpu_id = level_brushes[j].id * MAXFACES;
                         //bind VAO
-                        glBindVertexArray(VAO[tp->local_id]);
+                        glBindVertexArray(VAO[gpu_id+k]);
                         //set POS and transforms
                         m_reset_diag(Model,4);
                         if(level_brushes[j].faces[k] == 2) //front

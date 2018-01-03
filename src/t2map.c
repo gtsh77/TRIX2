@@ -84,6 +84,8 @@ extern void doMapCalc(double *points, uint8_t plane_count, uint8_t *faces, uint8
 			}
 		}
 	}
+
+	return;
 }
 
 uint8_t intIn(uint8_t num, uint8_t *arr, uint8_t size)
@@ -140,6 +142,8 @@ void getIntersaction(double *points, uint8_t i, uint8_t j, uint8_t k, double *in
 		intersaction[2] = tmp[23];		
 	}
 
+	return;
+
 }
  
 
@@ -173,5 +177,6 @@ void getND(double *points, uint8_t planeNum, double *normals, double *distances)
 	normals[2] = normal_n[2];
 	distances[0] = distance;
 
+	return;
 }
 

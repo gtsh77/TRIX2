@@ -17,8 +17,9 @@
 #define WW 640
 #define WH 480
 #define BLOCKSIZE 256
-#define MAXVO 64
-#define MAXVAO 64
+#define MAXFACES 6
+#define MAXVO 64*MAXFACES
+#define MAXVAO 64*MAXFACES
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 60
@@ -116,7 +117,6 @@ typedef struct tnode
 extern TNODE *tn_fp, *tn_cp, *tn_lp;
 
 //map parser
-#define MAXFACES 6
 #define TEXMAXNAMELENGTH 64
 #define ENTMAXVALLENGTH 32
 #define ENTMAXVAL 8
@@ -139,7 +139,7 @@ typedef struct
 	uint32_t id;
 	uint8_t face_count;
 	uint8_t plane_count;
-	uint8_t faces[MAXFACES];	
+	uint8_t faces[MAXFACES];
 	int32_t vertices[12*MAXFACES];
 	int32_t planes[9*MAXFACES];
 	char texel[MAXFACES][TEXMAXNAMELENGTH];
@@ -168,6 +168,7 @@ typedef struct
 extern CHEAD level_header;
 extern CTEX *level_texels;
 extern CBRUSH *level_brushes;
+extern uint32_t gpu_id;
 
 //ingame assets count, should be equal to objNames & objIds length
 #define TRGAMEOBJECTS 10

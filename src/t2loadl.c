@@ -76,6 +76,7 @@ extern void loadLevel(char *name){
 		{
 			//get proper TNODE
 			tp = getTNodeByPath(brush[j].texel[k]);
+			gpu_id = brush[j].id * MAXFACES;
 			//calc width & height
 			if(brush[j].faces[k] == 2) //behind
 			{
@@ -92,8 +93,8 @@ extern void loadLevel(char *name){
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
-				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4])/BLOCKSIZE - 1;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
+				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] - brush[j].width[k])/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 			else if(brush[j].faces[k] == 5) //right
 			{
@@ -102,7 +103,7 @@ extern void loadLevel(char *name){
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
 				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] + brush[j].width[k])/BLOCKSIZE;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;					
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 			else if(brush[j].faces[k] == 1) //floor
 			{
@@ -124,7 +125,7 @@ extern void loadLevel(char *name){
 			}
 
 			//debug
-			printf("%f\n",brush[j].start_x[k]);			
+			//printf("%f\n",brush[j].start_x[k]);
 
 			shape[0] = 0.0; //-
 			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
@@ -146,13 +147,13 @@ extern void loadLevel(char *name){
 			//printf("%f\n",shape[11]);
 
 			//gen VAO
-			glGenVertexArrays(1, &VAO[tp->local_id]);	
+			glGenVertexArrays(1, &VAO[gpu_id+k]);
 			//gen VO
-			glGenBuffers(1, &VO[tp->local_id]);
+			glGenBuffers(1, &VO[gpu_id+k]);
 			//activate VAO
-			glBindVertexArray(VAO[tp->local_id]);
+			glBindVertexArray(VAO[gpu_id+k]);
 			//use VO
-			glBindBuffer(GL_ARRAY_BUFFER, VO[tp->local_id]);
+			glBindBuffer(GL_ARRAY_BUFFER, VO[gpu_id+k]);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(shape), shape, GL_STATIC_DRAW);
 
 			//use same EL
@@ -167,13 +168,13 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			printf("----brush %d object %d ----",j,k);
-			printf("face: %d\n",brush[j].faces[k]);
-			printf("tex: %s\n",brush[j].texel[k]);
-			for(i=0;i<brush[j].face_count*12;i++)
-			{
-				printf("p%d: %d\n",i,brush[j].vertices[i]);
-			}
+			// printf("----brush %d object %d ----",j,k);
+			// printf("face: %d\n",brush[j].faces[k]);
+			// printf("tex: %s\n",brush[j].texel[k]);
+			// for(i=0;i<brush[j].face_count*12;i++)
+			// {
+			// 	printf("p%d: %d\n",i,brush[j].vertices[i]);
+			// }
 		}
 	}
 

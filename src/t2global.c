@@ -15,3 +15,4 @@ uint32_t VAO[MAXVO];
 CHEAD level_header;
 CTEX *level_texels;
 CBRUSH *level_brushes;
+uint32_t gpu_id;

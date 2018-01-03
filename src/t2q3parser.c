@@ -163,7 +163,7 @@ extern void parseMap(char *path)
                 }
 
                 //check if it has valid face
-                if(strncmp(tmp_brush[0].texel[0],"common/caulk",12) != 0)
+                if(strncmp(tmp_brush[0].texel[0],"common/caulk",12) != 0 && strncmp(tmp_brush[0].texel[0],"common/nodraw",12) != 0)
                 {
                     //printf("new face\n");
                     //store face id
@@ -253,6 +253,7 @@ extern void parseMap(char *path)
     	}
     	//calculatec vertices
     	doMapCalc(planes, brush[i].plane_count, brush[i].faces, brush[i].face_count, vertices);
+        //printf("brush %d OK\n",i);
     	//chk result
 		// printf("**** brush %d\n",i);
 
