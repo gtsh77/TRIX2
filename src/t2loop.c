@@ -66,12 +66,12 @@ void initLoop(void)
     gsl_matrix *MVP = m_new(4,4);
     gsl_matrix *Projection = m_new(4,4);      
     float MVPA[16];
-    double eye[] = {0,-0.25,4};
+    double eye[] = {0,0.5,4};
     double center[] = {0,0,-1};
-    double up[] = {0,1,0};       
+    double up[] = {0,1,0};
 
     double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
-    double speed = 0.08;
+    double speed = 0.15;
     mulVec(center,speed,3,speed_zoom);
     getCrossV3(center,up,center_up);
     normalize(center_up,3,center_up);
@@ -433,12 +433,12 @@ void initLoop(void)
                         //bind VAO
                         glBindVertexArray(VAO[tp->local_id]);
                         //set POS and transforms
+                        m_reset_diag(Model,4);
                         if(level_brushes[j].faces[k] == 2) //front
                         {
                            m_setRz(Model,0,0);
                            //start_x = (double)level_brushes[j].verices[12*k + 0]/
-                        }
-                        m_reset_diag(Model,4);
+                        }                        
                         m_setT(Model,level_brushes[j].start_x[k],0,0,0);
 
                         glmLookAt(eye,eye_center,up,View);

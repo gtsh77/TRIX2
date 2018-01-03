@@ -81,35 +81,28 @@ extern void loadLevel(char *name){
 			{
 				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
-				brush[j].start_x[k] = brush[j].vertices[12*k + 0]/(double)brush[j].width[k];
-				//brush[j].start_y = brush[j].vertices[12*k + 1]/(double)brush[j].;
+				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				//debug
+				printf("%f\n",brush[j].start_x[k]);
 
 			}
 
-			//set shape dems and text coords
-			// float shape[] = {
-			//     -(float)width/BLOCKSIZE,  (float)height/BLOCKSIZE, 0.0, 				    0.0,
-			//      (float)width/BLOCKSIZE,  (float)height/BLOCKSIZE, (float)tp->width/width,  0.0,
-			//      (float)width/BLOCKSIZE, -(float)height/BLOCKSIZE, (float)tp->width/width,  (float)tp->height/height,
-			//     -(float)width/BLOCKSIZE, -(float)height/BLOCKSIZE, 0.0, 				    (float)tp->height/height
-			// };
-
-			shape[0] = -(float)brush[j].width[k]/BLOCKSIZE;
+			shape[0] = 0.0; //-
 			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
 			shape[2] =  0.0;
 			shape[3] =  0.0;
 			shape[4] =  (float)brush[j].width[k]/BLOCKSIZE;
 			shape[5] = 	(float)brush[j].height[k]/BLOCKSIZE;			
-			shape[6] =  (float)brush[j].width[k]/tp->width; //+
+			shape[6] =  (float)brush[j].width[k]/tp->width; //tex
 			shape[7] =  0.0;
 			shape[8] =  (float)brush[j].width[k]/BLOCKSIZE;
-			shape[9] = -(float)brush[j].height[k]/BLOCKSIZE;
-			shape[10] = (float)brush[j].width[k]/tp->width; //+
-			shape[11] = (float)BLOCKSIZE/tp->height;//+
-			shape[12] = -(float)brush[j].width[k]/BLOCKSIZE;
-			shape[13] = -(float)brush[j].height[k]/BLOCKSIZE;
+			shape[9] = 0.0; //-
+			shape[10] = (float)brush[j].width[k]/tp->width; //tex
+			shape[11] = (float)brush[j].height[k]/tp->height;//tex
+			shape[12] = 0.0; //-
+			shape[13] = 0.0; //-
 			shape[14] = 0.0;
-			shape[15] = (float)BLOCKSIZE/tp->height; //+
+			shape[15] = (float)brush[j].height[k]/tp->height; //tex
 
 			//printf("%f\n",shape[11]);
 
@@ -134,14 +127,14 @@ extern void loadLevel(char *name){
 			//deactivate VAO
 			glBindVertexArray(0);
 
-
-				printf("face_%d: %d\n",k,brush[j].faces[k]);
-				printf("tex_%d: %s\n",k,brush[j].texel[k]);
-			// }
-			// for(i=0;i<brush[j].face_count*12;i++)
-			// {
-			// 	printf("p%d: %d\n",i,brush[j].vertices[i]);
-			// }
+			//debug
+			printf("----brush %d object %d ----",j,k);
+			printf("face: %d\n",brush[j].faces[k]);
+			printf("tex: %s\n",brush[j].texel[k]);
+			for(i=0;i<brush[j].face_count*12;i++)
+			{
+				printf("p%d: %d\n",i,brush[j].vertices[i]);
+			}
 		}
 	}
 
