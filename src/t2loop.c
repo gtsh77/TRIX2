@@ -82,9 +82,7 @@ void initLoop(void)
     uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");         
 
     TNODE *tp;
-    uint8_t i,j,k;
-
-    double start_x, start_y, start_z;
+    uint8_t j,k;
 
     while(1)
     {

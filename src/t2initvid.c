@@ -12,8 +12,11 @@ void initVideo(void)
 		"Simple Room",
 		0,0,
 		WW,WH,
-		SDL_WINDOW_OPENGL
+		SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE
 	);
+
+	SDL_SetWindowMinimumSize(window,320,240);
+    SDL_ShowCursor(1);	
 
 	GLPixmap = SDL_GL_CreateContext(window);
 	glewExperimental = GL_TRUE;

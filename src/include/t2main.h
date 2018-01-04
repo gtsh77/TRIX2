@@ -14,8 +14,6 @@
 #include "jpeglib.h"
 
 #define GLEW_STATIC
-#define WW 640
-#define WH 480
 #define BLOCKSIZE 256
 #define MAXFACES 6
 #define MAXVO 64*MAXFACES
@@ -30,6 +28,10 @@
 #define LLEVEL     02
 
 extern uint8_t MODE;
+
+extern uint16_t WW;
+extern uint16_t WH;
+extern float FOV;
 
 //globals
 extern SDL_Window *window;
@@ -242,6 +244,7 @@ void loadShaders(void);
 //common
 void initVideo(void);
 void initLoop(void);
+void initLoopV2(void);
 void doQuit(void);
 void doQuit2(void);
 uint64_t benchCPU(void);
