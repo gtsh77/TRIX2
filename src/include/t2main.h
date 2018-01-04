@@ -148,6 +148,7 @@ typedef struct
 	double start_x[MAXFACES];
 	double start_y[MAXFACES];
 	double start_z[MAXFACES];
+	uint8_t direction_code[MAXFACES];
 } CBRUSH;
 
 typedef struct

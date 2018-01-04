@@ -77,6 +77,84 @@ extern void loadLevel(char *name){
 			//get proper TNODE
 			tp = getTNodeByPath(brush[j].texel[k]);
 			gpu_id = brush[j].id * MAXFACES;
+
+			//get direction_code
+			//if y1 == ... == y4 then front/back
+			if(brush[j].vertices[12*k + 1] == brush[j].vertices[12*k + 4] && brush[j].vertices[12*k + 4] == brush[j].vertices[12*k + 7] && brush[j].vertices[12*k + 7] == brush[j].vertices[12*k + 10])
+			{
+				//if c.x == b.x -> front
+				if(brush[j].vertices[12*k + 3] == brush[j].vertices[12*k + 6])
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+
+					brush[j].direction_code[k] = 2;
+				}
+				//back
+				//...
+			}
+			//if x1 == ... == x4 then left/right
+			else if(brush[j].vertices[12*k + 0] == brush[j].vertices[12*k + 3] && brush[j].vertices[12*k + 3] == brush[j].vertices[12*k + 6] && brush[j].vertices[12*k + 6] == brush[j].vertices[12*k + 9])
+			{
+				//if z.y == z.y -> right
+				if(brush[j].vertices[12*k + 4] == brush[j].vertices[12*k + 7])
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 1] - brush[j].vertices[12*k + 4];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] + brush[j].width[k])/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+
+					brush[j].direction_code[k] = 5;
+				}
+				//left
+				else
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] - brush[j].width[k])/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;	
+
+					brush[j].direction_code[k] = 3;
+				}
+			}
+			//if z1 == ... == z4 then floor/ceil
+			else if(brush[j].vertices[12*k + 2] == brush[j].vertices[12*k + 5] && brush[j].vertices[12*k + 5] == brush[j].vertices[12*k + 8] && brush[j].vertices[12*k + 8] == brush[j].vertices[12*k + 11])
+			{
+				//if c.y == b.y -> ceil
+				if(brush[j].vertices[12*k + 4] == brush[j].vertices[12*k + 7])
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 0] - brush[j].vertices[12*k + 9];
+					brush[j].height[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 6]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;	
+
+					brush[j].direction_code[k] = 0;
+				}
+				//floor
+				else
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+					brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+
+					brush[j].direction_code[k] = 1;
+				}
+			}			
+
+			#if 0
 			//calc width & height
 			if(brush[j].faces[k] == 2) //behind
 			{
@@ -123,9 +201,6 @@ extern void loadLevel(char *name){
 				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
-
-			#if 1
-
 			#endif
 
 			//debug
@@ -172,12 +247,12 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			if(brush[j].faces[k] == 0)
+			if(brush[j].faces[k] == 1)
 			{
 				printf("----brush %d object %d ----",j,k);
 				printf("face: %d\n",brush[j].faces[k]);
 				printf("tex: %s\n",brush[j].texel[k]);
-				for(i=brush[j].faces[k]*12;i<12;i++)
+				for(i=k*12;i<k*12 + 12;i++)
 				{
 					printf("p%d: %d\n",i,brush[j].vertices[i]);
 				}				

@@ -435,23 +435,23 @@ void initLoop(void)
                         glBindVertexArray(VAO[gpu_id+k]);
                         //set POS and transforms
                         m_reset_diag(Model,4);
-                        if(level_brushes[j].faces[k] == 2) //front
+                        if(level_brushes[j].direction_code[k] == 2) //front
                         {
                            m_setRz(Model,0,0);
                         }
-                        else if(level_brushes[j].faces[k] == 3) //front
+                        else if(level_brushes[j].direction_code[k] == 3) //front
                         {
                            m_setRy(Model,-90,0);
                         }
-                        else if(level_brushes[j].faces[k] == 5) //front
+                        else if(level_brushes[j].direction_code[k] == 5) //front
                         {
                            m_setRy(Model,90,0);
                         }
-                        else if(level_brushes[j].faces[k] == 1) //floor
+                        else if(level_brushes[j].direction_code[k] == 1) //floor
                         {
                            m_setRx(Model,90,0);
                         }
-                        else if(level_brushes[j].faces[k] == 0) //ceil
+                        else if(level_brushes[j].direction_code[k] == 0) //ceil
                         {
                            m_setRx(Model,-90,0);
                         }
