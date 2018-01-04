@@ -116,13 +116,17 @@ extern void loadLevel(char *name){
 			}
 			else if(brush[j].faces[k] == 0) //ceil
 			{
-				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 1];
+				brush[j].width[k] = brush[j].vertices[12*k + 0] - brush[j].vertices[12*k + 9];
 				brush[j].height[k] = brush[j].vertices[12*k + 4] - brush[j].vertices[12*k + 1];
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 6]/BLOCKSIZE;
 				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
+
+			#if 1
+
+			#endif
 
 			//debug
 			//printf("%f\n",brush[j].start_x[k]);
@@ -168,13 +172,17 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			// printf("----brush %d object %d ----",j,k);
-			// printf("face: %d\n",brush[j].faces[k]);
-			// printf("tex: %s\n",brush[j].texel[k]);
-			// for(i=0;i<brush[j].face_count*12;i++)
-			// {
-			// 	printf("p%d: %d\n",i,brush[j].vertices[i]);
-			// }
+			if(brush[j].faces[k] == 0)
+			{
+				printf("----brush %d object %d ----",j,k);
+				printf("face: %d\n",brush[j].faces[k]);
+				printf("tex: %s\n",brush[j].texel[k]);
+				for(i=brush[j].faces[k]*12;i<12;i++)
+				{
+					printf("p%d: %d\n",i,brush[j].vertices[i]);
+				}				
+			}
+
 		}
 	}
 
