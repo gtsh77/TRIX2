@@ -6,9 +6,8 @@ void initLoopV2(void)
     #if SHOWFRAMETIME
         uint64_t start,end;
     #endif
-    uint64_t lo,hi,a,b,c,interval; 
+    uint64_t lo,hi,a,b,c = 0, last_frame = 0, frame, interval; 
     uint8_t flag = 0;
-    c = 0;
     interval = 44195117;
     //interval = (benchCPU()/FPS);
 
@@ -27,7 +26,7 @@ void initLoopV2(void)
     double cameraUp[] = {0,1,0};
 
     double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3];
-    double speed = 0.15f;
+    double speed = 0.15f, velocity;
 
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
@@ -50,6 +49,9 @@ void initLoopV2(void)
             b = ((uint64_t)hi << 32) | lo;
             c += (b - a);
             flag = 0;
+            // frame = (b - a) - last_frame;
+            // last_frame = (b - a);
+            // velocity = speed * ((double)frame / interval);
 
         }
         if (SDL_PollEvent(&windowEvent))
@@ -62,8 +64,12 @@ void initLoopV2(void)
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                     else if(windowEvent.key.keysym.sym == SDLK_w)
                     {
+
+                                           
+
                         mulVec(cameraFront,speed,3,cameraFront_speed);
                         addVec(cameraPos,cameraFront_speed,3,cameraPos);
+                        
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_a)
                     {                       
@@ -167,6 +173,10 @@ void initLoopV2(void)
                         {
                            m_setRz(Model,0,0);
                         }
+                        else if(level_brushes[j].direction_code[k] == 4) //back
+                        {
+                           m_setRy(Model,180,0);
+                        }
                         else if(level_brushes[j].direction_code[k] == 3) //left
                         {
                            m_setRy(Model,-90,0);
@@ -207,7 +217,7 @@ void initLoopV2(void)
             
             SDL_GL_SwapWindow(window);
             c = 0;
-        } 
+        }
         #if SHOWFRAMETIME
             end = getCycles();
             printf("Frame: %.9f\n",(double)(end-start)/3.5e9);

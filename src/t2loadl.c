@@ -94,6 +94,17 @@ extern void loadLevel(char *name){
 
 					brush[j].direction_code[k] = 2;
 				}
+				else
+				{
+					brush[j].width[k] = brush[j].vertices[12*k + 0] - brush[j].vertices[12*k + 3];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+
+					brush[j].direction_code[k] = 4;
+				}
 				//back
 				//...
 			}
@@ -247,7 +258,7 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			if(brush[j].faces[k] == 1)
+			if(brush[j].faces[k] == 4)
 			{
 				printf("----brush %d object %d ----",j,k);
 				printf("face: %d\n",brush[j].faces[k]);
