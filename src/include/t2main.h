@@ -23,8 +23,8 @@
 #define MAXVAO 64*MAXFACES
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
-#define FPS 60
-#define SLEEP 1000
+#define FPS 120
+#define SLEEP 100
 #define SHOWFRAMETIME 0
 
 #define TESTROOM   01

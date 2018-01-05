@@ -1,15 +1,21 @@
 #include "include/t2main.h"
 
+#define WKEY 0x1
+#define SKEY 0x2 
+#define AKEY 0x4
+#define DKEY 0x8
+
 void initLoopV2(void)
 {
 
     #if SHOWFRAMETIME
         uint64_t start,end;
     #endif
-    uint64_t lo,hi,a,b,c = 0, last_frame = 0, frame, interval; 
-    uint8_t flag = 0;
-    interval = 44195117;
-    //interval = (benchCPU()/FPS);
+
+    uint64_t lo,hi,a,b,c = 0, interval, KEY = 0;
+    uint8_t rd_flag = 0;
+    //interval = 44195117;
+    interval = (benchCPU()/FPS);
 
     TNODE *tp;
     float ratio, sens = 0.1f, yaw = -90.0f ,pitch = 0.0f, mx_offset, my_offset;
@@ -18,15 +24,15 @@ void initLoopV2(void)
     gsl_matrix *Model = m_new_diag(4);
     gsl_matrix *View = m_new(4,4);
     gsl_matrix *MV = m_new(4,4);
-    gsl_matrix *MVP = m_new(4,4);
+    gsl_matrix *MVP = m_new(4,4); 
     gsl_matrix *Projection = m_new(4,4);
     float MVPA[16];
-    double cameraPos[] = {0,0.5,1};
+    double cameraPos[] = {0,0.5,1};  
     double cameraFront[] = {0,0,-1};
     double cameraUp[] = {0,1,0};
 
-    double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3];
-    double speed = 0.15f, velocity;
+    double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3]; 
+    double speed = 0.025f;
 
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
@@ -39,58 +45,29 @@ void initLoopV2(void)
         #if SHOWFRAMETIME
             start = getCycles();
         #endif
-        if(!flag)
+        if(!rd_flag)
         {
             a = ((uint64_t)hi << 32) | lo;
-            flag = 1;
+            rd_flag = 1;
         }
         else
         {
             b = ((uint64_t)hi << 32) | lo;
             c += (b - a);
-            flag = 0;
-            // frame = (b - a) - last_frame;
-            // last_frame = (b - a);
-            // velocity = speed * ((double)frame / interval);
-
+            rd_flag = 0;
         }
-        if (SDL_PollEvent(&windowEvent))
+        if(SDL_PollEvent(&windowEvent))
         {
-            if (windowEvent.type == SDL_QUIT) break; //cross
+            if (windowEvent.type == SDL_QUIT) break;
             else if(windowEvent.type == SDL_KEYDOWN)
             {
                 if(MODE & LLEVEL)
                 {
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
-                    else if(windowEvent.key.keysym.sym == SDLK_w)
-                    {
-
-                                           
-
-                        mulVec(cameraFront,speed,3,cameraFront_speed);
-                        addVec(cameraPos,cameraFront_speed,3,cameraPos);
-                        
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_a)
-                    {                       
-                        getCrossV3(front,cameraUp,front_cameraUp);
-                        normalize(front_cameraUp,3,front_cameraUp);
-                        mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
-                        subVec(cameraPos,front_cameraUp_speed,3,cameraPos);
-
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_d)
-                    {
-                        getCrossV3(front,cameraUp,front_cameraUp);
-                        normalize(front_cameraUp,3,front_cameraUp);
-                        mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
-                        addVec(cameraPos,front_cameraUp_speed,3,cameraPos);
-                    }
-                    else if(windowEvent.key.keysym.sym == SDLK_s)
-                    {
-                        mulVec(cameraFront,speed,3,cameraFront_speed);
-                        subVec(cameraPos,cameraFront_speed,3,cameraPos);
-                    }
+                    else if(windowEvent.key.keysym.sym == SDLK_w && !(KEY & WKEY) && (KEY |= WKEY));
+                    else if(windowEvent.key.keysym.sym == SDLK_s && !(KEY & SKEY) && (KEY |= SKEY));
+                    else if(windowEvent.key.keysym.sym == SDLK_a && !(KEY & AKEY) && (KEY |= AKEY));
+                    else if(windowEvent.key.keysym.sym == SDLK_d && !(KEY & AKEY) && (KEY |= DKEY));
                     else if(windowEvent.key.keysym.sym == SDLK_F11)
                     {
                         if(MODE & FLSCRN)
@@ -105,6 +82,13 @@ void initLoopV2(void)
                         }
                     }
                 }
+            }
+            else if(windowEvent.type == SDL_KEYUP)
+            {
+                if(windowEvent.key.keysym.sym == SDLK_w && (KEY &= ~WKEY));
+                else if(windowEvent.key.keysym.sym == SDLK_s && (KEY &= ~SKEY));
+                else if(windowEvent.key.keysym.sym == SDLK_a && (KEY &= ~AKEY));
+                else if(windowEvent.key.keysym.sym == SDLK_d && (KEY &= ~DKEY));
             }
             else if(windowEvent.type == SDL_WINDOWEVENT)
             {
@@ -147,16 +131,42 @@ void initLoopV2(void)
                 front[2] = sin(RAD(yaw)) * cos(RAD(pitch));
                 normalize(front,3,cameraFront);
             }
-            else;
-
         }
         if(c > interval)
        	{
             if(MODE & LLEVEL)
-            {
+            {   
                 glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glEnable(GL_CULL_FACE);
+
+                if(KEY & WKEY)
+                {
+                    mulVec(cameraFront,speed,3,cameraFront_speed);
+                    addVec(cameraPos,cameraFront_speed,3,cameraPos);
+                }
+                if(KEY & SKEY)
+                {
+                    mulVec(cameraFront,speed,3,cameraFront_speed);
+                    subVec(cameraPos,cameraFront_speed,3,cameraPos);
+                }
+
+                if(KEY & AKEY)
+                {
+                    getCrossV3(front,cameraUp,front_cameraUp);
+                    normalize(front_cameraUp,3,front_cameraUp);
+                    mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
+                    subVec(cameraPos,front_cameraUp_speed,3,cameraPos);
+                }
+                if(KEY & DKEY)
+                {
+                    getCrossV3(front,cameraUp,front_cameraUp);
+                    normalize(front_cameraUp,3,front_cameraUp);
+                    mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
+                    addVec(cameraPos,front_cameraUp_speed,3,cameraPos);
+                }
+
+                addVec(cameraPos,cameraFront,3,cameraPos_cameraFront);
 
                 for(j=0;j<level_header.brush_count;j++)
                 {
@@ -196,16 +206,11 @@ void initLoopV2(void)
 
                         m_setT(Model,level_brushes[j].start_x[k],level_brushes[j].start_z[k],-level_brushes[j].start_y[k],0); //swap Z Y
 
-
-                        
-
-                        //glmLookAt(eye,eye_center,up,View);
-                        addVec(cameraPos,cameraFront,3,cameraPos_cameraFront);
-
                         glmLookAt(cameraPos,cameraPos_cameraFront,cameraUp,View);
                         m_mul(Model,View,MV);
                         m_mul(MV,Projection,MVP);
                         m_array(MVP,4,4,MVPA);
+
                         glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
                         glUniform1i(tsrc,tp->local_id);
                         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
