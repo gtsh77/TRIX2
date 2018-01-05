@@ -26,8 +26,9 @@
 
 #define TESTROOM   01
 #define LLEVEL     02
+#define FLSCRN     04
 
-extern uint8_t MODE;
+extern uint32_t MODE;
 
 extern uint16_t WW;
 extern uint16_t WH;

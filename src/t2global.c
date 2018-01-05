@@ -1,9 +1,9 @@
 #include "include/t2main.h"
 
-uint16_t WW = 640;
-uint16_t WH = 480;
-float FOV = 90.0f;
-uint8_t MODE;
+uint16_t WW = 1024;
+uint16_t WH = 768;
+float FOV = 80.0f;
+uint32_t MODE;
 uint32_t shader_elf;
 SDL_Window *window;
 SDL_Event windowEvent;

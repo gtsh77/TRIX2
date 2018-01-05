@@ -10,6 +10,7 @@ void initLoopV2(void)
     uint8_t flag = 0;
     c = 0;
     interval = 44195117;
+    //interval = (benchCPU()/FPS);
 
     gsl_matrix *Model = m_new_diag(4);
     gsl_matrix *View = m_new(4,4);
@@ -17,7 +18,7 @@ void initLoopV2(void)
     gsl_matrix *MVP = m_new(4,4);
     gsl_matrix *Projection = m_new(4,4);      
     float MVPA[16];
-    double eye[] = {0,0.5,4};
+    double eye[] = {0,0.5,1};
     double center[] = {0,0,-1};
     double up[] = {0,1,0};
 
@@ -28,7 +29,7 @@ void initLoopV2(void)
     normalize(center_up,3,center_up);
     mulVec(center_up,speed,3,speed_straight);  
 
-    glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,10.0f,Projection); 
+    glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
     uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");         
 
@@ -86,6 +87,19 @@ void initLoopV2(void)
                         subVec(eye,speed_zoom,3,eye);
                         addVec(eye,center,3,eye_center);
                     }
+                    else if(windowEvent.key.keysym.sym == SDLK_F11)
+                    {
+                        if(MODE & FLSCRN)
+                        {
+                            SDL_SetWindowFullscreen(window,0);
+                            MODE &= ~FLSCRN;
+                        }
+                        else
+                        {
+                            SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
+                            MODE |= FLSCRN;
+                        }
+                    }
                 }
             }
             else if(windowEvent.type == SDL_WINDOWEVENT)
@@ -98,17 +112,17 @@ void initLoopV2(void)
 
             		if(ratio < 1.3)
             		{
-            			printf("RESIZE\n");
             			WW = (uint16_t)WH*1.3;
             			SDL_SetWindowSize(window,WW,WH);
             		}
-            		else if(ratio > 2.3)
+            		else if(ratio > 2.4)
             		{
-            			WW = (uint16_t)WH*2.5;
+            			WW = (uint16_t)WH*2.4;
             			SDL_SetWindowSize(window,WW,WH);
             		}
 
             		FOV = (float)WW/WH*70;
+
             		glViewport(0, 0, WW, WH);
             	}
             		

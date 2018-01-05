@@ -16,7 +16,9 @@ void initVideo(void)
 	);
 
 	SDL_SetWindowMinimumSize(window,320,240);
-    SDL_ShowCursor(1);	
+    SDL_ShowCursor(1);
+
+    if(MODE & FLSCRN) SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	GLPixmap = SDL_GL_CreateContext(window);
 	glewExperimental = GL_TRUE;
