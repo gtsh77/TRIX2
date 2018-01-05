@@ -15,10 +15,16 @@ void initVideo(void)
 		SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE
 	);
 
-	SDL_SetWindowMinimumSize(window,320,240);
-    SDL_ShowCursor(1);
+	SDL_SetWindowMinimumSize(window,320,240);    
+    SDL_SetRelativeMouseMode(1);
 
-    if(MODE & FLSCRN) SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
+    if(MODE & FLSCRN)
+    {
+    	SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
+    	SDL_GetWindowSize(window, &WW, &WH);
+    }
+    
+    SDL_WarpMouseInWindow(window,WW/2,WH/2);
 
 	GLPixmap = SDL_GL_CreateContext(window);
 	glewExperimental = GL_TRUE;

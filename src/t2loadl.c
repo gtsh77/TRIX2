@@ -144,7 +144,7 @@ extern void loadLevel(char *name){
 				else
 				{
 					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
-					brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 2];
+					brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 1];
 
 					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
 					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;

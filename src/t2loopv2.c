@@ -6,39 +6,34 @@ void initLoopV2(void)
     #if SHOWFRAMETIME
         uint64_t start,end;
     #endif
-    uint64_t lo,hi,a,b,c,interval;
+    uint64_t lo,hi,a,b,c,interval; 
     uint8_t flag = 0;
     c = 0;
     interval = 44195117;
     //interval = (benchCPU()/FPS);
 
+    TNODE *tp;
+    float ratio, sens = 0.1f, yaw = -90.0f ,pitch = 0.0f, mx_offset, my_offset;
+    uint8_t j,k;
+
     gsl_matrix *Model = m_new_diag(4);
     gsl_matrix *View = m_new(4,4);
     gsl_matrix *MV = m_new(4,4);
     gsl_matrix *MVP = m_new(4,4);
-    gsl_matrix *Projection = m_new(4,4);      
+    gsl_matrix *Projection = m_new(4,4);
     float MVPA[16];
-    double eye[] = {0,0.5,1};
-    double center[] = {0,0,-1};
-    double up[] = {0,1,0};
+    double cameraPos[] = {0,0.5,1};
+    double cameraFront[] = {0,0,-1};
+    double cameraUp[] = {0,1,0};
 
-    double speed_zoom[3], speed_straight[3], center_up[3], eye_center[3];
-    double speed = 0.15;
-    mulVec(center,speed,3,speed_zoom);
-    getCrossV3(center,up,center_up);
-    normalize(center_up,3,center_up);
-    mulVec(center_up,speed,3,speed_straight);  
+    double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3];
+    double speed = 0.15f;
 
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-    uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");         
+    uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
 
-    TNODE *tp;
-    uint8_t j,k;
-
-    int32_t x,y;
-    float ratio;
-
+    
 	while(1)
 	{
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
@@ -67,25 +62,28 @@ void initLoopV2(void)
                     if(windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
                     else if(windowEvent.key.keysym.sym == SDLK_w)
                     {
-                        addVec(eye,speed_zoom,3,eye);
-                        addVec(eye,center,3,eye_center);
+                        mulVec(cameraFront,speed,3,cameraFront_speed);
+                        addVec(cameraPos,cameraFront_speed,3,cameraPos);
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_a)
-                    {
-                        subVec(eye,speed_straight,3,eye);
-                        addVec(eye,center,3,eye_center);
+                    {                       
+                        getCrossV3(front,cameraUp,front_cameraUp);
+                        normalize(front_cameraUp,3,front_cameraUp);
+                        mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
+                        subVec(cameraPos,front_cameraUp_speed,3,cameraPos);
+
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_d)
                     {
-                        //glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed
-                        addVec(eye,speed_straight,3,eye);
-                        addVec(eye,center,3,eye_center);
-
+                        getCrossV3(front,cameraUp,front_cameraUp);
+                        normalize(front_cameraUp,3,front_cameraUp);
+                        mulVec(front_cameraUp,speed,3,front_cameraUp_speed);
+                        addVec(cameraPos,front_cameraUp_speed,3,cameraPos);
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_s)
                     {
-                        subVec(eye,speed_zoom,3,eye);
-                        addVec(eye,center,3,eye_center);
+                        mulVec(cameraFront,speed,3,cameraFront_speed);
+                        subVec(cameraPos,cameraFront_speed,3,cameraPos);
                     }
                     else if(windowEvent.key.keysym.sym == SDLK_F11)
                     {
@@ -121,15 +119,27 @@ void initLoopV2(void)
             			SDL_SetWindowSize(window,WW,WH);
             		}
 
-            		FOV = (float)WW/WH*70;
-
+            		FOV = (float)WW/WH*DEFFOVCOEF;
             		glViewport(0, 0, WW, WH);
-            	}
-            		
+            	}            		
             }            
             else if(windowEvent.type == SDL_MOUSEMOTION)
             {
-            	//SDL_GetMouseState(&x,&y);
+                mx_offset = windowEvent.motion.xrel;
+            	my_offset = -windowEvent.motion.yrel;
+                mx_offset *= sens;
+                my_offset *= sens;
+                pitch += my_offset;
+                yaw += mx_offset;
+
+                if(pitch > 89) pitch = 89;
+                else if(pitch < -89) pitch = -89;
+                else;
+
+                front[0] = cos(RAD(pitch)) * cos(RAD(yaw));
+                front[1] = sin(RAD(pitch));
+                front[2] = sin(RAD(yaw)) * cos(RAD(pitch));
+                normalize(front,3,cameraFront);
             }
             else;
 
@@ -176,7 +186,13 @@ void initLoopV2(void)
 
                         m_setT(Model,level_brushes[j].start_x[k],level_brushes[j].start_z[k],-level_brushes[j].start_y[k],0); //swap Z Y
 
-                        glmLookAt(eye,eye_center,up,View);
+
+                        
+
+                        //glmLookAt(eye,eye_center,up,View);
+                        addVec(cameraPos,cameraFront,3,cameraPos_cameraFront);
+
+                        glmLookAt(cameraPos,cameraPos_cameraFront,cameraUp,View);
                         m_mul(Model,View,MV);
                         m_mul(MV,Projection,MVP);
                         m_array(MVP,4,4,MVPA);

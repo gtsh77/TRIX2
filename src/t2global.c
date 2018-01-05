@@ -1,8 +1,8 @@
 #include "include/t2main.h"
 
-uint16_t WW = 1024;
-uint16_t WH = 768;
-float FOV = 80.0f;
+int32_t WW = DEFWW;
+int32_t WH = DEFWH;
+float FOV = DEFWW/DEFWH*DEFFOVCOEF;
 uint32_t MODE;
 uint32_t shader_elf;
 SDL_Window *window;

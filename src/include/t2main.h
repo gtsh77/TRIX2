@@ -14,6 +14,9 @@
 #include "jpeglib.h"
 
 #define GLEW_STATIC
+#define DEFWW 1024
+#define DEFWH 768
+#define DEFFOVCOEF 70 //1.3 90 1.7 120
 #define BLOCKSIZE 256
 #define MAXFACES 6
 #define MAXVO 64*MAXFACES
@@ -28,17 +31,16 @@
 #define LLEVEL     02
 #define FLSCRN     04
 
-extern uint32_t MODE;
-
-extern uint16_t WW;
-extern uint16_t WH;
-extern float FOV;
-
 //globals
+extern uint32_t MODE;
+extern uint32_t shader_elf;
+extern int32_t WW;
+extern int32_t WH;
+extern float FOV;
 extern SDL_Window *window;
 extern SDL_GLContext GLPixmap;
 extern SDL_Event windowEvent;
-extern uint32_t shader_elf;
+
 //extern GLint uniColor;
 
 //vertex buffer ids storage (old)
