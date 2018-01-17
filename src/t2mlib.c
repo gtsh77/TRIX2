@@ -177,7 +177,6 @@ extern void m_array(gsl_matrix *ma, uint8_t m, uint8_t n, float *array)
 	uint8_t i,j;
 	for(i=0;i<n;i++)
 	{
-		printf("\n");
 		for(j=0;j<m;j++)
 		{
 			array[i*m+j] = (float)gsl_matrix_get(ma,i,j);

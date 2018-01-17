@@ -31,6 +31,8 @@ void initLoopV2(void)
     double cameraFront[] = {0,0,-1};
     double cameraUp[] = {0,1,0};
 
+    getCamPos(cameraPos);
+
     double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3]; 
     double speed = 0.025f;
 
@@ -124,7 +126,6 @@ void initLoopV2(void)
 
                 if(pitch > 89) pitch = 89;
                 else if(pitch < -89) pitch = -89;
-                else;
 
                 front[0] = cos(RAD(pitch)) * cos(RAD(yaw));
                 front[1] = sin(RAD(pitch));
@@ -144,13 +145,13 @@ void initLoopV2(void)
                 {
                     mulVec(cameraFront,speed,3,cameraFront_speed);
                     addVec(cameraPos,cameraFront_speed,3,cameraPos);
+                    printf("%f %f %f\n",cameraPos[0],cameraPos[1],cameraPos[2]);
                 }
                 if(KEY & SKEY)
                 {
                     mulVec(cameraFront,speed,3,cameraFront_speed);
                     subVec(cameraPos,cameraFront_speed,3,cameraPos);
                 }
-
                 if(KEY & AKEY)
                 {
                     getCrossV3(front,cameraUp,front_cameraUp);
@@ -179,27 +180,27 @@ void initLoopV2(void)
                         glBindVertexArray(VAO[gpu_id+k]);
                         //set POS and transforms
                         m_reset_diag(Model,4);
-                        if(level_brushes[j].direction_code[k] == 2) //front
+                        if(level_brushes[j].faces[k] == 2) //front
                         {
                            m_setRz(Model,0,0);
                         }
-                        else if(level_brushes[j].direction_code[k] == 4) //back
+                        else if(level_brushes[j].faces[k] == 4) //back
                         {
                            m_setRy(Model,180,0);
                         }
-                        else if(level_brushes[j].direction_code[k] == 3) //left
+                        else if(level_brushes[j].faces[k] == 3) //left
                         {
                            m_setRy(Model,-90,0);
                         }
-                        else if(level_brushes[j].direction_code[k] == 5) //right
+                        else if(level_brushes[j].faces[k] == 5) //right
                         {
                            m_setRy(Model,90,0);
                         }
-                        else if(level_brushes[j].direction_code[k] == 1) //floor
+                        else if(level_brushes[j].faces[k] == 1) //floor
                         {
                            m_setRx(Model,90,0);
                         }
-                        else if(level_brushes[j].direction_code[k] == 0) //ceil
+                        else if(level_brushes[j].faces[k] == 0) //ceil
                         {
                            m_setRx(Model,-90,0);
                         }

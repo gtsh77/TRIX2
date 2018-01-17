@@ -32,7 +32,8 @@ extern void parseMap(char *path)
     uint8_t isBrush = 0, isEntity = 0, nonextlen, ent_part = 0, ignore_brush = 0;
     char *line = NULL, *dot;
     uint32_t lbuffer, i, j, k;
-    int32_t num[1], brush_num, entity_num;
+    int32_t num[3], brush_num, entity_num;
+    float fl[3];
 
     printf("\nq3 map path: %s\n",path);
 
@@ -154,7 +155,7 @@ extern void parseMap(char *path)
     	if(isBrush)
     	{
 	    	//parse main line into tmp struct
-            if(sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel[0],&num[0]) == 11)
+            if(sscanf(line,"( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %f %f %f",&tmp_brush[0].planes[0],&tmp_brush[0].planes[1],&tmp_brush[0].planes[2],&tmp_brush[0].planes[3],&tmp_brush[0].planes[4],&tmp_brush[0].planes[5],&tmp_brush[0].planes[6],&tmp_brush[0].planes[7],&tmp_brush[0].planes[8],tmp_brush[0].texel[0],&num[0],&num[1],&fl[2],&fl[0],&fl[1]) == 15)
             {
                 //store planes
                 for(i=0;i<9;i++)
@@ -170,6 +171,12 @@ extern void parseMap(char *path)
                     brush[brush_num].faces[brush[brush_num].face_count] = brush[brush_num].plane_count;
                     //store texel name
                     strcpy(brush[brush_num].texel[brush[brush_num].face_count],tmp_brush[0].texel[0]);
+                    //store texel shift
+                    brush[brush_num].shift_x[brush[brush_num].face_count] = num[0];
+                    brush[brush_num].shift_y[brush[brush_num].face_count] = num[1];
+                    //store texel scale
+                    brush[brush_num].scale_x[brush[brush_num].face_count] = fl[0];
+                    brush[brush_num].scale_y[brush[brush_num].face_count] = fl[1];
                     //update global texels array
                     strcpy(texel_dup[header[0].texel_count].path,tmp_brush[0].texel[0]);
                     //upd tx cnt
@@ -191,10 +198,12 @@ extern void parseMap(char *path)
         else if(isEntity)
         {
             //printf("line: %s\n",line);
-            if(sscanf(line,"%s %[^\t]s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value) == 2)
+            if(sscanf(line,"%s %[^\t\n]s",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value) == 2)
             {
-                entity[entity_num].value_cnt++;
+                
                 //printf("%s %s\n",entity[entity_num].values[entity[entity_num].value_cnt].name,entity[entity_num].values[entity[entity_num].value_cnt].value);
+                if(strcmp(entity[entity_num].values[entity[entity_num].value_cnt].name,"\"classname\"") == 0) strcpy(entity[entity_num].classname,entity[entity_num].values[entity[entity_num].value_cnt].value);
+                entity[entity_num].value_cnt++;
             }
             else printf("bad_ent_format: %s\n",line);
         }
@@ -271,7 +280,7 @@ extern void parseMap(char *path)
     }    
 
     //chk data
-    //printf("%d\n",brush[1].vertices[0]);    
+    //printf("HIHO %s\n",entity[0].classname);    
 
     //write bin
     fwrite(header,sizeof(CHEAD),1,file2);

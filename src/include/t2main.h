@@ -16,7 +16,7 @@
 #define GLEW_STATIC
 #define DEFWW 1024
 #define DEFWH 768
-#define DEFFOVCOEF 70 //1.3 90 1.7 120
+#define DEFFOVCOEF 50 //1.3 65 1.7 85
 #define BLOCKSIZE 256
 #define MAXFACES 6
 #define MAXVO 64*MAXFACES
@@ -148,6 +148,10 @@ typedef struct
 	int32_t vertices[12*MAXFACES];
 	int32_t planes[9*MAXFACES];
 	char texel[MAXFACES][TEXMAXNAMELENGTH];
+	int32_t shift_x[MAXFACES];
+	int32_t shift_y[MAXFACES];
+	float scale_x[MAXFACES];
+	float scale_y[MAXFACES];
 	uint32_t width[MAXFACES];
 	uint32_t height[MAXFACES];
 	double start_x[MAXFACES];
@@ -174,6 +178,7 @@ typedef struct
 extern CHEAD level_header;
 extern CTEX *level_texels;
 extern CBRUSH *level_brushes;
+extern CENT *level_entities;
 extern uint32_t gpu_id;
 
 //ingame assets count, should be equal to objNames & objIds length
@@ -243,6 +248,7 @@ extern void loadLevel(char *);
 extern void decodeJPG(TNODE *, void (*)(TNODE *, uint8_t *, uint32_t));
 void proccessTexel(TNODE *, uint8_t *, uint32_t);
 void loadShaders(void);
+void getCamPos(double *);
 
 //common
 void initVideo(void);

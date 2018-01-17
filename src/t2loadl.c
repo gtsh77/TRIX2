@@ -30,18 +30,20 @@ extern void loadLevel(char *name){
 	//load texel names array
 	level_texels = (CTEX *)calloc(hp->texel_count,sizeof(CTEX));
 	CTEX *texels = level_texels;
-	fread(level_texels,sizeof(CTEX),hp->texel_count,cmap);
+	fread(texels,sizeof(CTEX),hp->texel_count,cmap);
 
 	//load brushes
 	level_brushes = (CBRUSH *)calloc(hp->brush_count,sizeof(CBRUSH));
 	CBRUSH *brush = level_brushes;
 	fread(brush,sizeof(CBRUSH),hp->brush_count,cmap);
 
-	//printf("%d\n",brush[0].face_count);
-	//return;
-
 	//load ent
-	//...
+	level_entities = (CENT *)calloc(hp->entity_count,sizeof(CENT));
+	CENT *entity = level_entities;
+	fread(entity,sizeof(CENT),hp->entity_count,cmap);
+
+	//printf("%s\n",entity[0].values[0].name);
+	//return;
 
 	//create TNODES, read, decode, map in gpu
 	tn_fp = (TNODE *)(calloc(1,sizeof(TNODE)));
@@ -65,7 +67,7 @@ extern void loadLevel(char *name){
 	    0, 1, 2,
 	    2, 3, 0
 	};
-	float shape[16];
+	float shape[16], shift_x = 0, shift_y = 0, scale_x = 0, scale_y = 0;
 	//gen EL
 	glGenBuffers(1, &buffers.eo1);
 
@@ -77,13 +79,13 @@ extern void loadLevel(char *name){
 			//get proper TNODE
 			tp = getTNodeByPath(brush[j].texel[k]);
 			gpu_id = brush[j].id * MAXFACES;
-
+			#if 0
 			//get direction_code
 			//if y1 == ... == y4 then front/back
 			if(brush[j].vertices[12*k + 1] == brush[j].vertices[12*k + 4] && brush[j].vertices[12*k + 4] == brush[j].vertices[12*k + 7] && brush[j].vertices[12*k + 7] == brush[j].vertices[12*k + 10])
 			{
 				//if c.x == b.x -> front
-				if(brush[j].vertices[12*k + 3] == brush[j].vertices[12*k + 6])
+				if(brush[j].vertices[12*k + 0] == brush[j].vertices[12*k + 6])
 				{
 					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
 					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
@@ -163,18 +165,26 @@ extern void loadLevel(char *name){
 
 					brush[j].direction_code[k] = 1;
 				}
-			}			
-
-			#if 0
+			}	
+			#endif		
 			//calc width & height
-			if(brush[j].faces[k] == 2) //behind
+			if(brush[j].faces[k] == 2) //front
 			{
-				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
-				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
-				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
-				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+			}
+			else if(brush[j].faces[k] == 4) //back
+			{
+					brush[j].width[k] = brush[j].vertices[12*k + 0] - brush[j].vertices[12*k + 3];
+					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
+
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 			else if(brush[j].faces[k] == 3) //left
 			{
@@ -196,12 +206,12 @@ extern void loadLevel(char *name){
 			}
 			else if(brush[j].faces[k] == 1) //floor
 			{
-				brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
-				brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 2];
+					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
+					brush[j].height[k] = brush[j].vertices[12*k + 7] - brush[j].vertices[12*k + 1];
 
-				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
-				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 			else if(brush[j].faces[k] == 0) //ceil
 			{
@@ -210,29 +220,33 @@ extern void loadLevel(char *name){
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 6]/BLOCKSIZE;
 				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;	
 			}
-			#endif
 
 			//debug
 			//printf("%f\n",brush[j].start_x[k]);
+			if(brush[j].scale_x[k] > 0) scale_x = brush[j].scale_x[k];
+			if(brush[j].scale_y[k] > 0) scale_y = brush[j].scale_y[k];			
+			if(brush[j].shift_x[k] > 0) shift_x = (float)1/(tp->width/brush[j].shift_x[k])/(scale_x > 0 ? scale_x : 1);
+			if(brush[j].shift_y[k] > 0) shift_y = (float)1/(tp->height/brush[j].shift_y[k])/(scale_y > 0 ? scale_y : 1);
+
 
 			shape[0] = 0.0; //-
 			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
-			shape[2] =  0.0;
-			shape[3] =  0.0;
+			shape[2] =  0.0 + shift_x; //tex
+			shape[3] =  0.0 + shift_y; //tex
 			shape[4] =  (float)brush[j].width[k]/BLOCKSIZE;
 			shape[5] = 	(float)brush[j].height[k]/BLOCKSIZE;
-			shape[6] =  (float)brush[j].width[k]/tp->width; //tex
-			shape[7] =  0.0;
+			shape[6] =  (float)brush[j].width[k]/tp->width/(scale_x > 0 ? scale_x : 1) + shift_x; //tex
+			shape[7] =  0.0 + shift_y; //tex
 			shape[8] =  (float)brush[j].width[k]/BLOCKSIZE;
 			shape[9] = 0.0; //-
-			shape[10] = (float)brush[j].width[k]/tp->width; //tex
-			shape[11] = (float)brush[j].height[k]/tp->height;//tex
+			shape[10] = (float)brush[j].width[k]/tp->width/(scale_x > 0 ? scale_x : 1) + shift_x; //tex
+			shape[11] = (float)brush[j].height[k]/tp->height/(scale_y > 0 ? scale_y : 1) + shift_y;//tex
 			shape[12] = 0.0; //-
 			shape[13] = 0.0; //-
-			shape[14] = 0.0;
-			shape[15] = (float)brush[j].height[k]/tp->height; //tex
+			shape[14] = 0.0 + shift_x; //tex
+			shape[15] = (float)brush[j].height[k]/tp->height/(scale_y > 0 ? scale_y : 1) + shift_y; //tex
 
 			//printf("%f\n",shape[11]);
 
@@ -258,17 +272,19 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			if(brush[j].faces[k] == 4)
-			{
-				printf("----brush %d object %d ----",j,k);
-				printf("face: %d\n",brush[j].faces[k]);
-				printf("tex: %s\n",brush[j].texel[k]);
-				for(i=k*12;i<k*12 + 12;i++)
-				{
-					printf("p%d: %d\n",i,brush[j].vertices[i]);
-				}				
-			}
-
+			// if(brush[j].faces[k] == 1)
+			// {
+			// 	printf("----brush %d object %d ----\n",j,k);
+			// 	printf("face: %d\n",brush[j].faces[k]);
+			// 	printf("tex: %s\n",brush[j].texel[k]);
+			// 	printf("shift_x: %d\n",brush[j].shift_x[k]);
+			// 	printf("shift_y: %d\n",brush[j].shift_y[k]);
+			// 	printf("%f\n",0.0 + (float)brush[j].width[k]/tp->width);
+			// 	for(i=k*12;i<k*12 + 12;i++)
+			// 	{
+			// 		printf("p%d: %d\n",i,brush[j].vertices[i]);
+			// 	}				
+			// }
 		}
 	}
 
@@ -389,5 +405,28 @@ void loadShaders(void){
 		// glUniform1i(tsrc,1);
 	}
 
+	return;
+}
+
+void getCamPos(double *pos)
+{
+	uint32_t x,y,z,i,j;
+	for(i = 0; i < level_header.entity_count;i++)
+	{
+		if(strncmp(&level_entities[i].classname[1],"info_player_allied",18) == 0)
+		{
+			for(j = 0; j < level_entities[i].value_cnt; j++)
+			{
+				if(strncmp(&level_entities[i].values[j].name[1],"origin",6) == 0)
+				{
+					sscanf(&level_entities[i].values[j].value[1],"%d %d %d",&x,&y,&z);
+					pos[0] = (float)x/BLOCKSIZE;
+					pos[1] = (float)z/BLOCKSIZE;
+					pos[2] = -(float)y/BLOCKSIZE;
+					return;
+				}
+			}
+		}
+	}
 	return;
 }
