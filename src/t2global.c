@@ -2,7 +2,8 @@
 
 int32_t WW = DEFWW;
 int32_t WH = DEFWH;
-float FOV = DEFWW/DEFWH*DEFFOVCOEF;
+//float FOV = DEFWW/DEFWH*DEFFOVCOEF;
+float FOV = 50;
 uint32_t MODE;
 uint32_t shader_elf;
 SDL_Window *window;

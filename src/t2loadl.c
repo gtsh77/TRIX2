@@ -225,10 +225,27 @@ extern void loadLevel(char *name){
 
 			//debug
 			//printf("%f\n",brush[j].start_x[k]);
+			shift_x = shift_y = scale_x = scale_y = 0;
 			if(brush[j].scale_x[k] > 0) scale_x = brush[j].scale_x[k];
 			if(brush[j].scale_y[k] > 0) scale_y = brush[j].scale_y[k];			
-			if(brush[j].shift_x[k] > 0) shift_x = (float)1/(tp->width/brush[j].shift_x[k])/(scale_x > 0 ? scale_x : 1);
-			if(brush[j].shift_y[k] > 0) shift_y = (float)1/(tp->height/brush[j].shift_y[k])/(scale_y > 0 ? scale_y : 1);
+			if(brush[j].shift_x[k] > 0)
+			{
+				if(brush[j].shift_x[k] > tp->width)
+				{
+					shift_x = brush[j].shift_x[k] - (tp->width*(uint32_t)(brush[j].shift_x[k]/tp->width));
+					shift_x = (float)1/(tp->width/shift_x)/(scale_x > 0 ? scale_x : 1);
+				}
+				else shift_x = (float)1/(tp->width/brush[j].shift_x[k])/(scale_x > 0 ? scale_x : 1);
+			}
+			if(brush[j].shift_y[k] > 0)
+			{
+				if(brush[j].shift_y[k] > tp->height)
+				{
+					shift_y = brush[j].shift_y[k] - (tp->height*(uint32_t)(brush[j].shift_y[k]/tp->height));
+					shift_y = (float)1/(tp->height/shift_y)/(scale_y > 0 ? scale_y : 1);
+				}
+				else shift_y = (float)1/(tp->height/brush[j].shift_y[k])/(scale_y > 0 ? scale_y : 1);
+			}
 
 
 			shape[0] = 0.0; //-
@@ -247,8 +264,6 @@ extern void loadLevel(char *name){
 			shape[13] = 0.0; //-
 			shape[14] = 0.0 + shift_x; //tex
 			shape[15] = (float)brush[j].height[k]/tp->height/(scale_y > 0 ? scale_y : 1) + shift_y; //tex
-
-			//printf("%f\n",shape[11]);
 
 			//gen VAO
 			glGenVertexArrays(1, &VAO[gpu_id+k]);

@@ -111,7 +111,7 @@ void initLoopV2(void)
             			SDL_SetWindowSize(window,WW,WH);
             		}
 
-            		FOV = (float)WW/WH*DEFFOVCOEF;
+            		//FOV = (float)WW/WH*DEFFOVCOEF;
             		glViewport(0, 0, WW, WH);
             	}            		
             }            
@@ -145,7 +145,7 @@ void initLoopV2(void)
                 {
                     mulVec(cameraFront,speed,3,cameraFront_speed);
                     addVec(cameraPos,cameraFront_speed,3,cameraPos);
-                    printf("%f %f %f\n",cameraPos[0],cameraPos[1],cameraPos[2]);
+                    //printf("%f %f %f\n",cameraPos[0],cameraPos[1],cameraPos[2]);
                 }
                 if(KEY & SKEY)
                 {

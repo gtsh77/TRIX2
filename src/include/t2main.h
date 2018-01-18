@@ -16,11 +16,11 @@
 #define GLEW_STATIC
 #define DEFWW 1024
 #define DEFWH 768
-#define DEFFOVCOEF 50 //1.3 65 1.7 85
+#define DEFFOVCOEF 27 //1.3 35 1.7 45
 #define BLOCKSIZE 256
 #define MAXFACES 6
-#define MAXVO 64*MAXFACES
-#define MAXVAO 64*MAXFACES
+#define MAXVO 128*MAXFACES
+#define MAXVAO 128*MAXFACES
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 120
