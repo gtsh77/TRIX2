@@ -167,15 +167,20 @@ extern void loadLevel(char *name){
 				}
 			}	
 			#endif		
-			//calc width & height
+			//calc face's width & height
 			if(brush[j].faces[k] == 2) //front
 			{
 					brush[j].width[k] = brush[j].vertices[12*k + 3] - brush[j].vertices[12*k + 0];
 					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
 					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].end_x[k] = brush[j].start_x[k] + ((double)brush[j].width[k]/BLOCKSIZE);
+
 					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].end_y[k] = brush[j].start_y[k];
+
 					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+					brush[j].end_z[k] = brush[j].start_z[k] + ((double)brush[j].height[k]/BLOCKSIZE);
 			}
 			else if(brush[j].faces[k] == 4) //back
 			{
@@ -201,8 +206,13 @@ extern void loadLevel(char *name){
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+				brush[j].end_x[k] = brush[j].start_x[k];
+
 				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] + brush[j].width[k])/BLOCKSIZE;
+				brush[j].end_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
+
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+				brush[j].end_z[k] = brush[j].start_z[k] + ((double)brush[j].height[k]/BLOCKSIZE);
 			}
 			else if(brush[j].faces[k] == 1) //floor
 			{
@@ -223,8 +233,7 @@ extern void loadLevel(char *name){
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;	
 			}
 
-			//debug
-			//printf("%f\n",brush[j].start_x[k]);
+			//calc proper texel shift/scale
 			shift_x = shift_y = scale_x = scale_y = 0;
 			if(brush[j].scale_x[k] > 0) scale_x = brush[j].scale_x[k];
 			if(brush[j].scale_y[k] > 0) scale_y = brush[j].scale_y[k];			
@@ -247,7 +256,7 @@ extern void loadLevel(char *name){
 				else shift_y = (float)1/(tp->height/brush[j].shift_y[k])/(scale_y > 0 ? scale_y : 1);
 			}
 
-
+			//define face's local-space dimensions
 			shape[0] = 0.0; //-
 			shape[1] =  (float)brush[j].height[k]/BLOCKSIZE;
 			shape[2] =  0.0 + shift_x; //tex
@@ -264,6 +273,8 @@ extern void loadLevel(char *name){
 			shape[13] = 0.0; //-
 			shape[14] = 0.0 + shift_x; //tex
 			shape[15] = (float)brush[j].height[k]/tp->height/(scale_y > 0 ? scale_y : 1) + shift_y; //tex
+
+			//GPU routines
 
 			//gen VAO
 			glGenVertexArrays(1, &VAO[gpu_id+k]);
@@ -287,7 +298,7 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			// if(brush[j].faces[k] == 1)
+			// if(brush[j].faces[k] == 5)
 			// {
 			// 	printf("----brush %d object %d ----\n",j,k);
 			// 	printf("face: %d\n",brush[j].faces[k]);
@@ -303,15 +314,14 @@ extern void loadLevel(char *name){
 		}
 	}
 
-
-	//load shaders
 	loadShaders();
-
 	fclose(cmap);
 
 	return;
 }
 
+
+//unique texture extra routines
 void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length){
 	//GPU stuff
 	float max_aniso = 0;
@@ -336,6 +346,7 @@ void proccessTexel(TNODE *tp, uint8_t *data, uint32_t data_length){
 	return;
 }
 
+//read and compile shaders
 void loadShaders(void){
 	//load frag/vertex shader's code
 	char *vertex_code = readFile("shaders/room_a_vertex.glsl");
@@ -423,6 +434,7 @@ void loadShaders(void){
 	return;
 }
 
+//define cam pos by entity's value
 void getCamPos(double *pos)
 {
 	uint32_t x,y,z,i,j;
