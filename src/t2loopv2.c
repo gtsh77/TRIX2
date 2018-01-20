@@ -262,18 +262,58 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 4) //back
                         {
                            m_setRy(Model,180,0);
+                           if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.15) &&
+                              cameraPos[2] <= -(level_brushes[j].end_y[k])          &&
+                              cameraPos[0] >= level_brushes[j].end_x[k] - 0.05           &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.05             &&
+                              cameraPos[1] >= level_brushes[j].start_z[k]           &&
+                              cameraPos[1] <= (level_brushes[j].end_z[k]))
+                           {
+                                AXIS |= AXISY;
+                                if(yaw > 0 && yaw < 180 && (LIM |= WLIM)) 
+                                {
+                                    if(yaw < 90 && (LIM |= DLIM));
+                                    else if(yaw > 90 && (LIM |= ALIM));
+                                }
+                                else if(yaw > 180 && yaw < 360 && (LIM |= SLIM))
+                                {
+                                    if(yaw > 180 && yaw < 270 && (LIM |= ALIM));
+                                    else if(yaw > 270 && (LIM |= DLIM));
+                                }
+                           }
                         }
                         else if(level_brushes[j].faces[k] == 3) //left
                         {
                            m_setRy(Model,-90,0);
+                           if(cameraPos[2] <= -(level_brushes[j].start_y[k]) + 0.05        &&
+                              cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.05
+                                      &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.15    &&
+                              cameraPos[0] >= level_brushes[j].end_x[k]             &&
+                              cameraPos[1] >= level_brushes[j].start_z[k]           &&
+                              cameraPos[1] <= (level_brushes[j].end_z[k]))
+                           {
+                                AXIS |= AXISX;
+                                if(yaw > 0 && yaw < 180 && (LIM |= DLIM)) 
+                                {
+                                    if(yaw < 90 && (LIM |= SLIM));
+                                    else if(yaw > 90 && (LIM |= WLIM));
+                                }
+
+                                else if(yaw > 180 && yaw < 360 && (LIM |= ALIM))
+                                {
+                                    if(yaw > 180 && yaw < 270 && (LIM |= WLIM));
+                                    else if(yaw > 270 && (LIM |= SLIM));
+                                }
+                            }                           
                         }
                         else if(level_brushes[j].faces[k] == 5) //right
                         {
                            m_setRy(Model,90,0);
-                           if(cameraPos[2] >= -(level_brushes[j].start_y[k])        &&
-                              cameraPos[2] <= -(level_brushes[j].end_y[k])          &&
+                           if(cameraPos[2] >= -(level_brushes[j].start_y[k]) - 0.05        &&
+                              cameraPos[2] <= -(level_brushes[j].end_y[k]) + 0.05          &&
                               cameraPos[0] >= level_brushes[j].start_x[k] - 0.15    &&
-                              cameraPos[0] <= level_brushes[j].end_x[k]             &&
+                              cameraPos[0] <= level_brushes[j].end_x[k]            &&
                               cameraPos[1] >= level_brushes[j].start_z[k]           &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {

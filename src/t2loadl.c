@@ -188,8 +188,13 @@ extern void loadLevel(char *name){
 					brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
 					brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
+					brush[j].end_x[k] = brush[j].start_x[k] - ((double)brush[j].width[k]/BLOCKSIZE);
+
 					brush[j].start_y[k] = (double)brush[j].vertices[12*k + 1]/BLOCKSIZE;
+					brush[j].end_y[k] = brush[j].start_y[k];
+
 					brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+					brush[j].end_z[k] = brush[j].start_z[k] + ((double)brush[j].height[k]/BLOCKSIZE);
 			}
 			else if(brush[j].faces[k] == 3) //left
 			{
@@ -197,8 +202,13 @@ extern void loadLevel(char *name){
 				brush[j].height[k] = brush[j].vertices[12*k + 5] - brush[j].vertices[12*k + 2];
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 0]/BLOCKSIZE;
-				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 4] - brush[j].width[k])/BLOCKSIZE;
+				brush[j].end_x[k] = brush[j].start_x[k];
+
+				brush[j].start_y[k] = (double)(brush[j].vertices[12*k + 1])/BLOCKSIZE;
+				brush[j].end_y[k] = brush[j].start_y[k] + (double)brush[j].width[k]/BLOCKSIZE;
+
 				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
+				brush[j].end_z[k] = brush[j].start_z[k] + ((double)brush[j].height[k]/BLOCKSIZE);
 			}
 			else if(brush[j].faces[k] == 5) //right
 			{
@@ -298,19 +308,16 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			// if(brush[j].faces[k] == 5)
-			// {
-			// 	printf("----brush %d object %d ----\n",j,k);
-			// 	printf("face: %d\n",brush[j].faces[k]);
-			// 	printf("tex: %s\n",brush[j].texel[k]);
-			// 	printf("shift_x: %d\n",brush[j].shift_x[k]);
-			// 	printf("shift_y: %d\n",brush[j].shift_y[k]);
-			// 	printf("%f\n",0.0 + (float)brush[j].width[k]/tp->width);
-			// 	for(i=k*12;i<k*12 + 12;i++)
-			// 	{
-			// 		printf("p%d: %d\n",i,brush[j].vertices[i]);
-			// 	}				
-			// }
+			if(brush[j].faces[k] == 3)
+			{
+				printf("----brush %d object %d ----\n",j,k);
+				printf("face: %d\n",brush[j].faces[k]);
+				printf("tex: %s\n",brush[j].texel[k]);
+				for(i=k*12;i<k*12 + 12;i++)
+				{
+					printf("p%d: %d\n",i,brush[j].vertices[i]);
+				}				
+			}
 		}
 	}
 
