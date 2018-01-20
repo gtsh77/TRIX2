@@ -42,7 +42,7 @@ void initLoopV2(void)
     getCamPos(cameraPos);
 
     double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3]; 
-    double speed = 0.025f;
+    double speed = 0.050f;
 
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
@@ -237,10 +237,10 @@ void initLoopV2(void)
                            m_setRz(Model,0,0);
 
                            //check if we should apply restrictions
-                           if(cameraPos[2] <= -(level_brushes[j].start_y[k] - 0.15) &&
+                           if(cameraPos[2] <= -(level_brushes[j].start_y[k] - 0.20) &&
                               cameraPos[2] >= -(level_brushes[j].end_y[k])          &&
-                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.05    &&
-                              cameraPos[0] <= level_brushes[j].end_x[k] + 0.05      &&
+                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.15    &&
+                              cameraPos[0] <= level_brushes[j].end_x[k] + 0.15      &&
                               cameraPos[1] >= level_brushes[j].start_z[k]           &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {
@@ -262,10 +262,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 4) //back
                         {
                            m_setRy(Model,180,0);
-                           if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.15) &&
+                           if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.20) &&
                               cameraPos[2] <= -(level_brushes[j].end_y[k])          &&
-                              cameraPos[0] >= level_brushes[j].end_x[k] - 0.05           &&
-                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.05             &&
+                              cameraPos[0] >= level_brushes[j].end_x[k] - 0.15           &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.15             &&
                               cameraPos[1] >= level_brushes[j].start_z[k]           &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {
@@ -285,10 +285,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 3) //left
                         {
                            m_setRy(Model,-90,0);
-                           if(cameraPos[2] <= -(level_brushes[j].start_y[k]) + 0.05        &&
-                              cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.05
+                           if(cameraPos[2] <= -(level_brushes[j].start_y[k]) + 0.15        &&
+                              cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.15
                                       &&
-                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.15    &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.20    &&
                               cameraPos[0] >= level_brushes[j].end_x[k]             &&
                               cameraPos[1] >= level_brushes[j].start_z[k]           &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
@@ -310,9 +310,9 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 5) //right
                         {
                            m_setRy(Model,90,0);
-                           if(cameraPos[2] >= -(level_brushes[j].start_y[k]) - 0.05        &&
-                              cameraPos[2] <= -(level_brushes[j].end_y[k]) + 0.05          &&
-                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.15    &&
+                           if(cameraPos[2] >= -(level_brushes[j].start_y[k]) - 0.15        &&
+                              cameraPos[2] <= -(level_brushes[j].end_y[k]) + 0.15          &&
+                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.20    &&
                               cameraPos[0] <= level_brushes[j].end_x[k]            &&
                               cameraPos[1] >= level_brushes[j].start_z[k]           &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))

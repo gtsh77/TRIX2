@@ -17,7 +17,7 @@
 #define DEFWW 1024
 #define DEFWH 768
 #define DEFFOVCOEF 27 //1.3 35 1.7 45
-#define BLOCKSIZE 256
+#define BLOCKSIZE 128
 #define MAXFACES 6
 #define MAXVO 128*MAXFACES
 #define MAXVAO 128*MAXFACES

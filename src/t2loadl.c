@@ -308,16 +308,16 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			if(brush[j].faces[k] == 3)
-			{
-				printf("----brush %d object %d ----\n",j,k);
-				printf("face: %d\n",brush[j].faces[k]);
-				printf("tex: %s\n",brush[j].texel[k]);
-				for(i=k*12;i<k*12 + 12;i++)
-				{
-					printf("p%d: %d\n",i,brush[j].vertices[i]);
-				}				
-			}
+			// if(brush[j].faces[k] == 3)
+			// {
+			// 	printf("----brush %d object %d ----\n",j,k);
+			// 	printf("face: %d\n",brush[j].faces[k]);
+			// 	printf("tex: %s\n",brush[j].texel[k]);
+			// 	for(i=k*12;i<k*12 + 12;i++)
+			// 	{
+			// 		printf("p%d: %d\n",i,brush[j].vertices[i]);
+			// 	}				
+			// }
 		}
 	}
 
