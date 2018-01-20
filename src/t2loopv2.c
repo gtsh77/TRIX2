@@ -38,6 +38,10 @@ void initLoopV2(void)
     double cameraPos[] = {0,0.5,1};  
     double cameraFront[] = {0,0,-1};
     double cameraUp[] = {0,1,0};
+    double ZPOS;
+    double player = (double)PLAYERHEIGHT/BLOCKSIZE,
+           ppad = (double)8/BLOCKSIZE,
+           plppad = player + ppad;
 
     getCamPos(cameraPos);
 
@@ -215,6 +219,14 @@ void initLoopV2(void)
                     }                  
                 }
 
+                //gravity
+                if(ZPOS)
+                {
+                    if(ZPOS != 100) cameraPos[1] += ZPOS;
+                    ZPOS = 0;
+                }
+
+                //apply vector
                 addVec(cameraPos,cameraFront,3,cameraPos_cameraFront);
 
                 //reset restrictions before redraw
@@ -262,11 +274,11 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 4) //back
                         {
                            m_setRy(Model,180,0);
-                           if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.20) &&
-                              cameraPos[2] <= -(level_brushes[j].end_y[k])          &&
-                              cameraPos[0] >= level_brushes[j].end_x[k] - 0.15           &&
-                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.15             &&
-                              cameraPos[1] >= level_brushes[j].start_z[k]           &&
+                           if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.20)        &&
+                              cameraPos[2] <= -(level_brushes[j].end_y[k])                 &&
+                              cameraPos[0] >= level_brushes[j].end_x[k] - 0.15             &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.15           &&
+                              cameraPos[1] >= level_brushes[j].start_z[k]                  &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {
                                 AXIS |= AXISY;
@@ -286,11 +298,10 @@ void initLoopV2(void)
                         {
                            m_setRy(Model,-90,0);
                            if(cameraPos[2] <= -(level_brushes[j].start_y[k]) + 0.15        &&
-                              cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.15
-                                      &&
-                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.20    &&
-                              cameraPos[0] >= level_brushes[j].end_x[k]             &&
-                              cameraPos[1] >= level_brushes[j].start_z[k]           &&
+                              cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.15          &&
+                              cameraPos[0] <= level_brushes[j].start_x[k] + 0.20           &&
+                              cameraPos[0] >= level_brushes[j].end_x[k]                    &&
+                              cameraPos[1] >= level_brushes[j].start_z[k]                  &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {
                                 AXIS |= AXISX;
@@ -312,9 +323,9 @@ void initLoopV2(void)
                            m_setRy(Model,90,0);
                            if(cameraPos[2] >= -(level_brushes[j].start_y[k]) - 0.15        &&
                               cameraPos[2] <= -(level_brushes[j].end_y[k]) + 0.15          &&
-                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.20    &&
-                              cameraPos[0] <= level_brushes[j].end_x[k]            &&
-                              cameraPos[1] >= level_brushes[j].start_z[k]           &&
+                              cameraPos[0] >= level_brushes[j].start_x[k] - 0.20           &&
+                              cameraPos[0] <= level_brushes[j].end_x[k]                    &&
+                              cameraPos[1] >= level_brushes[j].start_z[k]                  &&
                               cameraPos[1] <= (level_brushes[j].end_z[k]))
                            {
                                 AXIS |= AXISX;
@@ -334,6 +345,23 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 1) //floor
                         {
                            m_setRx(Model,90,0);
+                           //(float)(PLAYERHEIGHT+8)/BLOCKSIZE == cameraPos[1]
+                              if(cameraPos[2] <= -(level_brushes[j].start_y[k])        &&
+                                 cameraPos[2] >= -(level_brushes[j].end_y[k])          &&
+                                 cameraPos[0] >= level_brushes[j].start_x[k]           &&
+                                 cameraPos[0] <= level_brushes[j].end_x[k])
+                            {
+                                //printf("FIRE\n");
+                                if(!ZPOS && (cameraPos[1] - plppad) != level_brushes[j].start_z[k])
+                                {
+                                    if((cameraPos[1] - plppad) < level_brushes[j].start_z[k])
+                                    {
+                                        ZPOS = -(cameraPos[1] - plppad - level_brushes[j].start_z[k]);
+                                    }
+                                    else ZPOS = -ppad;
+                                }
+                                else ZPOS = 100;
+                            }
                         }
                         else if(level_brushes[j].faces[k] == 0) //ceil
                         {
