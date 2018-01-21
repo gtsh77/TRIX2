@@ -21,13 +21,13 @@ void initLoopV2(void)
     #endif
 
     uint64_t lo,hi,a,b,c = 0, interval, KEY = 0, LIM = 0, AXIS = 0;
-    uint8_t rd_flag = 0;
+    uint8_t rd_flag = 0, ZLOCK = 0, NLOCK = 0;
     //interval = 44195117;
     interval = (benchCPU()/FPS);
 
     TNODE *tp;
     float ratio, sens = 0.1f, yaw = 270.0f ,pitch = 0.0f, mx_offset, my_offset;
-    uint8_t j,k;
+    uint32_t j,k;
 
     gsl_matrix *Model = m_new_diag(4);
     gsl_matrix *View = m_new(4,4);
@@ -219,12 +219,9 @@ void initLoopV2(void)
                     }                  
                 }
 
-                //gravity
-                if(ZPOS)
-                {
-                    if(ZPOS != 100) cameraPos[1] += ZPOS;
-                    ZPOS = 0;
-                }
+                //gravity/step on
+                if(!ZLOCK) cameraPos[1] += ZPOS;
+                ZLOCK = NLOCK = ZPOS = 0;
 
                 //apply vector
                 addVec(cameraPos,cameraFront,3,cameraPos_cameraFront);
@@ -345,22 +342,31 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 1) //floor
                         {
                            m_setRx(Model,90,0);
-                           //(float)(PLAYERHEIGHT+8)/BLOCKSIZE == cameraPos[1]
                               if(cameraPos[2] <= -(level_brushes[j].start_y[k])        &&
                                  cameraPos[2] >= -(level_brushes[j].end_y[k])          &&
                                  cameraPos[0] >= level_brushes[j].start_x[k]           &&
                                  cameraPos[0] <= level_brushes[j].end_x[k])
                             {
-                                //printf("FIRE\n");
-                                if(!ZPOS && (cameraPos[1] - plppad) != level_brushes[j].start_z[k])
+                                if(!ZLOCK)
                                 {
-                                    if((cameraPos[1] - plppad) < level_brushes[j].start_z[k])
+                                    if((cameraPos[1] - plppad) == level_brushes[j].start_z[k])
                                     {
-                                        ZPOS = -(cameraPos[1] - plppad - level_brushes[j].start_z[k]);
+                                        ZLOCK = 1;
                                     }
-                                    else ZPOS = -ppad;
+                                    else if(!NLOCK)
+                                    {
+                                        if((cameraPos[1] - plppad) <= level_brushes[j].start_z[k] && (cameraPos[1] - player) >= level_brushes[j].start_z[k])
+                                        {
+                                            ZPOS = -(cameraPos[1] - plppad - level_brushes[j].start_z[k]);
+                                            //if having near decision do "near lock"
+                                            NLOCK = 1;
+                                        }
+                                        else 
+                                        {
+                                            ZPOS = -ppad;
+                                        }                                        
+                                    }
                                 }
-                                else ZPOS = 100;
                             }
                         }
                         else if(level_brushes[j].faces[k] == 0) //ceil

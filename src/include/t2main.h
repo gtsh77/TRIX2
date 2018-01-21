@@ -20,8 +20,8 @@
 #define BLOCKSIZE 128
 #define PLAYERHEIGHT 64
 #define MAXFACES 6
-#define MAXVO 128*MAXFACES
-#define MAXVAO 128*MAXFACES
+#define MAXVO 512*MAXFACES
+#define MAXVAO 512*MAXFACES
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 120

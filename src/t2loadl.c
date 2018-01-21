@@ -3,7 +3,8 @@
 extern void loadLevel(char *name){
 	//prepare cmap path by given filename
 	char path[MAXCMAPFILENAME + 10];
-	uint8_t plen = strlen(name), i, j, k;
+	uint8_t plen = strlen(name);
+	uint32_t i, j, k;
 
 	if(plen > MAXCMAPFILENAME){
 		printf("level name (%d) maxchar exceeded, maximum: %d\n",plen,MAXCMAPFILENAME);
@@ -67,18 +68,23 @@ extern void loadLevel(char *name){
 	    0, 1, 2,
 	    2, 3, 0
 	};
+	uint32_t lastId = 0;
 	float shape[16], shift_x = 0, shift_y = 0, scale_x = 0, scale_y = 0;
 	//gen EL
 	glGenBuffers(1, &buffers.eo1);
 
+	//printf("%d\n",hp->brush_count);
 	//gen VAO/VO
 	for(j=0;j<hp->brush_count;j++)
 	{
+		gpu_id = brush[j].id * MAXFACES;
 		for(k=0;k<brush[j].face_count;k++)
 		{
+			//printf("%d\n",brush[j].face_count);
 			//get proper TNODE
 			tp = getTNodeByPath(brush[j].texel[k]);
-			gpu_id = brush[j].id * MAXFACES;
+
+			//printf("%d\n",gpu_id);
 			#if 0
 			//get direction_code
 			//if y1 == ... == y4 then front/back
@@ -245,7 +251,7 @@ extern void loadLevel(char *name){
 
 				brush[j].start_x[k] = (double)brush[j].vertices[12*k + 6]/BLOCKSIZE;
 				brush[j].start_y[k] = (double)brush[j].vertices[12*k + 4]/BLOCKSIZE;
-				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;	
+				brush[j].start_z[k] = (double)brush[j].vertices[12*k + 2]/BLOCKSIZE;
 			}
 
 			//calc proper texel shift/scale
