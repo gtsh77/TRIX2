@@ -157,7 +157,7 @@ void initLoopV2(void)
             if(MODE & LLEVEL)
             {   
                 //clear space
-                glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+                glClearColor(0.55f, 0.55f, 0.55f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glEnable(GL_CULL_FACE);
 
@@ -220,7 +220,7 @@ void initLoopV2(void)
                 }
 
                 //gravity/step on
-                if(!ZLOCK) cameraPos[1] += ZPOS;
+                if(!ZLOCK || NLOCK) cameraPos[1] += ZPOS;
                 ZLOCK = NLOCK = ZPOS = 0;
 
                 //apply vector
@@ -347,7 +347,7 @@ void initLoopV2(void)
                                  cameraPos[0] >= level_brushes[j].start_x[k]           &&
                                  cameraPos[0] <= level_brushes[j].end_x[k])
                             {
-                                if(!ZLOCK)
+                                if(!ZLOCK || !NLOCK)
                                 {
                                     if((cameraPos[1] - plppad) == level_brushes[j].start_z[k])
                                     {
