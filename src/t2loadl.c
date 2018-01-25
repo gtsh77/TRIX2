@@ -319,7 +319,8 @@ extern void loadLevel(char *name){
 			glBindVertexArray(0);
 
 			//debug
-			// if(brush[j].faces[k] == 1)
+			//if(brush[j].faces[k] == 1)
+			// if(strncmp(brush[j].texel[k],"algiers/afrika",14) == 0)
 			// {
 			// 	printf("----brush %d object %d ----\n",j,k);
 			// 	printf("face: %d\n",brush[j].faces[k]);

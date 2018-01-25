@@ -18,7 +18,7 @@ void initVideo(void)
 	SDL_SetWindowMinimumSize(window,320,240);    
     SDL_SetRelativeMouseMode(1);
 
-    if(MODE & FLSCRN)
+    if(OPTS & FLSCRN)
     {
     	SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
     	SDL_GetWindowSize(window, &WW, &WH);

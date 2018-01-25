@@ -16,14 +16,13 @@
 void initLoopV2(void)
 {
 
-    #if SHOWFRAMETIME
-        uint64_t start,end;
-    #endif
 
+    uint64_t start,end;
     uint64_t lo,hi,a,b,c = 0, interval, KEY = 0, LIM = 0, AXIS = 0;
     uint8_t rd_flag = 0, ZLOCK = 0, NLOCK = 0;
     //interval = 44195117;
-    interval = (benchCPU()/FPS);
+    uint64_t csec = benchCPU();
+    interval = (uint64_t)(csec/FPS);
 
     TNODE *tp;
     float ratio, sens = 0.1f, yaw = 270.0f ,pitch = 0.0f, mx_offset, my_offset;
@@ -34,7 +33,14 @@ void initLoopV2(void)
     gsl_matrix *MV = m_new(4,4);
     gsl_matrix *MVP = m_new(4,4); 
     gsl_matrix *Projection = m_new(4,4);
-    float MVPA[16];
+    float MVPA[16], MA[16];
+
+    float lightpos_src[] = {(float)5843/BLOCKSIZE,(float)910/BLOCKSIZE,-(float)4652/BLOCKSIZE};
+    //5179 3572 110
+    //float lightpos_src[] = {(float)5179/BLOCKSIZE,(float)110/BLOCKSIZE,-(float)3572/BLOCKSIZE};
+    float lightcolor_src[] = {1.0f,0.9f,0.8f};
+    float normals_src[3];
+
     double cameraPos[] = {0,0.5,1};  
     double cameraFront[] = {0,0,-1};
     double cameraUp[] = {0,1,0};
@@ -49,16 +55,19 @@ void initLoopV2(void)
     double speed = 0.050f;
 
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
-    GLint uniformMatrix = glGetUniformLocation(shader_elf, "matrix");
-    uint32_t tsrc = glGetUniformLocation(shader_elf, "tsrc");
+    uint32_t uniformMatrix = glGetUniformLocation(shader_elf, "MVP"),
+             tsrc = glGetUniformLocation(shader_elf, "tsrc"),
+             lightpos = glGetUniformLocation(shader_elf, "lightpos"),
+             lightcolor = glGetUniformLocation(shader_elf, "lightcolor"),
+             model = glGetUniformLocation(shader_elf, "model"),
+             normal = glGetUniformLocation(shader_elf, "normal");
 
+    glUniform3fv(lightpos,1,lightpos_src);
+    glUniform3fv(lightcolor,1,lightcolor_src);
     
 	while(1)
 	{
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-        #if SHOWFRAMETIME
-            start = getCycles();
-        #endif
         if(!rd_flag)
         {
             a = ((uint64_t)hi << 32) | lo;
@@ -85,15 +94,15 @@ void initLoopV2(void)
                     else if(windowEvent.key.keysym.sym == SDLK_d && !(KEY & DKEY) && (KEY |= DKEY));
                     else if(windowEvent.key.keysym.sym == SDLK_F11)
                     {
-                        if(MODE & FLSCRN)
+                        if(OPTS & FLSCRN)
                         {
                             SDL_SetWindowFullscreen(window,0);
-                            MODE &= ~FLSCRN;
+                            OPTS &= ~FLSCRN;
                         }
                         else
                         {
                             SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
-                            MODE |= FLSCRN;
+                            OPTS |= FLSCRN;
                         }
                     }
                 }
@@ -153,11 +162,13 @@ void initLoopV2(void)
         //start new frame
         if(c > interval)
        	{
+            //bench frame
+            if(OPTS & FRATE) start = getCycles();                     
             //level mode
             if(MODE & LLEVEL)
             {   
                 //clear space
-                glClearColor(0.55f, 0.55f, 0.55f, 1.0f);
+                glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glEnable(GL_CULL_FACE);
 
@@ -244,6 +255,9 @@ void initLoopV2(void)
                         if(level_brushes[j].faces[k] == 2) //front
                         {
                            m_setRz(Model,0,0);
+                           normals_src[0] = 0;
+                           normals_src[1] = 0;
+                           normals_src[2] = 1;
 
                            //check if we should apply restrictions
                            if(cameraPos[2] <= -(level_brushes[j].start_y[k] - 0.20) &&
@@ -271,6 +285,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 4) //back
                         {
                            m_setRy(Model,180,0);
+                           normals_src[0] = 0;
+                           normals_src[1] = 0;
+                           normals_src[2] = -1;
+
                            if(cameraPos[2] >= -(level_brushes[j].start_y[k] + 0.20)        &&
                               cameraPos[2] <= -(level_brushes[j].end_y[k])                 &&
                               cameraPos[0] >= level_brushes[j].end_x[k] - 0.15             &&
@@ -294,6 +312,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 3) //left
                         {
                            m_setRy(Model,-90,0);
+                           normals_src[0] = 1;
+                           normals_src[1] = 0;
+                           normals_src[2] = 0;
+
                            if(cameraPos[2] <= -(level_brushes[j].start_y[k]) + 0.15        &&
                               cameraPos[2] >= -(level_brushes[j].end_y[k]) - 0.15          &&
                               cameraPos[0] <= level_brushes[j].start_x[k] + 0.20           &&
@@ -318,6 +340,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 5) //right
                         {
                            m_setRy(Model,90,0);
+                           normals_src[0] = -1;
+                           normals_src[1] = 0;
+                           normals_src[2] = 0;
+
                            if(cameraPos[2] >= -(level_brushes[j].start_y[k]) - 0.15        &&
                               cameraPos[2] <= -(level_brushes[j].end_y[k]) + 0.15          &&
                               cameraPos[0] >= level_brushes[j].start_x[k] - 0.20           &&
@@ -342,6 +368,10 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 1) //floor
                         {
                            m_setRx(Model,90,0);
+                           normals_src[0] = 0;
+                           normals_src[1] = 1;
+                           normals_src[2] = 0;      
+
                               if(cameraPos[2] <= -(level_brushes[j].start_y[k])        &&
                                  cameraPos[2] >= -(level_brushes[j].end_y[k])          &&
                                  cameraPos[0] >= level_brushes[j].start_x[k]           &&
@@ -372,6 +402,9 @@ void initLoopV2(void)
                         else if(level_brushes[j].faces[k] == 0) //ceil
                         {
                            m_setRx(Model,-90,0);
+                           normals_src[0] = 0;
+                           normals_src[1] = -1;
+                           normals_src[2] = 0;
                         }
 
                         m_setT(Model,level_brushes[j].start_x[k],level_brushes[j].start_z[k],-level_brushes[j].start_y[k],0); //swap Z Y
@@ -380,8 +413,12 @@ void initLoopV2(void)
                         m_mul(Model,View,MV);
                         m_mul(MV,Projection,MVP);
                         m_array(MVP,4,4,MVPA);
+                        m_array(Model,4,4,MA);
 
+                        glUniformMatrix4fv(model, 1, GL_FALSE, MA);
                         glUniformMatrix4fv(uniformMatrix, 1, GL_FALSE, MVPA);
+                        glUniform3fv(normal,1,normals_src);                        
+
                         glUniform1i(tsrc,tp->local_id);
                         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
                         //unbind VAO
@@ -392,11 +429,14 @@ void initLoopV2(void)
             
             SDL_GL_SwapWindow(window);
             c = 0;
+            if(OPTS & FRATE)
+            {
+                end = getCycles();
+                printf("Frame: %.9f\n",(double)(end-start)/csec);  
+            }
+           
         }
-        #if SHOWFRAMETIME
-            end = getCycles();
-            printf("Frame: %.9f\n",(double)(end-start)/3.5e9);
-        #endif        
+      
         usleep(SLEEP);     			
 	}
 	return;

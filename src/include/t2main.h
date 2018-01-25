@@ -20,20 +20,21 @@
 #define BLOCKSIZE 128
 #define PLAYERHEIGHT 64
 #define MAXFACES 6
-#define MAXVO 512*MAXFACES
-#define MAXVAO 512*MAXFACES
+#define MAXVO 1024*MAXFACES
+#define MAXVAO 1024*MAXFACES
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 120
 #define SLEEP 100
-#define SHOWFRAMETIME 0
 
 #define TESTROOM   01
 #define LLEVEL     02
-#define FLSCRN     04
+#define FLSCRN     01
+#define FRATE      02
 
 //globals
 extern uint32_t MODE;
+extern uint32_t OPTS;
 extern uint32_t shader_elf;
 extern int32_t WW;
 extern int32_t WH;
