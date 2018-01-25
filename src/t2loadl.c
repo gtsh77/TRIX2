@@ -476,3 +476,41 @@ void getCamPos(double *pos)
 	}
 	return;
 }
+
+//prepare light struct for shaders
+void getLights(void)
+{
+	uint32_t x,y,z,i,j;
+	float r,g,b;
+	for(i = 0; i < level_header.entity_count;i++)
+	{
+		if(strncmp(&level_entities[i].classname[1],"light",5) == 0)
+		{
+			for(j = 0; j < level_entities[i].value_cnt; j++)
+			{
+				if(strncmp(&level_entities[i].values[j].name[1],"origin",6) == 0)
+				{
+					sscanf(&level_entities[i].values[j].value[1],"%d %d %d",&x,&y,&z);
+					level_lights[level_lights_count].origin[0] = (float)x/BLOCKSIZE;
+					level_lights[level_lights_count].origin[1] = (float)z/BLOCKSIZE;
+					level_lights[level_lights_count].origin[2] = -(float)y/BLOCKSIZE;
+				}
+				else if(strncmp(&level_entities[i].values[j].name[1],"_color",6) == 0)
+				{
+					sscanf(&level_entities[i].values[j].value[1],"%f %f %f",&r,&g,&b);
+					level_lights[level_lights_count].color[0] = r;
+					level_lights[level_lights_count].color[1] = g;
+					level_lights[level_lights_count].color[2] = b;
+				}
+				else if(strncmp(&level_entities[i].values[j].name[1],"light",5) == 0)
+				{
+					sscanf(&level_entities[i].values[j].value[1],"%d",&x);
+					level_lights[level_lights_count].radius = (int32_t)x;
+				}
+			}
+			level_lights_count++;
+		}
+	}
+	
+	return;
+}

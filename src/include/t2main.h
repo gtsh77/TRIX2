@@ -22,6 +22,7 @@
 #define MAXFACES 6
 #define MAXVO 1024*MAXFACES
 #define MAXVAO 1024*MAXFACES
+#define MAXLIGHTS 128
 #define RAD(d) (d) * (M_PI/180)
 #define ZEROCHK(i) ((i) == 0)?0:i
 #define FPS 120
@@ -179,12 +180,21 @@ typedef struct
 	CENTPROP values[ENTMAXVAL];
 } CENT;
 
+typedef struct
+{
+	float origin[3];
+	float color[3];
+	int32_t radius;
+} CLIGHT;
+
 //globals for current level
 extern CHEAD level_header;
 extern CTEX *level_texels;
 extern CBRUSH *level_brushes;
 extern CENT *level_entities;
+extern CLIGHT level_lights[MAXLIGHTS];
 extern uint32_t gpu_id;
+extern uint32_t level_lights_count;
 
 //ingame assets count, should be equal to objNames & objIds length
 #define TRGAMEOBJECTS 10
@@ -254,6 +264,7 @@ extern void decodeJPG(TNODE *, void (*)(TNODE *, uint8_t *, uint32_t));
 void proccessTexel(TNODE *, uint8_t *, uint32_t);
 void loadShaders(void);
 void getCamPos(double *);
+void getLights(void);
 
 //common
 void initVideo(void);

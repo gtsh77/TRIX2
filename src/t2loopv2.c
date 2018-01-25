@@ -35,10 +35,10 @@ void initLoopV2(void)
     gsl_matrix *Projection = m_new(4,4);
     float MVPA[16], MA[16];
 
-    float lightpos_src[] = {(float)5843/BLOCKSIZE,(float)910/BLOCKSIZE,-(float)4652/BLOCKSIZE};
+    //float lightpos_src[] = {(float)5843/BLOCKSIZE,(float)910/BLOCKSIZE,-(float)4652/BLOCKSIZE};
     //5179 3572 110
     //float lightpos_src[] = {(float)5179/BLOCKSIZE,(float)110/BLOCKSIZE,-(float)3572/BLOCKSIZE};
-    float lightcolor_src[] = {1.0f,0.9f,0.8f};
+    //float lightcolor_src[] = {1.0f,0.9f,0.8f};
     float normals_src[3];
 
     double cameraPos[] = {0,0.5,1};  
@@ -49,22 +49,53 @@ void initLoopV2(void)
            ppad = (double)8/BLOCKSIZE,
            plppad = player + ppad;
 
+    //set camera
     getCamPos(cameraPos);
+    //prepare lights
+    getLights();
 
     double cameraFront_speed[3], cameraPos_cameraFront[3], front[3], front_cameraUp[3], front_cameraUp_speed[3]; 
     double speed = 0.050f;
 
+    //GLSL
     glmPerspective(RAD(FOV),(double)WW/(double)WH,0.1f,20.0f,Projection); 
     uint32_t uniformMatrix = glGetUniformLocation(shader_elf, "MVP"),
              tsrc = glGetUniformLocation(shader_elf, "tsrc"),
-             lightpos = glGetUniformLocation(shader_elf, "lightpos"),
-             lightcolor = glGetUniformLocation(shader_elf, "lightcolor"),
+             lights_count = glGetUniformLocation(shader_elf, "lights_count"),
+             lights_struct,
              model = glGetUniformLocation(shader_elf, "model"),
              normal = glGetUniformLocation(shader_elf, "normal");
+    char struct_name[128], struct_num[10];
 
-    glUniform3fv(lightpos,1,lightpos_src);
-    glUniform3fv(lightcolor,1,lightcolor_src);
-    
+    //load lights into GPU
+    glUniform1i(lights_count,level_lights_count);
+    for(j=0;j<level_lights_count;j++)
+    {
+        strcat(struct_name,"lights[");
+        sprintf(struct_num,"%d",j);
+        strcat(struct_name,struct_num);
+        strcat(struct_name,"].origin");
+        lights_struct = glGetUniformLocation(shader_elf, struct_name);
+        glUniform3fv(lights_struct,1,level_lights[j].origin);
+        memset(struct_name,0,sizeof(struct_name));
+        strcat(struct_name,"lights[");
+        sprintf(struct_num,"%d",j);
+        strcat(struct_name,struct_num);
+        strcat(struct_name,"].color");
+        printf("%s\n",struct_name);
+        lights_struct = glGetUniformLocation(shader_elf, struct_name);     
+        glUniform3fv(lights_struct,1,level_lights[j].color);
+        memset(struct_name,0,sizeof(struct_name));
+        strcat(struct_name,"lights[");
+        sprintf(struct_num,"%d",j);
+        strcat(struct_name,struct_num);
+        strcat(struct_name,"].radius");
+        lights_struct = glGetUniformLocation(shader_elf, struct_name);
+        glUniform1i(lights_struct,level_lights[j].radius);        
+        memset(struct_name,0,sizeof(struct_name));
+    }
+
+    //start LOOP
 	while(1)
 	{
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));

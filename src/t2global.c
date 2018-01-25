@@ -21,4 +21,6 @@ CHEAD level_header;
 CTEX *level_texels;
 CBRUSH *level_brushes;
 CENT *level_entities;
+CLIGHT level_lights[MAXLIGHTS];
+uint32_t level_lights_count = 0;
 uint32_t gpu_id;
