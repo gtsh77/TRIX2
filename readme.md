@@ -53,6 +53,7 @@ gmake
 ./trix2 -mf load mapname
 ```
 #### FLAGS:
+`-m mode` enable special mode
 `-f` fullscreen
 `-b` calc frame render time
 `-l` nolights
