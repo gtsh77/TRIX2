@@ -2,7 +2,7 @@
 ### FEATURES
 ... (comming)
 ### BUILD
-#### A. BSD
+#### A. BSD AS FREEBSD11
 1. PREPARE SHARED LIBS:
       1. COMPILE THEM FROM SOURCE:
             ```sh
@@ -13,21 +13,37 @@
             cd /usr/ports/math/gsl && sudo make install clean BATCH=yes
             cd /usr/ports/graphics/jpeg-turbo && sudo make install clean BATCH=yes
             ```
-      2. OR CPY PRE-COMPILED:
+      2. OR FETCH PRE-COMPILED PACKAGES:
             ```sh
             sudo pkg install gcc gmake gsl sdl2 glew jpeg-turbo
             ```
 2. CLONE LATEST VER:
 ```sh
-git clone git@github.com:gtsh77/TRIX2.git lovely_folder && cd lovely_folder
+git clone git@github.com:gtsh77/TRIX2.git
 ```
 3. PRODUCE  ELF64:
 ```sh
 gmake
 ```
 
-#### B. LINUX
-... (comming)
+#### B. LINUX AS CENTOS7 (EXPERIMENTAL)
+1. PREPARE SHARED LIBS:
+      1. INSTALL EPEL REPO
+            ```sh
+            yum install epel-release
+            ```
+      2. FETCH PRE-COMPILED PACKAGES:
+            ```sh
+            yum install gcc gsl-devel.x86_64 glew-devel.x86_64 SDL2-devel.x86_64 libjpeg-turbo-devel.x86_64 
+            ```
+2. CLONE LATEST VER:
+```sh
+git clone git@github.com:gtsh77/TRIX2.git
+```
+3. PRODUCE  ELF64:
+```sh
+gmake
+```
 
 #### C. WINDOWS
 ... (comming)

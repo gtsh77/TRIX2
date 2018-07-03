@@ -7,7 +7,10 @@
 #include <string.h>
 #include <math.h>
 #include <gsl/gsl_linalg.h>
-
+#ifdef linux
+	#include <gsl/gsl_blas.h>
+	#include <gsl/gsl_cblas.h>
+#endif
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
