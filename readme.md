@@ -26,23 +26,27 @@ git clone git@github.com:gtsh77/TRIX2.git
 gmake
 ```
 
-#### B. LINUX AS CENTOS7 (EXPERIMENTAL)
+#### B. LINUX AS CENTOS7/DEB10 (EXPERIMENTAL)
 1. PREPARE SHARED LIBS:
       1. INSTALL EPEL REPO
             ```sh
             yum install epel-release
             ```
-      2. FETCH PRE-COMPILED PACKAGES:
+      2. FETCH PRE-COMPILED PACKAGES (RHEL):
             ```sh
             yum install gcc gsl-devel.x86_64 glew-devel.x86_64 SDL2-devel.x86_64 libjpeg-turbo-devel.x86_64 
             ```
+      2. FETCH PRE-COMPILED PACKAGES (DEB10):
+            ```sh
+            apt install libgsl-dev libglew-dev libsdl2-dev libjpeg-dev
+            ```            
 2. CLONE LATEST VER:
 ```sh
 git clone git@github.com:gtsh77/TRIX2.git
 ```
 3. PRODUCE  ELF64:
 ```sh
-gmake
+make
 ```
 
 #### C. WINDOWS
