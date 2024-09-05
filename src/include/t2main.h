@@ -1,6 +1,3 @@
-#ifndef _H_T2MAIN
-#define _H_T2MAIN
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -279,5 +276,3 @@ uint64_t benchCPU(void);
 void genWall(void);
 void genCrate(void);
 void genRoom(void);
-
-#endif
