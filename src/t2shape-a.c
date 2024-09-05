@@ -42,8 +42,30 @@ void shape_a(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-	const char *vertex_code = readFile("shaders/vertex.glsl");
-	const char *fragment_code = readFile("shaders/frag.glsl");
+	const char* vertex_code =
+		"#version 150 core\n"
+		"in vec2 intexcoord;"
+		"in vec3 incolor;"
+		"in vec2 position;"
+		"out vec3 fragcolor;"
+		"out vec2 fragtexcoord;"
+		"void main() {"
+		"	fragtexcoord = intexcoord;"
+		"	fragcolor = incolor;"
+		"    gl_Position = vec4(position, 0.0, 1.0);"
+		"}";
+
+	const char *fragment_code = 
+		"#version 150 core\n"
+		"in vec2 fragtexcoord;"
+		"in vec3 fragcolor;"
+		"out vec4 outColor;"
+		"uniform sampler2D tex;"
+		"void main()"
+		"{"
+		"    outColor = texture(tex, fragtexcoord) * vec4(fragcolor, 1.0);"
+		"}";
+
 	if(!vertex_code || !fragment_code)
 	{
 		printf("not all shaders are loaded\n");
